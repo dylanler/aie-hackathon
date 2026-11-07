@@ -1,0 +1,148 @@
+{
+  "robot": "mini-dog-12dof",
+  "mjcf": "robot.xml",
+  "control_hz": 50,
+  "sim_timestep": 0.002,
+  "decimation": 10,
+  "action_scale_rad": 0.45,
+  "joint_vel_scale": 0.1,
+  "obs_clip": 10.0,
+  "obs_dim": 50,
+  "act_dim": 12,
+  "joints": [
+    "FL_abad",
+    "FL_hip",
+    "FL_knee",
+    "FR_abad",
+    "FR_hip",
+    "FR_knee",
+    "RL_abad",
+    "RL_hip",
+    "RL_knee",
+    "RR_abad",
+    "RR_hip",
+    "RR_knee"
+  ],
+  "obs_slices": {
+    "projected_gravity": [
+      0,
+      3
+    ],
+    "base_ang_vel": [
+      3,
+      6
+    ],
+    "base_lin_vel": [
+      6,
+      9
+    ],
+    "joint_pos_rel": [
+      9,
+      21
+    ],
+    "joint_vel_scaled": [
+      21,
+      33
+    ],
+    "prev_action": [
+      33,
+      45
+    ],
+    "command": [
+      45,
+      48
+    ],
+    "phase_sincos": [
+      48,
+      50
+    ]
+  },
+  "action": "residual joint target, radians: q_target = default_pose + action * action_scale_rad, then clipped to joint limits",
+  "default_pose_rad": {
+    "walk": [
+      0.0,
+      0.8,
+      -1.5,
+      0.0,
+      0.8,
+      -1.5,
+      0.0,
+      0.8,
+      -1.5,
+      0.0,
+      0.8,
+      -1.5
+    ],
+    "trot": [
+      0.0,
+      0.8,
+      -1.5,
+      0.0,
+      0.8,
+      -1.5,
+      0.0,
+      0.8,
+      -1.5,
+      0.0,
+      0.8,
+      -1.5
+    ],
+    "rollover": [
+      0.0,
+      0.8,
+      -1.5,
+      0.0,
+      0.8,
+      -1.5,
+      0.0,
+      0.8,
+      -1.5,
+      0.0,
+      0.8,
+      -1.5
+    ],
+    "play-dead": [
+      0.35,
+      0.9,
+      -1.8,
+      -0.35,
+      0.9,
+      -1.8,
+      0.35,
+      0.9,
+      -1.8,
+      -0.35,
+      0.9,
+      -1.8
+    ]
+  },
+  "commands": {
+    "walk": [
+      0.2,
+      0.0,
+      0.0
+    ],
+    "trot": [
+      0.4,
+      0.0,
+      0.0
+    ],
+    "rollover": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "play-dead": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "network": "MLP 50-64-64-12, tanh hidden activations, deterministic mean action",
+  "onnx": {
+    "walk": "walk.onnx",
+    "trot": "trot.onnx",
+    "rollover": "rollover.onnx",
+    "play-dead": "play-dead.onnx"
+  }
+}
