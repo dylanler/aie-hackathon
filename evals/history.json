@@ -95,5 +95,67 @@
         ]
       }
     ]
+  },
+  {
+    "version": "v4",
+    "parent": "v1",
+    "trainPass": 0.8,
+    "heldoutPass": 0.5,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added general true through-hole, identical-count, envelope-check, and single-solid-union rules to fix undersized, blind, missing, single-count, and oversize failures.",
+    "ts": 1794091473243,
+    "subqMean": 0.559,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 25.58 mm; 2 match(es), found 0)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 25.58 mm; 2 match(es), found 0)"
+        ]
+      },
+      {
+        "case": "drawer-pull",
+        "failed": [
+          "OpenSCAD compiles (measured 0/1)",
+          "fits 256×256×256 mm bed (measured 0 mm)",
+          "wall ≥ 2 mm (measured n/a mm)",
+          "size ≥ 8×10×70 mm (measured n/a mm)",
+          "size ≤ 40×40×120 mm (measured n/a mm)"
+        ]
+      },
+      {
+        "case": "shelf-pin",
+        "failed": [
+          "size ≤ 16×16×30 mm (measured 16×17×29.5 mm)"
+        ]
+      }
+    ]
+  },
+  {
+    "version": "v5",
+    "parent": "v1",
+    "trainPass": 0.95,
+    "heldoutPass": 0.625,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added general through-hole construction, clearance-diameter, hole-count duplication, and envelope-margin rules to fix blind, undersized, missing, and oversize failures.",
+    "ts": 1794091733022,
+    "subqMean": 0.521,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 25.58 mm; 2 match(es), found 0)"
+        ]
+      }
+    ]
   }
 ]
