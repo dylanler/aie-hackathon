@@ -107,14 +107,17 @@ export async function runPipeline(id: string, prompt: string) {
     if (fs.existsSync(verifyPy)) {
       emit({ runId: id, stage: "cad", phase: "progress", message: "MuJoCo physics verifier running (independent of the designer)" });
       for (const f of ["sim_verdict.json", "verdict.json"]) try { fs.unlinkSync(path.join(dir, f)); } catch {}
-      const r = await new Promise<{ status: number | null; stderr: string }>((resolve) => {
-        const p = spawn("python3", [verifyPy, dir], { cwd: repoRoot() });
+      const runSim = (gl?: string) => new Promise<{ status: number | null; stderr: string }>((resolve) => {
+        const p = spawn("python3", [verifyPy, dir], { cwd: repoRoot(), env: gl ? { ...process.env, MUJOCO_GL: gl } : process.env });
         let err = "";
         p.stderr.on("data", (d) => (err += d));
         const t = setTimeout(() => p.kill("SIGKILL"), 240_000);
         p.on("close", (code) => { clearTimeout(t); resolve({ status: code, stderr: err }); });
         p.on("error", () => { clearTimeout(t); resolve({ status: -1, stderr: err }); });
       });
+      let r = await runSim();
+      // no GL on this box (EGL/OSMesa missing): rerun physics with rendering disabled — checks are identical, only media is skipped
+      if (!fs.existsSync(path.join(dir, "sim_verdict.json")) && /EGL|OSMesa|glGetError|GLFW|OpenGL/i.test(r.stderr)) r = await runSim("disable");
       for (const f of ["sim_verdict.json", "verdict.json"]) {
         if (simVerdict) break;
         try { simVerdict = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")); } catch {}
