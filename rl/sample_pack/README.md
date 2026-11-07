@@ -6,5 +6,6 @@ The core pipeline can copy this directory onto a run:
     cp -a rl/sample_pack/. data/runs/<id>/rl/
 
 manifest.json matches the frozen contract in COORDINATION.md.
-Walk and play-dead videos are captioned scripted-motion fallbacks when
-the short PPO burst has not learned the gait yet.
+A skill mp4 is a PPO policy rollout when that policy performs the skill.
+Otherwise the mp4 is the open-loop clip, captioned scripted motion fallback.
+success in manifest.json matches the published mp4.

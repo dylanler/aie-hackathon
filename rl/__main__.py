@@ -93,6 +93,13 @@ def np_image(path):
     return np.asarray(ImageCls.open(path).convert("RGB"))
 
 
+def _cmd_upgrade(args: argparse.Namespace) -> None:
+    from rl.eureka import upgrade
+
+    result = upgrade(skills=_skills(args.skill), timesteps=args.timesteps, seed=args.seed, resume=args.resume)
+    print(json.dumps(result, indent=2))
+
+
 def _cmd_export(args: argparse.Namespace) -> None:
     from rl.export_onnx import export_checkpoint
 
@@ -155,6 +162,13 @@ def main(argv: list[str] | None = None) -> None:
     eureka.add_argument("--candidates", type=int, default=2)
     eureka.add_argument("--seed", type=int, default=0)
     eureka.set_defaults(func=_cmd_eureka)
+
+    upgrade = sub.add_parser("upgrade", help="train longer and publish a policy clip when the rollout does the skill")
+    upgrade.add_argument("--skill", default="all")
+    upgrade.add_argument("--timesteps", type=int, default=65536)
+    upgrade.add_argument("--seed", type=int, default=0)
+    upgrade.add_argument("--resume", action="store_true", help="continue the adopted checkpoint instead of a new reward")
+    upgrade.set_defaults(func=_cmd_upgrade)
 
     judge = sub.add_parser("judge", help="judge logged candidates with SubQ Snap or the local judge")
     judge.add_argument("--skill", default="all")

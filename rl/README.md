@@ -54,10 +54,12 @@ prints key material.
 
 ## Videos
 
-`walk.mp4` and `play-dead.mp4` are physics rollouts of an open-loop controller
-so the demo is not an empty fall. Each frame is captioned **scripted motion
-fallback**. `policy_success` in the curve JSON is the PPO eval. `success` in
-`manifest.json` matches the captioned video.
+`success` in `manifest.json` matches the captioned mp4. When the deterministic
+PPO rollout actually performs the skill, that rollout is `skill.mp4` and the
+frames are captioned **ppo policy rollout**. `video_source` in the curve is
+`ppo-policy`. When it does not, the mp4 stays the open-loop clip, captioned
+**scripted motion fallback**, and `policy_success` is still the PPO rollout.
+Standing still is not counted as a walk or a trot.
 
 ## Setup
 
@@ -102,6 +104,11 @@ python -m rl replay --skill play-dead --controller scripted --out rl/play-dead.m
 python -m rl replay --skill walk --controller policy
 python -m rl replay --skill trot --controller scripted
 python -m rl replay --skill rollover --controller scripted
+
+# Continue the adopted checkpoint, or train the next local reward, then
+# publish a policy mp4 only if the rollout does the skill.
+python -m rl upgrade --skill play-dead --timesteps 8192 --resume
+python -m rl upgrade --skill walk --timesteps 65536
 ```
 
 `python -m rl demo` is the command that wrote the artifacts currently in this

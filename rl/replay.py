@@ -32,6 +32,20 @@ def _record(env: MiniDogEnv, skill: str, label: str, seconds: float, target_fn, 
     return frames, env.metrics(), float(env.task_score())
 
 
+def scripted_task_score(skill: str, reward_path: Path, seconds: float | None = None) -> float:
+    """Task score of the open-loop controller. No video."""
+    env = MiniDogEnv(skill, reward_path)
+    qpos, qvel = scripted.initial_qpos_qvel(env.model, skill)
+    seconds = float(seconds if seconds is not None else scripted.VIDEO_SECONDS[skill])
+    env.set_state(qpos, qvel)
+    steps = max(1, int(round(seconds / spec.CTRL_DT)))
+    for _ in range(steps):
+        env.apply_targets(scripted.targets(skill, env.data.time))
+    score = float(env.task_score())
+    env.close()
+    return score
+
+
 def scripted_rollout(skill: str, reward_path: Path, out: Path, seconds: float | None = None) -> dict:
     env = MiniDogEnv(skill, reward_path)
     qpos, qvel = scripted.initial_qpos_qvel(env.model, skill)

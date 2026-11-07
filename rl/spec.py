@@ -54,7 +54,10 @@ COMMANDS = {
     "rollover": (0.0, 0.0, 0.0),
     "play-dead": (0.0, 0.0, 0.0),
 }
-GAIT_FREQ = {"walk": 1.6, "trot": 2.0, "rollover": 0.0, "play-dead": 0.0}
+# Walk and trot clocks match gaits that fit in the ±0.45 rad residual.
+# Rollover's 3 Hz clock is the alternation that rolls this body from a stand.
+# Play-dead stays at phase 0: the episode already starts belly-up.
+GAIT_FREQ = {"walk": 2.4, "trot": 2.4, "rollover": 3.0, "play-dead": 0.0}
 EPISODE_STEPS = {"walk": 250, "trot": 200, "rollover": 160, "play-dead": 200}
 DEFAULT_POSE = {
     "walk": STAND,
@@ -146,6 +149,7 @@ def policy_spec() -> dict:
         "action": "residual joint target, radians: q_target = default_pose + action * action_scale_rad, then clipped to joint limits",
         "default_pose_rad": {skill: list(DEFAULT_POSE[skill]) for skill in SKILLS},
         "commands": {skill: list(COMMANDS[skill]) for skill in SKILLS},
+        "gait_freq_hz": {skill: GAIT_FREQ[skill] for skill in SKILLS},
         "network": "MLP 50-64-64-12, tanh hidden activations, deterministic mean action",
         "onnx": {skill: policy_filename(skill) for skill in SKILLS},
     }
