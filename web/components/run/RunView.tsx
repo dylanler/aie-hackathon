@@ -146,7 +146,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
 
   return (
     <main className="fixed inset-0 overflow-hidden bg-bg">
-      <div className="absolute inset-0">
+      <div className={`absolute inset-x-0 top-0 transition-[bottom] duration-300 md:bottom-0 ${view === "design" || view === "make" ? "bottom-[44vh]" : view === "verify" ? "bottom-[30vh]" : "bottom-0"}`}>
         <Canvas3D parts={parts} kind={r.run?.kind} mode={mode} params={params} explode={explode} hovered={hovered} onHover={setHovered}
           failing={r.verdict ? !r.verdict.pass : false} urlFor={urlFor} gait={(skillNow?.name ?? gait).replace("-", " ") as Gait} hideRobot={view === "train" && !!video} paused={paused || view !== "train"} locked={locked}
           onUserOrbit={() => setLocked(true)} showContext />
@@ -190,6 +190,20 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       <div data-allow-overflow className="no-scrollbar absolute inset-x-2 top-[60px] flex justify-start overflow-x-auto md:inset-x-auto md:left-1/2 md:top-[68px] md:-translate-x-1/2 md:justify-center md:overflow-visible">
         <PlanStrip steps={r.steps} active={view} onSelect={select} kind={r.run?.kind} />
       </div>
+
+      {/* error: one quiet line with the reason and a retry */}
+      {(r.run as any)?.status === "error" && (
+        <div role="alert" className="absolute inset-x-0 top-[116px] z-10 mx-auto flex w-fit max-w-[calc(100vw-24px)] items-center gap-3 rounded-full border border-err/40 bg-surface/90 py-1 pl-4 pr-1 text-s md:top-[124px]">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-err" />
+          <span className="truncate text-text-2">{String((r.run as any)?.error || "This run stopped before it finished.").split("\n")[0].slice(0, 120)}</span>
+          <button onClick={async () => {
+            const p = r.run?.prompt; if (!p) return;
+            const res = await fetch("/api/runs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: p }) }).catch(() => null);
+            const j = res && res.ok ? await res.json().catch(() => null) : null;
+            if (j?.id) router.push(`/runs/${encodeURIComponent(j.id)}`); else router.push(`/?q=${encodeURIComponent(p)}`);
+          }} className="h-9 shrink-0 rounded-full px-3 text-text hover:bg-raised md:h-7">Retry</button>
+        </div>
+      )}
 
       {/* fit verdict */}
       <AnimatePresence>
@@ -237,7 +251,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       </AnimatePresence>
 
       {/* right panel */}
-      <div className="absolute inset-x-0 bottom-0 z-20 max-h-[58vh] overflow-y-auto md:inset-x-auto md:bottom-auto md:right-6 md:top-[128px] md:max-h-none md:overflow-visible">
+      <div className="absolute inset-x-0 bottom-0 z-20 max-h-[44vh] overflow-y-auto md:inset-x-auto md:bottom-auto md:right-6 md:top-[128px] md:max-h-none md:overflow-visible">
         <AnimatePresence initial={false}>
           {view === "design" && part && (
             <motion.div key={"insp" + part.id} {...panel}>

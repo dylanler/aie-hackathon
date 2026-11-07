@@ -31,7 +31,7 @@ export function Inspector({ part, values, onChange, onCommit, onReset, explode, 
           </button>
         </HintTip>
       </div>
-      {part.purpose && <p className="mt-3 text-s text-text-2">{part.purpose}</p>}
+      {part.purpose && <p className="mt-3 hidden text-s text-text-2 md:block">{part.purpose}</p>}
       {keys.length > 0 ? (
         <div className="mt-4 space-y-4 border-t border-line pt-4">
           {keys.map((k) => {

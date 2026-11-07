@@ -206,17 +206,20 @@ function SketchBox() {
 }
 
 function Rig({ size, mode, locked }: { size: number; mode: Mode; locked: boolean }) {
-  const { camera } = useThree();
+  const { camera, size: vp } = useThree();
   const goal = useRef(new THREE.Vector3());
+  // portrait screens see less width: pull the camera back so the part fits (phones)
+  const aspect = vp.width / Math.max(1, vp.height);
+  const fit = aspect < 1 ? Math.min(2.2, 0.85 / aspect) : 1;
   const t0 = useRef(0);
   useEffect(() => {
-    const d = size * (mode === "train" ? 2.3 : 1.9);
+    const d = size * (mode === "train" ? 2.3 : 1.9) * fit;
     const presets: Record<Mode, [number, number, number]> = {
       sketch: [d * 0.8, d * 0.55, d * 0.9], model: [d * 0.75, d * 0.5, d * 0.95], fit: [d * 0.2, d * 0.45, d * 1.15], train: [d * 0.35, d * 0.35, d * 1.1],
     };
     goal.current.set(...presets[mode]);
     t0.current = 0;
-  }, [size, mode]);
+  }, [size, mode, fit]);
   useFrame((_, dt) => {
     if (locked || t0.current > 0.9) return;
     t0.current += dt / 0.6;

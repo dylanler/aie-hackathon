@@ -6,6 +6,7 @@ import { readRun } from "@/lib/agents/store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+const STALE_MS = 10 * 60 * 1000;
 
 // SSE: replays stored events, then tails events.jsonl until the run finishes.
 // Each message is one contract event: {runId, stage, phase, message, data, model, ts}.
@@ -46,6 +47,12 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         flush();
         let run: any = null;
         try { run = readRun(params.id); } catch {}
+        // a run orphaned by a server restart never finishes: after 10 min with no new events, end the stream as an error
+        if (run && run.status === "running") {
+          let idle = 0;
+          try { idle = Date.now() - fs.statSync(file).mtimeMs; } catch {}
+          if (idle > STALE_MS) run = { ...run, status: "error", error: "Run stopped: no progress for 10 min." };
+        }
         if (run && (run.status === "done" || run.status === "error")) {
           flush();
           send(`event: end\ndata: ${JSON.stringify(run)}\n\n`);
