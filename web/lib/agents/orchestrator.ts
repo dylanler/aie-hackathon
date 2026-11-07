@@ -121,22 +121,22 @@ export async function runPipeline(id: string, prompt: string) {
     if (mode === "local") {
       emit({ runId: id, stage: "cad", phase: "progress", message: "MuJoCo physics verifier running (independent of the designer)" });
       for (const f of ["sim_verdict.json", "verdict.json"]) try { fs.unlinkSync(path.join(dir, f)); } catch {}
-      const runSim = (gl?: string) => new Promise<{ status: number | null; stderr: string }>((resolve) => {
+      const runSim = (gl?: string) => new Promise<{ status: number | null; stderr: string; timedOut?: boolean }>((resolve) => {
         const p = spawn("python3", [verifyPy, dir], { cwd: repoRoot(), env: gl ? { ...process.env, MUJOCO_GL: gl } : process.env });
-        let err = "";
+        let err = "", timedOut = false;
         p.stderr.on("data", (d) => (err += d));
-        const t = setTimeout(() => p.kill("SIGKILL"), 240_000);
-        p.on("close", (code) => { clearTimeout(t); resolve({ status: code, stderr: err }); });
+        const t = setTimeout(() => { timedOut = true; p.kill("SIGKILL"); }, Number(process.env.SIM_TIMEOUT_MS || 240_000));
+        p.on("close", (code) => { clearTimeout(t); resolve({ status: code, stderr: err + (timedOut ? "\n[verifier timed out]" : ""), timedOut }); });
         p.on("error", () => { clearTimeout(t); resolve({ status: -1, stderr: err }); });
       });
       // one verifier at a time, started only when the box has memory for it (mesh queries peak ~1.3 GB)
       await simLock();
-      let r: { status: number | null; stderr: string };
+      let r: { status: number | null; stderr: string; timedOut?: boolean };
       try {
         await waitForMemory(1500, 90_000);
         r = await runSim();
         // killed by a signal (out of memory on a busy box) with no verdict: retry after memory frees — same checks
-        for (let k = 0; k < 2 && !fs.existsSync(path.join(dir, "sim_verdict.json")) && r.status === null; k++) {
+        for (let k = 0; k < 2 && !fs.existsSync(path.join(dir, "sim_verdict.json")) && r.status === null && !r.timedOut; k++) {
           await waitForMemory(1700, 60_000);
           r = await runSim(process.env.MUJOCO_GL || "disable");
         }
@@ -149,7 +149,7 @@ export async function runPipeline(id: string, prompt: string) {
       }
       const media = ["sim.png", "sim.mp4"].filter((f) => fs.existsSync(path.join(dir, f)));
       emit({ runId: id, stage: "cad", phase: simVerdict ? "artifact" : "progress",
-        message: simVerdict ? `MuJoCo verifier: ${(simVerdict.checks || []).filter((c: any) => c.pass).length}/${(simVerdict.checks || []).length} physics checks pass` : `sim/verify.py exited ${r.status}`,
+        message: simVerdict ? `MuJoCo verifier: ${(simVerdict.checks || []).filter((c: any) => c.pass).length}/${(simVerdict.checks || []).length} physics checks pass` : r.timedOut ? "MuJoCo verifier timed out" : r.status === null ? "MuJoCo verifier was killed (out of memory on this box)" : `sim/verify.py exited ${r.status}`,
         data: simVerdict ? { sim_verdict: "sim_verdict.json", media, checks: simVerdict.checks } : { stderr: (r.stderr || "").slice(-400) } });
     }
     emit({ runId: id, stage: "cad", phase: "done", message: `${built.filter((b) => b.compiled).length}/${built.length} parts compiled (${built[0]?.engine})` });
