@@ -49,5 +49,31 @@
         ]
       }
     ]
+  },
+  {
+    "version": "v2",
+    "parent": "v1",
+    "trainPass": 0.9,
+    "heldoutPass": 0.4375,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added general envelope-margin, true through-hole construction, clearance-oversize, identical-repeated-holes, and single-solid rules to fix undersized/blind/missing holes and oversize bounding boxes.",
+    "ts": 1794090813445,
+    "subqMean": 0.47,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.34 mm; 2 match(es), found 1)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.39 mm; 2 match(es), found 1)"
+        ]
+      }
+    ]
   }
 ]
