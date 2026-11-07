@@ -12,6 +12,7 @@ export type Criterion =
   | { type: "volume_max"; mm3: number }
   | { type: "volume_min"; mm3: number }
   | { type: "parts_min"; n: number }
+  | { type: "hole_spacing"; d: number; spacing: number; tol?: number; d_tol?: number } // two parallel through-holes Ø d, centres `spacing` apart
   | { type: "declared_param_min"; name: string; min: number; unit?: string };
 
 export type PartMeasure = { id: string; compiled: boolean; analysis?: Analysis; params?: Record<string, any> };
@@ -32,6 +33,7 @@ export function criterionLabel(c: Criterion): string {
     case "volume_max": return `volume ≤ ${c.mm3} mm³`;
     case "volume_min": return `volume ≥ ${c.mm3} mm³`;
     case "parts_min": return `≥ ${c.n} parts`;
+    case "hole_spacing": return `2× Ø${c.d} holes ${c.spacing}±${c.tol ?? 1} mm apart`;
     case "declared_param_min": return `${c.name} ≥ ${c.min}${c.unit ? " " + c.unit : ""} (declared)`;
   }
 }
@@ -92,6 +94,20 @@ export function evaluate(criteria: Criterion[], parts: PartMeasure[]): CheckResu
       case "volume_min":
         out.push({ name, pass: any((a) => a.volume_mm3 >= c.mm3), value: compiled[0]?.analysis!.volume_mm3 ?? null, unit: "mm3" });
         break;
+      case "hole_spacing": {
+        const dt = c.d_tol ?? 0.8, st = c.tol ?? 1;
+        let best: number | null = null;
+        for (const p of compiled) {
+          const hs = p.analysis!.holes.filter((h) => Math.abs(h.d_mm - c.d) <= dt);
+          for (let i = 0; i < hs.length; i++) for (let j = i + 1; j < hs.length; j++) {
+            if (hs[i].axis !== hs[j].axis) continue;
+            const sp = Math.hypot(hs[i].center[0] - hs[j].center[0], hs[i].center[1] - hs[j].center[1]);
+            if (best === null || Math.abs(sp - c.spacing) < Math.abs(best - c.spacing)) best = +sp.toFixed(2);
+          }
+        }
+        out.push({ name, pass: best !== null && Math.abs(best - c.spacing) <= st, value: best, unit: "mm" });
+        break;
+      }
       case "parts_min":
         out.push({ name, pass: parts.length >= c.n, value: parts.length });
         break;

@@ -19,8 +19,8 @@
   },
   {
    "type": "through_hole",
-   "d": 4.0,
-   "tol": 1.0,
+   "d": 4.4,
+   "tol": 0.6,
    "count": 2
   },
   {

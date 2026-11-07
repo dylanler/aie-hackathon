@@ -18,6 +18,12 @@
    "mm": 2.0
   },
   {
+   "type": "through_hole",
+   "d": 32.2,
+   "tol": 0.6,
+   "count": 1
+  },
+  {
    "type": "bbox_min",
    "mm": [
     8,

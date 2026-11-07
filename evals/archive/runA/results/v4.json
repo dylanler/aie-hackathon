@@ -1,0 +1,1021 @@
+{
+ "version": "v4",
+ "parent": "v2",
+ "train": {
+  "pass": 0.9375,
+  "n": 16,
+  "results": [
+   {
+    "case": "cabinet-knob",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.8962640166282654,
+    "ms": 16740,
+    "measured": [
+     {
+      "part": "cabinet_knob",
+      "compiled": true,
+      "dims_mm": [
+       30,
+       30,
+       21.9
+      ],
+      "min_wall_mm": 4,
+      "holes": [
+       {
+        "axis": "z",
+        "d_mm": 4.01,
+        "center": [
+         0,
+         0
+        ]
+       }
+      ],
+      "params": {
+       "base_d_mm": 30,
+       "total_h_mm": 22,
+       "hole_d_mm": 4
+      }
+     }
+    ]
+   },
+   {
+    "case": "cabinet-knob",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.911178708076477,
+    "ms": 17624,
+    "measured": [
+     {
+      "part": "cabinet_knob_30mm_m4",
+      "compiled": true,
+      "dims_mm": [
+       30,
+       30,
+       22
+      ],
+      "min_wall_mm": 5,
+      "holes": [
+       {
+        "axis": "z",
+        "d_mm": 4.01,
+        "center": [
+         0,
+         0
+        ]
+       }
+      ],
+      "params": {
+       "base_d_mm": 30,
+       "base_h_mm": 5,
+       "grip_d_mm": 22,
+       "grip_h_mm": 17,
+       "total_h_mm": 22,
+       "hole_d_mm": 4
+      }
+     }
+    ]
+   },
+   {
+    "case": "cable-clip",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.9398446679115295,
+    "ms": 29477,
+    "measured": [
+     {
+      "part": "desk_cable_clip",
+      "compiled": true,
+      "dims_mm": [
+       20,
+       24,
+       21.4
+      ],
+      "min_wall_mm": 3,
+      "holes": [
+       {
+        "axis": "z",
+        "d_mm": 3.5,
+        "center": [
+         0,
+         -7
+        ]
+       }
+      ],
+      "params": {
+       "bundle_dia_mm": 12,
+       "hole_d_mm": 3.5,
+       "base_x_mm": 20,
+       "base_y_mm": 24,
+       "total_z_mm": 19.9
+      }
+     }
+    ]
+   },
+   {
+    "case": "cable-clip",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.662888765335083,
+    "ms": 31645,
+    "measured": [
+     {
+      "part": "desk_cord_clip",
+      "compiled": true,
+      "dims_mm": [
+       38,
+       22,
+       20.1
+      ],
+      "min_wall_mm": 3,
+      "holes": [
+       {
+        "axis": "z",
+        "d_mm": 3.48,
+        "center": [
+         7.5,
+         11
+        ]
+       }
+      ],
+      "params": {
+       "bundle_d_mm": 12,
+       "hole_d_mm": 3.5,
+       "base_w_mm": 38,
+       "base_d_mm": 22,
+       "total_h_mm": 20
+      }
+     }
+    ]
+   },
+   {
+    "case": "curtain-rod-bracket",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.8954287171363831,
+    "ms": 34089,
+    "measured": [
+     {
+      "part": "curtain_rod_bracket",
+      "compiled": true,
+      "dims_mm": [
+       40,
+       60,
+       66.5
+      ],
+      "min_wall_mm": 4,
+      "holes": [
+       {
+        "axis": "x",
+        "d_mm": 24.99,
+        "center": [
+         -0.01,
+         50.01
+        ]
+       },
+       {
+        "axis": "z",
+        "d_mm": 4.98,
+        "center": [
+         0,
+         -20.01
+        ]
+       },
+       {
+        "axis": "z",
+        "d_mm": 5,
+        "center": [
+         -0.01,
+         20.01
+        ]
+       }
+      ],
+      "params": {
+       "rod_d_mm": 25,
+       "hole_d_mm": 5,
+       "plate_w_mm": 40,
+       "plate_h_mm": 60,
+       "collar_od_mm": 33
+      }
+     }
+    ]
+   },
+   {
+    "case": "curtain-rod-bracket",
+    "sample": 1,
+    "pass": false,
+    "failed": [
+     "2× through-hole Ø5±1 mm (measured n/a mm; 2 match(es), found 0)"
+    ],
+    "model": "muse-spark-1.3",
+    "subq": 0.02525501884520054,
+    "ms": 33135,
+    "measured": [
+     {
+      "part": "curtain_rod_bracket",
+      "compiled": true,
+      "dims_mm": [
+       36,
+       51.75,
+       60
+      ],
+      "min_wall_mm": 4,
+      "holes": [],
+      "params": {
+       "hole_d_mm": 5,
+       "plate_w_mm": 36,
+       "plate_h_mm": 60,
+       "rod_dia_mm": 25
+      }
+     }
+    ]
+   },
+   {
+    "case": "drawer-pull",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.18379554152488708,
+    "ms": 30454,
+    "measured": [
+     {
+      "part": "drawer_pull_64mm",
+      "compiled": true,
+      "dims_mm": [
+       78,
+       38,
+       18.2
+      ],
+      "min_wall_mm": 5.07,
+      "holes": [
+       {
+        "axis": "y",
+        "d_mm": 3.99,
+        "center": [
+         -3.99,
+         -31.98
+        ]
+       },
+       {
+        "axis": "y",
+        "d_mm": 3.99,
+        "center": [
+         -3.99,
+         31.98
+        ]
+       }
+      ],
+      "params": {
+       "hole_d_mm": 4,
+       "hole_spacing_mm": 64,
+       "overall_w_mm": 78,
+       "overall_d_mm": 38,
+       "overall_h_mm": 18.2
+      }
+     }
+    ]
+   },
+   {
+    "case": "drawer-pull",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.43961578607559204,
+    "ms": 26850,
+    "measured": [
+     {
+      "part": "drawer_pull_64mm",
+      "compiled": true,
+      "dims_mm": [
+       78,
+       10,
+       21.9
+      ],
+      "min_wall_mm": 4.29,
+      "holes": [
+       {
+        "axis": "y",
+        "d_mm": 3.98,
+        "center": [
+         6,
+         -31.98
+        ]
+       },
+       {
+        "axis": "y",
+        "d_mm": 3.98,
+        "center": [
+         6,
+         31.98
+        ]
+       }
+      ],
+      "params": {
+       "hole_d_mm": 4,
+       "hole_spacing_mm": 64,
+       "overall_length_mm": 78,
+       "overall_depth_mm": 10,
+       "overall_height_mm": 21.9
+      }
+     }
+    ]
+   },
+   {
+    "case": "freezer-latch-clip",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.8783597350120544,
+    "ms": 16953,
+    "measured": [
+     {
+      "part": "freezer_latch_clip",
+      "compiled": true,
+      "dims_mm": [
+       40,
+       15,
+       14.9
+      ],
+      "min_wall_mm": 3,
+      "holes": [
+       {
+        "axis": "z",
+        "d_mm": 3.99,
+        "center": [
+         10,
+         7.5
+        ]
+       }
+      ],
+      "params": {
+       "base_len_mm": 40,
+       "base_width_mm": 15,
+       "total_height_mm": 15,
+       "hole_d_mm": 4
+      }
+     }
+    ]
+   },
+   {
+    "case": "freezer-latch-clip",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.9530083537101746,
+    "ms": 15875,
+    "measured": [
+     {
+      "part": "freezer_latch_clip",
+      "compiled": true,
+      "dims_mm": [
+       40,
+       15,
+       13.9
+      ],
+      "min_wall_mm": 4,
+      "holes": [
+       {
+        "axis": "z",
+        "d_mm": 3.96,
+        "center": [
+         8,
+         7.5
+        ]
+       }
+      ],
+      "params": {
+       "length_mm": 40,
+       "width_mm": 15,
+       "base_thickness_mm": 4,
+       "hook_height_mm": 10,
+       "hole_d_mm": 4
+      }
+     }
+    ]
+   },
+   {
+    "case": "hose-reel-spacer",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.9882895946502686,
+    "ms": 11362,
+    "measured": [
+     {
+      "part": "spacer_washer",
+      "compiled": true,
+      "dims_mm": [
+       20,
+       20,
+       6
+      ],
+      "min_wall_mm": 6,
+      "holes": [
+       {
+        "axis": "z",
+        "d_mm": 8.02,
+        "center": [
+         0,
+         0
+        ]
+       }
+      ],
+      "params": {
+       "outer_d_mm": 20,
+       "hole_d_mm": 8,
+       "thickness_mm": 6
+      }
+     }
+    ]
+   },
+   {
+    "case": "hose-reel-spacer",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.9837606549263,
+    "ms": 9505,
+    "measured": [
+     {
+      "part": "spacer_washer",
+      "compiled": true,
+      "dims_mm": [
+       20,
+       20,
+       6
+      ],
+      "min_wall_mm": 6,
+      "holes": [
+       {
+        "axis": "z",
+        "d_mm": 8.02,
+        "center": [
+         0,
+         0
+        ]
+       }
+      ],
+      "params": {
+       "outer_d_mm": 20,
+       "hole_d_mm": 8,
+       "thickness_mm": 6
+      }
+     }
+    ]
+   },
+   {
+    "case": "shelf-pin",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.8848649263381958,
+    "ms": 29234,
+    "measured": [
+     {
+      "part": "shelf_pin",
+      "compiled": true,
+      "dims_mm": [
+       14,
+       24.9,
+       12
+      ],
+      "min_wall_mm": 2.31,
+      "holes": [],
+      "params": {
+       "peg_d_mm": 4.8,
+       "peg_len_mm": 12,
+       "collar_d_mm": 12,
+       "ledge_depth_mm": 10,
+       "bbox_xyz_mm": [
+        14,
+        22,
+        12
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "case": "shelf-pin",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.2904377281665802,
+    "ms": 27876,
+    "measured": [
+     {
+      "part": "shelf_pin",
+      "compiled": true,
+      "dims_mm": [
+       12,
+       22,
+       12
+      ],
+      "min_wall_mm": 2,
+      "holes": [],
+      "params": {
+       "pin_d_mm": 4.9,
+       "ledge_depth_mm": 10,
+       "width_mm": 12
+      }
+     },
+     {
+      "part": "shelf_pin",
+      "compiled": true,
+      "dims_mm": [
+       12,
+       22,
+       12
+      ],
+      "min_wall_mm": 2,
+      "holes": [],
+      "params": {
+       "pin_d_mm": 4.9,
+       "ledge_depth_mm": 10,
+       "width_mm": 12
+      }
+     }
+    ]
+   },
+   {
+    "case": "toilet-seat-hinge-cap",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.9861311912536621,
+    "ms": 17680,
+    "measured": [
+     {
+      "part": "hinge_bolt_cap",
+      "compiled": true,
+      "dims_mm": [
+       20.6,
+       20.6,
+       12.5
+      ],
+      "min_wall_mm": 2,
+      "holes": [],
+      "params": {
+       "inner_w_mm": 16.6,
+       "inner_d_mm": 16.6,
+       "inner_h_mm": 10.5,
+       "wall_mm": 2,
+       "outer_w_mm": 20.6,
+       "outer_d_mm": 20.6,
+       "outer_h_mm": 12.5
+      }
+     }
+    ]
+   },
+   {
+    "case": "toilet-seat-hinge-cap",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.9531391263008118,
+    "ms": 16140,
+    "measured": [
+     {
+      "part": "hinge_bolt_cover_cap",
+      "compiled": true,
+      "dims_mm": [
+       20.6,
+       20.4,
+       13
+      ],
+      "min_wall_mm": 2,
+      "holes": [],
+      "params": {
+       "inner_mm": 16.4,
+       "outer_mm": 20.4,
+       "height_mm": 13
+      }
+     }
+    ]
+   }
+  ],
+  "subqMean": 0.742
+ },
+ "heldout": {
+  "pass": 0.8333,
+  "n": 12,
+  "results": [
+   {
+    "case": "battery-cover",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.03291749581694603,
+    "ms": 21217,
+    "measured": [
+     {
+      "part": "remote_battery_cover",
+      "compiled": true,
+      "dims_mm": [
+       44.5,
+       32.5,
+       6.1
+      ],
+      "min_wall_mm": 2,
+      "holes": [],
+      "params": {
+       "plate_L_mm": 44.5,
+       "plate_W_mm": 32.5,
+       "plate_T_mm": 2,
+       "rim_H_mm": 3
+      }
+     }
+    ]
+   },
+   {
+    "case": "battery-cover",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.8418980240821838,
+    "ms": 15816,
+    "measured": [
+     {
+      "part": "battery_cover",
+      "compiled": true,
+      "dims_mm": [
+       44.5,
+       32.5,
+       5.2
+      ],
+      "min_wall_mm": 1.6,
+      "holes": [],
+      "params": {
+       "cover_x_mm": 44.5,
+       "cover_y_mm": 32.5,
+       "cover_t_mm": 2
+      }
+     }
+    ]
+   },
+   {
+    "case": "bike-light-mount",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.023627152666449547,
+    "ms": 33398,
+    "measured": [
+     {
+      "part": "handlebar_clamp_ring",
+      "compiled": true,
+      "dims_mm": [
+       39.8,
+       20,
+       48.9
+      ],
+      "min_wall_mm": 4,
+      "holes": [],
+      "params": {
+       "bar_d_mm": 31.8,
+       "hole_d_mm": 5,
+       "ring_width_mm": 20,
+       "outer_d_mm": 39.8
+      }
+     }
+    ]
+   },
+   {
+    "case": "bike-light-mount",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.6053698658943176,
+    "ms": 32983,
+    "measured": [
+     {
+      "part": "handlebar_clamp_ring",
+      "compiled": true,
+      "dims_mm": [
+       38,
+       48.05,
+       20
+      ],
+      "min_wall_mm": 3,
+      "holes": [
+       {
+        "axis": "x",
+        "d_mm": 4.96,
+        "center": [
+         24,
+         0
+        ]
+       }
+      ],
+      "params": {
+       "bar_d_mm": 31.8,
+       "inner_d_mm": 32,
+       "outer_d_mm": 38,
+       "width_mm": 20,
+       "hole_d_mm": 5
+      }
+     }
+    ]
+   },
+   {
+    "case": "door-stop-wedge",
+    "sample": 0,
+    "pass": false,
+    "failed": [
+     "OpenSCAD compiles (measured 0/1)",
+     "fits 256×256×256 mm bed (measured 0 mm)",
+     "wall ≥ 1.6 mm (measured n/a mm)",
+     "size ≥ 20×25×100 mm (measured n/a mm)",
+     "size ≤ 60×50×140 mm (measured n/a mm)"
+    ],
+    "model": "muse-spark-1.3",
+    "subq": null,
+    "ms": 15004,
+    "measured": [
+     {
+      "part": "door_stop_wedge",
+      "compiled": false,
+      "params": {
+       "length_mm": 120,
+       "height_thick_mm": 30,
+       "width_mm": 28
+      }
+     }
+    ],
+    "compileLog": "door_stop_wedge: ERROR: The given mesh is not closed! Unable to convert to CGAL_Nef_Polyhedron."
+   },
+   {
+    "case": "door-stop-wedge",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.7102429866790771,
+    "ms": 17655,
+    "measured": [
+     {
+      "part": "door_stop_wedge",
+      "compiled": true,
+      "dims_mm": [
+       120,
+       30,
+       30
+      ],
+      "min_wall_mm": 6.43,
+      "holes": [
+       {
+        "axis": "y",
+        "d_mm": 7.96,
+        "center": [
+         12,
+         104.02
+        ]
+       }
+      ],
+      "params": {
+       "length_mm": 120,
+       "width_mm": 30,
+       "thick_height_mm": 30,
+       "thin_height_mm": 5,
+       "hole_d_mm": 8
+      }
+     }
+    ]
+   },
+   {
+    "case": "phone-stand-hinge-pin",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.417451411485672,
+    "ms": 17320,
+    "measured": [
+     {
+      "part": "hinge_pin",
+      "compiled": true,
+      "dims_mm": [
+       46,
+       6.5,
+       6.5
+      ],
+      "min_wall_mm": 0.9,
+      "holes": [],
+      "params": {
+       "shaft_d_mm": 2.85,
+       "shaft_len_mm": 42,
+       "head_d_mm": 6.5,
+       "head_thick_mm": 2.5
+      }
+     }
+    ]
+   },
+   {
+    "case": "phone-stand-hinge-pin",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.9016759395599365,
+    "ms": 16972,
+    "measured": [
+     {
+      "part": "hinge_pin",
+      "compiled": true,
+      "dims_mm": [
+       8,
+       8,
+       46.5
+      ],
+      "min_wall_mm": 1.03,
+      "holes": [],
+      "params": {
+       "shaft_d_mm": 2.8,
+       "shaft_len_mm": 42,
+       "head_d_mm": 8,
+       "head_t_mm": 3,
+       "total_len_mm": 46.5
+      }
+     }
+    ]
+   },
+   {
+    "case": "table-leg-foot",
+    "sample": 0,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.7503143548965454,
+    "ms": 20076,
+    "measured": [
+     {
+      "part": "chair_cap_foot_22mm",
+      "compiled": true,
+      "dims_mm": [
+       32,
+       32,
+       24
+      ],
+      "min_wall_mm": 2.5,
+      "holes": [],
+      "params": {
+       "tube_od_mm": 22,
+       "socket_id_mm": 22.4,
+       "sleeve_od_mm": 27.4,
+       "flange_d_mm": 32,
+       "total_h_mm": 24
+      }
+     }
+    ]
+   },
+   {
+    "case": "table-leg-foot",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.6010363698005676,
+    "ms": 21920,
+    "measured": [
+     {
+      "part": "chair_cap_foot_22mm",
+      "compiled": true,
+      "dims_mm": [
+       32,
+       32,
+       22
+      ],
+      "min_wall_mm": 2.5,
+      "holes": [],
+      "params": {
+       "socket_d_mm": 22.4,
+       "outer_d_mm": 27.4,
+       "base_d_mm": 32,
+       "total_h_mm": 22,
+       "socket_depth_mm": 18
+      }
+     }
+    ]
+   },
+   {
+    "case": "vacuum-wall-hook",
+    "sample": 0,
+    "pass": false,
+    "failed": [
+     "2× through-hole Ø4±1 mm (measured 1.78 mm; 2 match(es), found 0)"
+    ],
+    "model": "muse-spark-1.3",
+    "subq": 0.06925085932016373,
+    "ms": 21990,
+    "measured": [
+     {
+      "part": "vacuum_wall_hook",
+      "compiled": true,
+      "dims_mm": [
+       60,
+       53,
+       51.9
+      ],
+      "min_wall_mm": 6,
+      "holes": [
+       {
+        "axis": "y",
+        "d_mm": 1.78,
+        "center": [
+         0,
+         -21.42
+        ]
+       },
+       {
+        "axis": "y",
+        "d_mm": 1.78,
+        "center": [
+         0,
+         21.42
+        ]
+       }
+      ],
+      "params": {
+       "hole_d_mm": 4,
+       "hole_spacing_mm": 40,
+       "slot_width_mm": 30,
+       "plate_w_mm": 60,
+       "plate_h_mm": 50,
+       "reach_mm": 47
+      }
+     }
+    ]
+   },
+   {
+    "case": "vacuum-wall-hook",
+    "sample": 1,
+    "pass": true,
+    "failed": [],
+    "model": "muse-spark-1.3",
+    "subq": 0.9665110111236572,
+    "ms": 19146,
+    "measured": [
+     {
+      "part": "vacuum_wall_hook",
+      "compiled": true,
+      "dims_mm": [
+       50,
+       60,
+       51.1
+      ],
+      "min_wall_mm": 5.1,
+      "holes": [
+       {
+        "axis": "z",
+        "d_mm": 4.01,
+        "center": [
+         25,
+         35
+        ]
+       },
+       {
+        "axis": "z",
+        "d_mm": 4.01,
+        "center": [
+         25,
+         50
+        ]
+       }
+      ],
+      "params": {
+       "base_w_mm": 50,
+       "base_h_mm": 60,
+       "slot_w_mm": 30,
+       "hole_d_mm": 4
+      }
+     }
+    ]
+   }
+  ],
+  "subqMean": 0.538
+ }
+}

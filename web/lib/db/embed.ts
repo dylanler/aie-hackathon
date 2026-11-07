@@ -6,7 +6,7 @@ export const EMBED_DIMS = 256;
 function fnv1a(s: string): number {
   let h = 0x811c9dc5;
   const bytes = new TextEncoder().encode(s);
-  for (const b of bytes) {
+  for (const b of Array.from(bytes)) {
     h ^= b;
     h = Math.imul(h, 0x01000193) >>> 0;
   }

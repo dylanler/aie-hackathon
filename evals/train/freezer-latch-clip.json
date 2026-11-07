@@ -19,8 +19,9 @@
   },
   {
    "type": "through_hole",
-   "d": 4.2,
-   "tol": 0.8
+   "d": 4.4,
+   "tol": 0.5,
+   "count": 1
   },
   {
    "type": "bbox_min",

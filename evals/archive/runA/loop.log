@@ -1,0 +1,37 @@
+self-improvement loop: 3 iteration(s), samples=2, provider=muse
+baseline v1
+  v1 train: 13/16 = 81.3%
+    ✗ curtain-rod-bracket#0: wall ≥ 2 mm (measured 1.83 mm) | 2× through-hole Ø5±1 mm (measured n/a mm; 2 match(es), found 0)
+    ✗ curtain-rod-bracket#1: 2× through-hole Ø5±1 mm (measured 4.69 mm; 2 match(es), found 1)
+    ✗ shelf-pin#1: wall ≥ 1.6 mm (measured 0.66 mm) | size ≤ 16×16×30 mm (measured 11×17×27.7 mm)
+  v1 heldout: 10/12 = 83.3%
+    ✗ vacuum-wall-hook#0: 2× through-hole Ø4±1 mm (measured 4.49 mm; 2 match(es), found 1)
+    ✗ vacuum-wall-hook#1: 2× through-hole Ø4±1 mm (measured 4.48 mm; 2 match(es), found 1)
+
+v2 ← patch of v1 from 3 train failures
+  diff: Added general envelope budgeting, guaranteed 2mm minimum-wall rule, and strict through-hole modeling protocol to fix thin walls, missing/miscounted holes, and oversize parts.
+  v2 train: 13/16 = 81.3%
+    ✗ curtain-rod-bracket#0: 2× through-hole Ø5±1 mm (measured 3.62 mm; 2 match(es), found 0)
+    ✗ curtain-rod-bracket#1: 2× through-hole Ø5±1 mm (measured 5.01 mm; 2 match(es), found 1)
+    ✗ shelf-pin#0: size ≤ 16×16×30 mm (measured 14×18.74×23.7 mm)
+  v2 heldout: 12/12 = 100.0%
+  held-out 83.3% → 100.0%: ADOPTED
+
+v3 ← patch of v2 from 3 train failures
+  diff: Added blind-socket default, no-shrink exact-diameter, and cutter-isolation rules to stop extra through-bores and partial blockages shrinking holes, plus full-union envelope check to stop supports pushing size over limit.
+  v3 train: 14/16 = 87.5%
+    ✗ cable-clip#0: through-hole Ø3.5±1 mm (measured n/a mm; 1 match(es), found 0)
+    ✗ cable-clip#1: through-hole Ø3.5±1 mm (measured n/a mm; 1 match(es), found 0)
+  v3 heldout: 12/12 = 100.0%
+  held-out 100.0% → 100.0%: ROLLED BACK to v2
+
+v4 ← patch of v2 from 3 train failures
+  diff: Added verbatim-diameter and no-rim-intersection rules to stop shrinkage/taper/partial blockage, inset/spacing/isolation rules to guarantee all holes fully pierce, and strict margin-checked bounding-box with orientation control to stop envelope violations.
+  v4 train: 15/16 = 93.8%
+    ✗ curtain-rod-bracket#1: 2× through-hole Ø5±1 mm (measured n/a mm; 2 match(es), found 0)
+  v4 heldout: 10/12 = 83.3%
+    ✗ door-stop-wedge#0: OpenSCAD compiles (measured 0/1) | fits 256×256×256 mm bed (measured 0 mm) | wall ≥ 1.6 mm (measured n/a mm) | size ≥ 20×25×100 mm (measured n/a mm) | size ≤ 60×50×140 mm (measured n/a mm)
+    ✗ vacuum-wall-hook#0: 2× through-hole Ø4±1 mm (measured 1.78 mm; 2 match(es), found 0)
+  held-out 100.0% → 83.3%: ROLLED BACK to v2
+
+current skill: v2 (train 81.3%, held-out 100.0%)

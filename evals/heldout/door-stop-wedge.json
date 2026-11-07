@@ -1,6 +1,6 @@
 {
  "id": "door-stop-wedge",
- "prompt": "My door keeps swinging shut. Make a door stop wedge, about 120 mm long and 30 mm tall at the thick end, with a hole so I can hang it on a hook.",
+ "prompt": "My door keeps swinging shut. Make a door stop wedge, about 120 mm long and 30 mm tall at the thick end, with a 10 mm hole so I can hang it on a hook.",
  "criteria": [
   {
    "type": "compiles"
@@ -18,19 +18,25 @@
    "mm": 1.6
   },
   {
+   "type": "through_hole",
+   "d": 10,
+   "tol": 0.8,
+   "count": 1
+  },
+  {
    "type": "bbox_min",
    "mm": [
     20,
     25,
-    100
+    110
    ]
   },
   {
    "type": "bbox_max",
    "mm": [
     60,
-    50,
-    140
+    40,
+    130
    ]
   }
  ]

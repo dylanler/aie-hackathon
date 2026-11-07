@@ -1,0 +1,44 @@
+{
+ "id": "smoke-detector-plate",
+ "prompt": "The plastic mounting plate for my smoke detector cracked. It screws to the ceiling box with two screws 83 mm apart (4 mm screws) and is a 100 mm disc, 3 mm thick.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 2.0
+  },
+  {
+   "type": "hole_spacing",
+   "d": 4.3,
+   "spacing": 83,
+   "tol": 0.8,
+   "d_tol": 0.8
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    2.5,
+    95,
+    95
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    10,
+    105,
+    105
+   ]
+  }
+ ]
+}

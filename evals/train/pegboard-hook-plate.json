@@ -1,0 +1,35 @@
+{
+ "id": "pegboard-hook-plate",
+ "prompt": "I need a pegboard tool holder plate with 2 pegs that fit standard pegboard holes 6 mm diameter on 25.4 mm (1 inch) spacing, holding a 20 mm screwdriver handle through a hole.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 2.0
+  },
+  {
+   "type": "through_hole",
+   "d": 20.5,
+   "tol": 1.5,
+   "count": 1
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    60,
+    80,
+    80
+   ]
+  }
+ ]
+}

@@ -15,12 +15,13 @@
   },
   {
    "type": "min_wall",
-   "mm": 1.2
+   "mm": 1.6
   },
   {
    "type": "through_hole",
-   "d": 3.5,
-   "tol": 1.0
+   "d": 3.8,
+   "tol": 0.5,
+   "count": 1
   },
   {
    "type": "bbox_max",

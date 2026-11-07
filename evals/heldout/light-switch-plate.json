@@ -1,0 +1,44 @@
+{
+ "id": "light-switch-plate",
+ "prompt": "My light switch cover plate cracked. It's a standard single-toggle US plate: 70 x 115 mm, two screws 60.3 mm apart (3.5 mm), toggle opening about 10 x 24 mm.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 1.6
+  },
+  {
+   "type": "hole_spacing",
+   "d": 3.8,
+   "spacing": 60.3,
+   "tol": 0.8,
+   "d_tol": 0.8
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    2,
+    68,
+    113
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    12,
+    73,
+    118
+   ]
+  }
+ ]
+}

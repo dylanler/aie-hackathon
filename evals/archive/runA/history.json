@@ -1,0 +1,114 @@
+[
+  {
+    "version": "v1",
+    "parent": null,
+    "trainPass": 0.8125,
+    "heldoutPass": 0.8333,
+    "trainN": 16,
+    "heldoutN": 12,
+    "adopted": true,
+    "diffSummary": "baseline hand-written skill",
+    "ts": 1794089212358,
+    "subqMean": 0.55,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "wall ≥ 2 mm (measured 1.83 mm)",
+          "2× through-hole Ø5±1 mm (measured n/a mm; 2 match(es), found 0)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5±1 mm (measured 4.69 mm; 2 match(es), found 1)"
+        ]
+      },
+      {
+        "case": "shelf-pin",
+        "failed": [
+          "wall ≥ 1.6 mm (measured 0.66 mm)",
+          "size ≤ 16×16×30 mm (measured 11×17×27.7 mm)"
+        ]
+      }
+    ]
+  },
+  {
+    "version": "v2",
+    "parent": "v1",
+    "trainPass": 0.8125,
+    "heldoutPass": 1,
+    "trainN": 16,
+    "heldoutN": 12,
+    "adopted": true,
+    "diffSummary": "Added general envelope budgeting, guaranteed 2mm minimum-wall rule, and strict through-hole modeling protocol to fix thin walls, missing/miscounted holes, and oversize parts.",
+    "ts": 1794089337918,
+    "subqMean": 0.584,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5±1 mm (measured 3.62 mm; 2 match(es), found 0)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5±1 mm (measured 5.01 mm; 2 match(es), found 1)"
+        ]
+      },
+      {
+        "case": "shelf-pin",
+        "failed": [
+          "size ≤ 16×16×30 mm (measured 14×18.74×23.7 mm)"
+        ]
+      }
+    ]
+  },
+  {
+    "version": "v3",
+    "parent": "v2",
+    "trainPass": 0.875,
+    "heldoutPass": 1,
+    "trainN": 16,
+    "heldoutN": 12,
+    "adopted": false,
+    "diffSummary": "Added blind-socket default, no-shrink exact-diameter, and cutter-isolation rules to stop extra through-bores and partial blockages shrinking holes, plus full-union envelope check to stop supports pushing size over limit.",
+    "ts": 1794089471924,
+    "subqMean": 0.58,
+    "failures": [
+      {
+        "case": "cable-clip",
+        "failed": [
+          "through-hole Ø3.5±1 mm (measured n/a mm; 1 match(es), found 0)"
+        ]
+      },
+      {
+        "case": "cable-clip",
+        "failed": [
+          "through-hole Ø3.5±1 mm (measured n/a mm; 1 match(es), found 0)"
+        ]
+      }
+    ]
+  },
+  {
+    "version": "v4",
+    "parent": "v2",
+    "trainPass": 0.9375,
+    "heldoutPass": 0.8333,
+    "trainN": 16,
+    "heldoutN": 12,
+    "adopted": false,
+    "diffSummary": "Added verbatim-diameter and no-rim-intersection rules to stop shrinkage/taper/partial blockage, inset/spacing/isolation rules to guarantee all holes fully pierce, and strict margin-checked bounding-box with orientation control to stop envelope violations.",
+    "ts": 1794089591681,
+    "subqMean": 0.538,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5±1 mm (measured n/a mm; 2 match(es), found 0)"
+        ]
+      }
+    ]
+  }
+]

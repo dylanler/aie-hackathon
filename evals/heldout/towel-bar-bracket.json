@@ -1,0 +1,36 @@
+{
+ "id": "towel-bar-bracket",
+ "prompt": "One end bracket of my towel bar broke. The bar is a 19 mm round rod and the bracket screws to the wall with two 4 mm screws 30 mm apart.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 2.0
+  },
+  {
+   "type": "hole_spacing",
+   "d": 4.4,
+   "spacing": 30,
+   "tol": 0.8,
+   "d_tol": 0.8
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    60,
+    60,
+    80
+   ]
+  }
+ ]
+}
