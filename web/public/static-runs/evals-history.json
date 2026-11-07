@@ -49,5 +49,181 @@
         ]
       }
     ]
+  },
+  {
+    "version": "v2",
+    "parent": "v1",
+    "trainPass": 0.9,
+    "heldoutPass": 0.4375,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added general envelope-margin, true through-hole construction, clearance-oversize, identical-repeated-holes, and single-solid rules to fix undersized/blind/missing holes and oversize bounding boxes.",
+    "ts": 1794090813445,
+    "subqMean": 0.47,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.34 mm; 2 match(es), found 1)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.39 mm; 2 match(es), found 1)"
+        ]
+      }
+    ]
+  },
+  {
+    "version": "v3",
+    "parent": "v1",
+    "trainPass": 0.95,
+    "heldoutPass": 0.5625,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added general through-hole, clearance-compensation, exact-count duplication, envelope-margin, and single-solid union-then-cut rules to fix blind/undersized/missing holes and oversize parts.",
+    "ts": 1794091175827,
+    "subqMean": 0.396,
+    "failures": [
+      {
+        "case": "smoke-detector-plate",
+        "failed": [
+          "2× Ø4.3 holes 83±0.8 mm apart (measured n/a mm)"
+        ]
+      }
+    ]
+  },
+  {
+    "version": "v4",
+    "parent": "v1",
+    "trainPass": 0.8,
+    "heldoutPass": 0.5,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added general true through-hole, identical-count, envelope-check, and single-solid-union rules to fix undersized, blind, missing, single-count, and oversize failures.",
+    "ts": 1794091473243,
+    "subqMean": 0.559,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 25.58 mm; 2 match(es), found 0)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 25.58 mm; 2 match(es), found 0)"
+        ]
+      },
+      {
+        "case": "drawer-pull",
+        "failed": [
+          "OpenSCAD compiles (measured 0/1)",
+          "fits 256×256×256 mm bed (measured 0 mm)",
+          "wall ≥ 2 mm (measured n/a mm)",
+          "size ≥ 8×10×70 mm (measured n/a mm)",
+          "size ≤ 40×40×120 mm (measured n/a mm)"
+        ]
+      },
+      {
+        "case": "shelf-pin",
+        "failed": [
+          "size ≤ 16×16×30 mm (measured 16×17×29.5 mm)"
+        ]
+      }
+    ]
+  },
+  {
+    "version": "v5",
+    "parent": "v1",
+    "trainPass": 0.95,
+    "heldoutPass": 0.625,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added general through-hole construction, clearance-diameter, hole-count duplication, and envelope-margin rules to fix blind, undersized, missing, and oversize failures.",
+    "ts": 1794091733022,
+    "subqMean": 0.521,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 25.58 mm; 2 match(es), found 0)"
+        ]
+      }
+    ]
+  },
+  {
+    "version": "v6",
+    "parent": "v1",
+    "trainPass": 0.8,
+    "heldoutPass": 0.6875,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added qualitative through-cut, correct-size-and-count, envelope, and access/clearance/retention rules to fix blind/missing/undersized holes, oversize boxes, and seating failures without brittle numeric margins.",
+    "ts": 1794092632000,
+    "subqMean": 0.514,
+    "rejectedPatchesSeen": 4,
+    "physicsLessons": 5,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.25 mm; 2 match(es), found 1)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.48 mm; 2 match(es), found 1)"
+        ]
+      },
+      {
+        "case": "shelf-pin",
+        "failed": [
+          "size ≤ 16×16×30 mm (measured 14×15×34.5 mm)"
+        ]
+      },
+      {
+        "case": "toilet-seat-hinge-cap",
+        "failed": [
+          "wall ≥ 1.2 mm (measured 0.8 mm)"
+        ]
+      }
+    ]
+  },
+  {
+    "version": "v7",
+    "parent": "v1",
+    "trainPass": 0.9,
+    "heldoutPass": 0.4375,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added two short qualitative rules for through-cut subtraction discipline and consistent assemblable design to fix blind/mismatched holes and interference without numeric margins that overfit.",
+    "ts": 1794092851229,
+    "subqMean": 0.362,
+    "rejectedPatchesSeen": 5,
+    "physicsLessons": 5,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.48 mm; 2 match(es), found 1)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.31 mm; 2 match(es), found 1)"
+        ]
+      }
+    ]
   }
 ]

@@ -18,6 +18,7 @@ import { EASE_OUT, T } from "../ui/motion";
 import { PlanStrip } from "../ui/PlanStrip";
 import { useToast } from "../ui/Toast";
 import { VerdictChip } from "../ui/VerdictChip";
+import { FitRounds } from "./FitRounds";
 import { Inspector } from "./Inspector";
 import { MakePanel } from "./MakePanel";
 import { PartRail } from "./PartRail";
@@ -242,6 +243,13 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
           <span className="lbl">contact</span>
         </div>
       )}
+
+      {/* repair rounds: critic pass → physics fail → repaired */}
+      <AnimatePresence>
+        {view === "verify" && r.verdict && (
+          <motion.div key="rounds" {...panel} className="absolute right-6 top-[164px]"><FitRounds asset={r.asset} /></motion.div>
+        )}
+      </AnimatePresence>
 
       {/* policy video from the RL lane, when there is one */}
       <AnimatePresence>
