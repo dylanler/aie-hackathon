@@ -74,13 +74,15 @@ function saveResults(version: string, data: any) {
 function writeHistory(h: HistoryEntry[]) { fs.writeFileSync(historyPath(), JSON.stringify(h, null, 2)); }
 const loadResults = (v: string) => { try { return JSON.parse(fs.readFileSync(path.join(EV, "results", `${v}.json`), "utf8")); } catch { return null; } };
 
-async function proposePatch(parentVersion: string, parentSkill: string, failures: CaseResult[], newVersion: string): Promise<{ text: string; diffSummary: string }> {
+async function proposePatch(parentVersion: string, parentSkill: string, failures: CaseResult[], newVersion: string, rejected: HistoryEntry[] = []): Promise<{ text: string; diffSummary: string }> {
   const report = failures.slice(0, 24).map((f) => ({ case: f.case, failed: f.failed, measured: f.measured, compile_log: f.compileLog?.slice(0, 500) }));
+  // Memory of rolled-back patches: what was tried from this parent, and how it did on train vs the hidden held-out set.
+  const tried = rejected.map((r) => `- ${r.version}: "${r.diffSummary}" → train ${(r.trainPass * 100).toFixed(0)}%, held-out ${(r.heldoutPass * 100).toFixed(0)}% (parent held-out ${((readHistory().find((h) => h.version === parentVersion)?.heldoutPass ?? 0) * 100).toFixed(0)}%) — ROLLED BACK`).join("\n");
   const r = await callLLM({
     role: "improver", json: true, effort: "medium",
     messages: [
       { role: "system", content: `You improve the system "skill" (instructions) given to an AI that writes OpenSCAD for 3D-printed household repair parts. You get the current skill and machine-measured failures from a training set. Write the next version of the skill. Rules: fix the ROOT CAUSES with GENERAL design rules (they must transfer to unseen household parts that are scored on a hidden held-out set); never mention specific training cases or their exact dimensions; keep everything in the current skill that still helps; be concise (under 450 words). Return JSON {"skill":"full markdown of the new skill, starting with '# Designer skill ${newVersion}'","diffSummary":"one sentence: what changed and why"}` },
-      { role: "user", content: `CURRENT SKILL (${parentVersion}):\n${parentSkill}\n\nTRAIN FAILURES (criterion → measured):\n${JSON.stringify(report, null, 1)}` },
+      { role: "user", content: `CURRENT SKILL (${parentVersion}):\n${parentSkill}\n\nTRAIN FAILURES (criterion → measured):\n${JSON.stringify(report, null, 1)}${tried ? `\n\nPATCHES ALREADY TRIED FROM THIS SKILL AND ROLLED BACK (they raised train but hurt held-out, i.e. they overfit or added rules that broke other parts). Do something different: fewer, more general rules; do not add hard numeric margins that shrink or grow parts; keep the skill short:\n${tried}` : ""}` },
     ],
   });
   const j = parseJSON<{ skill: string; diffSummary: string }>(r.text);
@@ -115,7 +117,8 @@ async function main() {
     if (!failures.length) { console.log(`${current.version} passes all train cases; nothing to learn from.`); break; }
     console.log(`\n${next} ← patch of ${current.version} from ${failures.length} train failures`);
     let patch;
-    try { patch = await proposePatch(current.version, curSkill, failures, next); }
+    const rejected = history.filter((h) => h.parent === current.version && !h.adopted);
+    try { patch = await proposePatch(current.version, curSkill, failures, next, rejected); }
     catch (e: any) { console.log("  improver failed:", e?.message); continue; }
     fs.writeFileSync(path.join(skillsDir(), `${next}.md`), patch.text);
     console.log(`  diff: ${patch.diffSummary}`);
@@ -123,7 +126,7 @@ async function main() {
     const ho = await evalSet(next, patch.text, "heldout");
     saveResults(next, { version: next, parent: current.version, train: tr, heldout: ho });
     const adopted = ho.pass > current.heldoutPass;
-    const e: HistoryEntry = { version: next, parent: current.version, trainPass: tr.pass, heldoutPass: ho.pass, trainN: tr.n, heldoutN: ho.n, adopted, diffSummary: patch.diffSummary, ts: Date.now(), subqMean: ho.subqMean,
+    const e: HistoryEntry = { version: next, parent: current.version, trainPass: tr.pass, heldoutPass: ho.pass, trainN: tr.n, heldoutN: ho.n, adopted, diffSummary: patch.diffSummary, ts: Date.now(), subqMean: ho.subqMean, rejectedPatchesSeen: rejected.length,
       failures: tr.results.filter((r) => !r.pass).map((r) => ({ case: r.case, failed: r.failed })) };
     history.push(e); writeHistory(history); void saveEvalResult(e); void saveSkillVersion(next, patch.text, e);
     console.log(`  held-out ${(current.heldoutPass * 100).toFixed(1)}% → ${(ho.pass * 100).toFixed(1)}%: ${adopted ? "ADOPTED" : `ROLLED BACK to ${current.version}`}`);

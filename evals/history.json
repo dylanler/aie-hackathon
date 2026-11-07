@@ -75,5 +75,25 @@
         ]
       }
     ]
+  },
+  {
+    "version": "v3",
+    "parent": "v1",
+    "trainPass": 0.95,
+    "heldoutPass": 0.5625,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added general through-hole, clearance-compensation, exact-count duplication, envelope-margin, and single-solid union-then-cut rules to fix blind/undersized/missing holes and oversize parts.",
+    "ts": 1794091175827,
+    "subqMean": 0.396,
+    "failures": [
+      {
+        "case": "smoke-detector-plate",
+        "failed": [
+          "2× Ø4.3 holes 83±0.8 mm apart (measured n/a mm)"
+        ]
+      }
+    ]
   }
 ]

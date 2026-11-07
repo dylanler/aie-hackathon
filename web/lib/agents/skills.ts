@@ -6,6 +6,7 @@ export type HistoryEntry = {
   version: string; parent: string | null; trainPass: number; heldoutPass: number; adopted: boolean;
   diffSummary: string; ts: number; trainN?: number; heldoutN?: number; subqMean?: number | null;
   failures?: { case: string; failed: string[] }[];
+  rejectedPatchesSeen?: number; // improver saw this many rolled-back sibling patches (memory of failed attempts)
 };
 
 export const skillsDir = () => path.join(repoRoot(), "evals", "skills");
