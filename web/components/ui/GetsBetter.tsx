@@ -7,7 +7,7 @@ import { EASE_OUT, T } from "./motion";
 
 /** The system that gets better: each dot is a design-skill version, scored on held-out prompts it never trained on. */
 export function GetsBetter({ variant = "strip" }: { variant?: "strip" | "quiet" }) {
-  const { history, current } = useHistory();
+  const { history, current, source } = useHistory();
   const [hover, setHover] = useState<HistoryEntry | null>(null);
   if (!history.length) return null;
   const first = history[0];
@@ -23,7 +23,7 @@ export function GetsBetter({ variant = "strip" }: { variant?: "strip" | "quiet" 
   if (variant === "quiet") {
     return (
       <div className="flex items-center gap-3 text-s text-text-3">
-        <span className="lbl">skill {best.version}</span>
+        <span className="lbl">skill {best.version}{source === "fixture" ? " · sample" : ""}</span>
         <span className="num">{frac(best)} held-out</span>
         <span className="num text-text-2">↑ from {frac(first)}</span>
       </div>
@@ -33,7 +33,7 @@ export function GetsBetter({ variant = "strip" }: { variant?: "strip" | "quiet" 
   return (
     <div className="glass relative flex items-center gap-5 rounded-panel px-4 py-3" onPointerLeave={() => setHover(null)}>
       <div className="w-[118px]">
-        <div className="lbl text-text-3">Gets better</div>
+        <div className="lbl flex items-center gap-2 text-text-3">Gets better{source === "fixture" && <span className="text-text-3/70 normal-case tracking-normal">· sample</span>}</div>
         <div className="mt-1 flex items-baseline gap-1.5">
           <span className="num text-l text-text">{Math.round(pct(best) * 100)}%</span>
           <span className="num text-s text-text-3">{n ? `${frac(best)}` : ""}</span>
@@ -71,7 +71,7 @@ export function GetsBetter({ variant = "strip" }: { variant?: "strip" | "quiet" 
               <span className="num text-s text-text">{hover.version}{hover.parent ? <span className="text-text-3"> ← {hover.parent}</span> : null}</span>
               <span className={`lbl ${hover.adopted ? "text-signal" : "text-text-3"}`}>{hover.adopted ? "adopted" : "rolled back"}</span>
             </div>
-            <div className="mt-1.5 text-s text-text-2">{hover.diffSummary}</div>
+            <div className="mt-1.5 line-clamp-4 text-s text-text-2">{hover.diffSummary}</div>
             <div className="num mt-2 flex gap-4 text-[12px] text-text-3">
               <span>held-out <span className="text-text">{frac(hover)}</span></span>
               <span>train <span className="text-text-2">{Math.round(hover.trainPass * (hover.trainPass > 1 ? 1 : 100))}{hover.trainPass > 1 ? "" : "%"}</span></span>

@@ -32,9 +32,10 @@ export function VerdictChip({ verdict }: { verdict: Verdict }) {
       </motion.div>
       <AnimatePresence>
         {open && (
+          <div className="absolute left-1/2 top-full z-40 -translate-x-1/2 pt-2">
           <motion.ul
             initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: T.ui, ease: EASE_OUT }}
-            className="glass absolute left-1/2 top-full z-40 mt-2 w-[340px] -translate-x-1/2 rounded-panel p-2"
+            className="glass w-[340px] rounded-panel p-2"
           >
             {verdict.checks.map((c, i) => (
               <motion.li key={c.name} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}
@@ -48,6 +49,7 @@ export function VerdictChip({ verdict }: { verdict: Verdict }) {
             ))}
             {verdict.critic_model && <li className="lbl px-2 pb-1 pt-2 text-text-3">checked by {verdict.critic_model}</li>}
           </motion.ul>
+          </div>
         )}
       </AnimatePresence>
     </div>

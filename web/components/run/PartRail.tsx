@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { Layers } from "lucide-react";
 import type { Part } from "../data/types";
 import { EASE_OUT, T } from "../ui/motion";
 
@@ -11,7 +12,7 @@ export function PartRail({ parts, selected, hovered, onSelect, onHover }: { part
     <motion.div onPointerEnter={() => setOpen(true)} onPointerLeave={() => { setOpen(false); onHover(null); }}
       initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0, width: open ? 216 : 48 }} transition={{ duration: T.ui, ease: EASE_OUT }}
       className="glass overflow-hidden rounded-panel p-1">
-      <div className="lbl flex h-7 items-center px-2.5 text-text-3">{open ? "Parts" : parts.length}</div>
+      <div className="lbl flex h-8 items-center gap-3 px-3 text-text-3"><Layers size={14} strokeWidth={1.75} className="shrink-0" />{open && <span>Parts · {parts.length}</span>}</div>
       {parts.map((p, i) => {
         const active = selected === p.id, hot = hovered === p.id;
         return (

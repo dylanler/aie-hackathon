@@ -8,17 +8,17 @@ function Ring({ state }: { state: StepState }) {
   const r = 6, c = 2 * Math.PI * r;
   return (
     <span className="relative inline-flex h-4 w-4 items-center justify-center">
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence initial={false}>
         {state === "done" ? (
-          <motion.span key="ok" initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: T.ui, ease: EASE_OUT }}>
+          <motion.span key="ok" className="absolute inset-0 flex items-center justify-center" initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: T.ui, ease: EASE_OUT }}>
             <Check size={13} strokeWidth={2.25} className="text-ok" />
           </motion.span>
         ) : state === "error" ? (
-          <motion.span key="err" initial={{ scale: 0.4 }} animate={{ scale: 1 }}><X size={13} strokeWidth={2.25} className="text-err" /></motion.span>
+          <motion.span key="err" className="absolute inset-0 flex items-center justify-center" initial={{ scale: 0.4 }} animate={{ scale: 1 }}><X size={13} strokeWidth={2.25} className="text-err" /></motion.span>
         ) : state === "skipped" ? (
-          <motion.span key="skip" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><Minus size={13} className="text-text-3" /></motion.span>
+          <motion.span key="skip" className="absolute inset-0 flex items-center justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><Minus size={13} className="text-text-3" /></motion.span>
         ) : (
-          <motion.svg key="ring" width="16" height="16" viewBox="0 0 16 16" exit={{ scale: 0.4, opacity: 0 }} transition={{ duration: T.micro }}>
+          <motion.svg key="ring" className="absolute inset-0" width="16" height="16" viewBox="0 0 16 16" exit={{ scale: 0.4, opacity: 0 }} transition={{ duration: T.micro }}>
             <circle cx="8" cy="8" r={r} fill="none" stroke="#26262A" strokeWidth="1.5" />
             {state === "running" && (
               <motion.circle

@@ -56,7 +56,7 @@ export function geometryFor(part: Part, params: Record<string, number>) {
 
 export function roundedBox(w: number, h: number, d: number, r = 3) { return rounded(w, h, d, r); }
 
-const OK = new THREE.Color("#3DD68C"), WARN = new THREE.Color("#F5B544"), ERR = new THREE.Color("#F2555A");
+const OK = new THREE.Color("#3DD68C"), WARN = new THREE.Color("#F5B544"), ERR = new THREE.Color("#F2555A"), CLAY = new THREE.Color("#D9D6CF");
 
 /** Paint vertex colours by proximity to a contact point: far = ok, close = warn, touching = err (only if failing). */
 export function paintHeatmap(g: THREE.BufferGeometry, contact: THREE.Vector3, radius: number, failing: boolean) {
@@ -66,9 +66,10 @@ export function paintHeatmap(g: THREE.BufferGeometry, contact: THREE.Vector3, ra
   for (let i = 0; i < pos.count; i++) {
     v.fromBufferAttribute(pos, i);
     const t = Math.max(0, 1 - v.distanceTo(contact) / radius);
-    if (t < 0.5) c.copy(OK);
-    else if (!failing) c.copy(OK).lerp(WARN, Math.min(1, (t - 0.5) / 0.4));
-    else c.copy(WARN).lerp(ERR, Math.min(1, (t - 0.5) / 0.3));
+    // far from contact: clay with a faint ok tint; near contact: saturate toward warn / err
+    if (t < 0.35) c.copy(CLAY).lerp(OK, 0.18 + t * 0.6);
+    else if (!failing) c.copy(CLAY).lerp(OK, 0.4).lerp(WARN, Math.min(1, (t - 0.35) / 0.5) * 0.9);
+    else c.copy(WARN).lerp(ERR, Math.min(1, (t - 0.35) / 0.4));
     col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
   }
   g.setAttribute("color", new THREE.BufferAttribute(col, 3));

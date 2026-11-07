@@ -51,8 +51,9 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
     const running = [...STEPS].reverse().find((s) => r.steps[s.key] === "running");
     const done = [...STEPS].reverse().find((s) => r.steps[s.key] === "done");
     const k = running?.key ?? done?.key ?? "diagnose";
+    if (k === "design" && !(r.run?.parts?.length)) return "diagnose"; // keep the diagnosis up until there is geometry
     return k === "make" ? "verify" : k;
-  }, [r.steps, r.finished, robot]);
+  }, [r.steps, r.finished, robot, r.run?.parts?.length]);
   const view = manual ?? auto;
   const mode = modeFor(view, parts.length > 0);
   const part = parts.find((p) => p.id === selected) ?? parts[0];
@@ -125,12 +126,12 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       {/* top bar */}
       <header className="pointer-events-none absolute inset-x-0 top-0 flex h-14 items-center justify-between px-6">
         <Link href="/" className="pointer-events-auto text-s text-text-2 transition-colors hover:text-text">Thought to Reality</Link>
-        <motion.div layoutId="prompt" className="glass pointer-events-auto absolute left-1/2 flex h-9 max-w-[520px] -translate-x-1/2 items-center gap-2 rounded-full px-4">
+        <div className="pointer-events-none absolute inset-x-0 flex justify-center"><motion.div initial={{ opacity: 0, y: 12, scale: 1.04 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: T.panel, ease: EASE_OUT }} className="glass pointer-events-auto flex h-9 max-w-[520px] items-center gap-2 rounded-full px-4">
           <HintTip label="Start over with a new prompt" side="bottom">
             <button onClick={() => router.push(`/?q=${encodeURIComponent(r.run?.prompt || "")}`)} className="max-w-[460px] truncate text-s text-text">{r.run?.prompt ?? "…"}</button>
           </HintTip>
-        </motion.div>
-        <div className="pointer-events-auto flex items-center gap-3">
+        </motion.div></div>
+        <div className="pointer-events-auto relative flex items-center gap-3">
           {r.source && (
             <HintTip label={r.source === "api" ? "Streaming from the pipeline" : "Recorded run, API offline"} side="bottom">
               <span className="flex items-center gap-1.5 text-s text-text-3">
@@ -157,7 +158,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       <AnimatePresence>
         {view === "verify" && r.verdict && (
           <motion.div key="verdict" {...panel} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-            className="absolute left-1/2 top-[128px] flex -translate-x-1/2 flex-col items-center gap-2.5">
+            className="absolute inset-x-0 top-[128px] mx-auto flex w-fit flex-col items-center gap-2.5">
             <VerdictChip verdict={r.verdict} />
             <div className="font-serif text-[17px] italic text-text-2">Designed by one model. Checked by physics.</div>
           </motion.div>
@@ -175,7 +176,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       <AnimatePresence>
         {view === "diagnose" && (
           <motion.div key="dx" {...panel} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
-            className="absolute left-1/2 top-[34%] w-[560px] -translate-x-1/2 text-center">
+            className="absolute inset-x-0 top-[34%] mx-auto w-[560px] text-center">
             {r.diagnosis ? (
               <>
                 <div className="lbl text-text-3">{r.diagnosis.object}</div>
@@ -200,7 +201,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
 
       {/* right panel */}
       <div className="absolute right-6 top-[128px]">
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false}>
           {view === "design" && part && (
             <motion.div key={"insp" + part.id} {...panel}>
               <Inspector part={part} values={params[part.id] || part.params || {}} explode={explode} onExplode={() => setExplode((x) => !x)}
@@ -212,7 +213,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
           {view === "make" && r.fab && (
             <motion.div key="make" {...panel}><MakePanel fab={r.fab} parts={parts} onDownload={download} /></motion.div>
           )}
-          {view === "make" && !r.fab && (
+          {view === "make" && !r.fab && r.steps.make !== "done" && (
             <motion.div key="make-wait" {...panel} className="glass w-[296px] rounded-panel p-4 text-s text-text-3">Routing to fabrication</motion.div>
           )}
         </AnimatePresence>
@@ -231,7 +232,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       <AnimatePresence>
         {view === "train" && (
           robot && r.rl ? (
-            <motion.div key="train" className="absolute bottom-6 left-1/2 -translate-x-1/2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div key="train" className="absolute inset-x-0 bottom-6 mx-auto w-fit" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               {r.rl.skills.find((s) => s.name === gait)?.video && r.source === "api" && (
                 <video key={gait} src={fileUrl(id, r.rl.skills.find((s) => s.name === gait)!.video!)} autoPlay loop muted playsInline
                   className="mb-3 w-[760px] rounded-panel border border-line" ref={(v) => { if (v) paused ? v.pause() : v.play().catch(() => {}); }} />
@@ -239,7 +240,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
               <TrainSheet rl={r.rl} gait={gait} onGait={setGait} paused={paused} onPause={() => setPaused((p) => !p)} curves={curves} />
             </motion.div>
           ) : (
-            <motion.div key="notrain" className="absolute left-1/2 top-[40%] -translate-x-1/2 text-m text-text-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div key="notrain" className="absolute inset-x-0 top-[40%] text-center text-m text-text-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               {robot ? "Training starts after Verify." : "Static part. Nothing to train."}
             </motion.div>
           )

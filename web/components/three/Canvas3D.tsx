@@ -41,9 +41,12 @@ function PartMesh({ geometry, part, mode, hovered, failing, onHover, position, s
     g.computeBoundingBox();
     const b = g.boundingBox!;
     const size = new THREE.Vector3(); b.getSize(size);
-    // contact = the hook tip / upper leading edge, where the part meets its context
-    const contact = new THREE.Vector3(b.min.x + size.x * 0.32, b.max.y, 0);
-    paintHeatmap(g, contact, Math.max(size.x, size.y) * 0.55, failing);
+    // contact = the highest point (hook tip / mating face), where the part meets its context
+    const pos = g.attributes.position as THREE.BufferAttribute;
+    const contact = new THREE.Vector3(); let best = -Infinity; const v = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i++) { v.fromBufferAttribute(pos, i); const score = v.y - Math.abs(v.z) * 0.01 - v.x * 0.02; if (score > best) { best = score; contact.copy(v); } }
+    contact.z = 0;
+    paintHeatmap(g, contact, Math.max(size.x, size.y, size.z) * 0.6, failing);
     return g;
   }, [geometry, mode, failing]);
   const isHover = hovered === part.id;
@@ -65,7 +68,7 @@ function PartMesh({ geometry, part, mode, hovered, failing, onHover, position, s
       {mode === "sketch" ? (
         <meshBasicMaterial color="#9A9AA1" wireframe transparent opacity={0.25} />
       ) : (
-        <meshStandardMaterial color={mode === "fit" ? "#ffffff" : CLAY} vertexColors={mode === "fit"} roughness={0.82} metalness={0}
+        <meshStandardMaterial key={mode} color={mode === "fit" ? "#ffffff" : CLAY} vertexColors={mode === "fit"} roughness={0.82} metalness={0}
           transparent opacity={dim ? 0.4 : 1} />
       )}
       {isHover && mode !== "sketch" && <Edges threshold={20} color={SIGNAL} transparent opacity={0.6} />}
@@ -94,25 +97,27 @@ function ProcPart(props: PartProps) {
   return <PartMesh {...props} geometry={geo} />;
 }
 
-/** Ghost of the context the part lives in: freezer frame + striker pin. */
-function Context({ x, w }: { x: number; w: number }) {
+/** Ghost of the context the part lives in: the surface it mounts to + the pin it catches. */
+function Context({ x, dims }: { x: number; dims: [number, number, number] }) {
+  const [w, d, h] = [dims[0], dims[1], dims[2]];
   return (
     <group position={[x, 0, 0]}>
-      <mesh position={[-w * 0.55, 9, 0]}>
-        <boxGeometry args={[w * 0.5, 18, 36]} />
-        <meshBasicMaterial color="#9A9AA1" transparent opacity={0.06} depthWrite={false} />
-        <Edges color="#9A9AA1" transparent opacity={0.25} />
+      <mesh position={[0, h * 0.7, -d / 2 - 2.5]}>
+        <boxGeometry args={[w * 1.3, h * 1.25, 3]} />
+        <meshBasicMaterial color="#9A9AA1" transparent opacity={0.05} depthWrite={false} />
+        <Edges color="#9A9AA1" transparent opacity={0.22} />
       </mesh>
-      <mesh position={[-w * 0.16, 12.6, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[3, 3, 30, 32]} />
-        <meshBasicMaterial color="#9A9AA1" transparent opacity={0.1} depthWrite={false} />
-        <Edges color="#9A9AA1" transparent opacity={0.35} />
+      <mesh position={[-w * 0.05, h * 0.9, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[Math.max(2, h * 0.2), Math.max(2, h * 0.2), d * 1.3, 32]} />
+        <meshBasicMaterial color="#9A9AA1" transparent opacity={0.08} depthWrite={false} />
+        <Edges color="#9A9AA1" transparent opacity={0.3} />
       </mesh>
     </group>
   );
 }
 
-function Dog({ gait, paused, hovered, onHover, mode, explode }: { gait: Gait; paused: boolean; hovered: string | null; onHover: (id: string | null) => void; mode: Mode; explode: number }) {
+function Dog({ gait, paused, hovered, onHover, mode, explode, chassis }: { gait: Gait; paused: boolean; hovered: string | null; onHover: (id: string | null) => void; mode: Mode; explode: number; chassis?: Record<string, number> }) {
+  const cs: [number, number, number] = [(chassis?.length_mm ?? 140) / 140, (chassis?.height_mm ?? 40) / 40, (chassis?.width_mm ?? 70) / 70];
   const root = useRef<THREE.Group>(null);
   const body = useRef<THREE.Group>(null);
   const legs = useRef<(THREE.Group | null)[]>([]);
@@ -166,11 +171,11 @@ function Dog({ gait, paused, hovered, onHover, mode, explode }: { gait: Gait; pa
   return (
     <group ref={root}>
       <group ref={body} position={[0, 112, 0]}>
-        <mesh geometry={g.chassis} position={[0, -17, 0]} castShadow {...hov("chassis")}>{mat("chassis")}</mesh>
-        <mesh geometry={g.deck} position={[0, 18 + ex * 40, 0]} castShadow {...hov("deck")}>{mat("deck")}</mesh>
-        <mesh geometry={g.head} position={[96 + ex * 40, 4, 0]} castShadow {...hov("head")}>{mat("head")}</mesh>
+        <mesh geometry={g.chassis} position={[0, -17, 0]} scale={cs} castShadow {...hov("chassis")}>{mat("chassis")}</mesh>
+        <mesh geometry={g.deck} scale={[cs[0], 1, cs[2]]} position={[0, -17 + 34 * cs[1] + 1 + ex * 40, 0]} castShadow {...hov("deck")}>{mat("deck")}</mesh>
+        <mesh geometry={g.head} position={[96 * cs[0] + ex * 40, 4, 0]} castShadow {...hov("head")}>{mat("head")}</mesh>
         {hips.map((h, i) => (
-          <group key={i} position={[h[0] * (1 + ex * 0.4), -10 - ex * 10, h[2] * (1 + ex * 0.8)]} ref={(el) => { legs.current[i] = el; }}>
+          <group key={i} position={[h[0] * cs[0] * (1 + ex * 0.4), -10 - ex * 10, h[2] * cs[2] * (1 + ex * 0.8)]} ref={(el) => { legs.current[i] = el; }}>
             <mesh geometry={g.thigh} castShadow {...hov("thigh")}>{mat("thigh")}</mesh>
             <group position={[0, -50 - ex * 20, 0]} ref={(el) => { knees.current[i] = el; }}>
               <mesh geometry={g.shin} castShadow {...hov("shin")}>{mat("shin")}</mesh>
@@ -248,7 +253,7 @@ export default function Canvas3D(p: Canvas3DProps) {
       <directionalLight position={[size, size * 2, size * 0.8]} intensity={1.6} castShadow shadow-mapSize={[1024, 1024]}
         shadow-camera-left={-size} shadow-camera-right={size} shadow-camera-top={size} shadow-camera-bottom={-size} />
       <directionalLight position={[-size, size * 0.6, -size]} intensity={0.35} color="#ffd9c4" />
-      <gridHelper args={[size * 8, 64, "#ffffff", "#ffffff"]} position={[0, -0.01, 0]}>
+      <gridHelper args={[size * 6, 36, "#ffffff", "#ffffff"]} position={[0, -0.01, 0]}>
         <meshBasicMaterial attach="material" color="#ffffff" transparent opacity={0.06} />
       </gridHelper>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]} receiveShadow>
@@ -257,7 +262,7 @@ export default function Canvas3D(p: Canvas3DProps) {
       </mesh>
       {p.mode === "sketch" && !p.parts.length && <SketchBox />}
       {robot && p.parts.length > 0 && (
-        <Dog gait={p.gait ?? "walk"} paused={!!p.paused} hovered={p.hovered} onHover={p.onHover} mode={p.mode} explode={ex} />
+        <Dog gait={p.gait ?? "walk"} paused={!!p.paused} hovered={p.hovered} onHover={p.onHover} mode={p.mode} explode={ex} chassis={p.params["chassis"]} />
       )}
       {!robot && placed.map(({ part, pos }) => {
         const url = p.urlFor?.(part) ?? null;
@@ -269,7 +274,7 @@ export default function Canvas3D(p: Canvas3DProps) {
           </Boundary>
         );
       })}
-      {showCtx && p.mode === "fit" && <Context x={placed[0].pos[0] + (p.explode ? -20 : 0)} w={sizes[0]} />}
+      {showCtx && p.mode === "fit" && <Context x={placed[0].pos[0]} dims={placed[0].part.dims_mm} />}
       <OrbitControls makeDefault enableDamping dampingFactor={0.08} minDistance={size * 0.4} maxDistance={size * 6} maxPolarAngle={Math.PI * 0.49}
         target={[0, size * 0.18, 0]} onStart={p.onUserOrbit} />
       <Rig size={size} mode={p.mode} locked={p.locked} />

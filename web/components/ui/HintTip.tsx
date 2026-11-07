@@ -31,17 +31,19 @@ export function HintTip({ label, kbd, side = "bottom", children, className = "" 
       {children}
       <AnimatePresence>
         {open && (
+          <span className={`pointer-events-none absolute z-50 ${pos[side]}`}>
           <motion.span
             role="tooltip"
             initial={{ opacity: 0, ...rise[side] }}
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: T.micro, ease: EASE_OUT }}
-            className={`pointer-events-none absolute z-50 flex items-center gap-2 whitespace-nowrap rounded-chip border border-line bg-raised px-2 py-1 text-s text-text shadow-float ${pos[side]}`}
+            className="flex items-center gap-2 whitespace-nowrap rounded-chip border border-line bg-raised px-2 py-1 text-s text-text shadow-float"
           >
             {label}
             {kbd && <KbdKey>{kbd}</KbdKey>}
           </motion.span>
+          </span>
         )}
       </AnimatePresence>
     </span>

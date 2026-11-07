@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Fab, HistoryEntry, RLManifest, Run, RunEvent, StepKey, StepState, Verdict } from "./types";
 import { STEPS, stepOf } from "./types";
 import { freezerEvents, freezerFab, freezerRun, freezerVerdict } from "@/fixtures/freezer-latch";
@@ -76,17 +76,16 @@ export function useRun(id: string): RunState {
   const [fab, setFab] = useState<Fab | null>(null);
   const [rl, setRl] = useState<RLManifest | null>(null);
   const [finished, setFinished] = useState(false);
-  const alive = useRef(true);
-
   useEffect(() => {
-    alive.current = true;
+    const alive = { current: true };
+    setSource(null); setRun(null); setEvents([]); setVerdict(null); setFab(null); setRl(null); setFinished(false);
     let es: EventSource | null = null;
     const timers: ReturnType<typeof setTimeout>[] = [];
 
     const loadArtifacts = async (r: Run) => {
-      if (r.verdict) getJSON<Verdict>(fileUrl(id, r.verdict)).then((v) => alive.current && v && setVerdict(v));
-      if (r.fab) getJSON<Fab>(fileUrl(id, r.fab)).then((v) => alive.current && v && setFab(v));
-      if (r.rl) getJSON<RLManifest>(fileUrl(id, r.rl)).then((v) => alive.current && v && setRl(v));
+      if (r.verdict) getJSON<Verdict>(fileUrl(id, r.verdict), 15000).then((v) => alive.current && v && setVerdict(v));
+      if (r.fab) getJSON<Fab>(fileUrl(id, r.fab), 15000).then((v) => alive.current && v && setFab(v));
+      if (r.rl) getJSON<RLManifest>(fileUrl(id, r.rl), 15000).then((v) => alive.current && v && setRl(v));
     };
 
     const replayFixture = (fx: Fixture) => {
@@ -108,7 +107,7 @@ export function useRun(id: string): RunState {
     };
 
     (async () => {
-      const r = await getJSON<Run>(`/api/runs/${encodeURIComponent(id)}`);
+      const r = await getJSON<Run>(`/api/runs/${encodeURIComponent(id)}`, 15000);
       if (!alive.current) return;
       if (!r) {
         replayFixture(FIXTURES[id] || FIXTURES["demo-freezer-latch"]);
@@ -124,7 +123,7 @@ export function useRun(id: string): RunState {
             const ev = JSON.parse(m.data) as RunEvent;
             setEvents((p) => [...p, ev]);
             if (ev.phase === "done" || ev.phase === "artifact") {
-              getJSON<Run>(`/api/runs/${encodeURIComponent(id)}`).then((nr) => { if (nr && alive.current) { setRun(nr); loadArtifacts(nr); } });
+              getJSON<Run>(`/api/runs/${encodeURIComponent(id)}`, 15000).then((nr) => { if (nr && alive.current) { setRun(nr); loadArtifacts(nr); } });
             }
           } catch {}
         };
@@ -149,7 +148,7 @@ export function useHistory(): { history: HistoryEntry[]; current: string | null;
   const [state, setState] = useState<{ history: HistoryEntry[]; current: string | null; source: Source | null }>({ history: [], current: null, source: null });
   useEffect(() => {
     let on = true;
-    getJSON<{ current: string; history: HistoryEntry[] }>("/api/evals").then((j) => {
+    getJSON<{ current: string; history: HistoryEntry[] }>("/api/evals", 15000).then((j) => {
       if (!on) return;
       if (j && Array.isArray(j.history) && j.history.length) setState({ history: j.history, current: j.current, source: "api" });
       else setState({ history: historyFixture, current: [...historyFixture].reverse().find((h) => h.adopted)?.version ?? null, source: "fixture" });
