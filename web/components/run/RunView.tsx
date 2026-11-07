@@ -6,7 +6,8 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { fileUrl, useRun } from "../data/client";
+import { useRun } from "../data/client";
+import { useSearchParams } from "next/navigation";
 import type { Part, StepKey } from "../data/types";
 import { STEPS } from "../data/types";
 import type { Gait, Mode } from "../three/Canvas3D";
@@ -30,7 +31,8 @@ const modeFor = (k: StepKey, hasParts: boolean): Mode => (!hasParts ? "sketch" :
 const panel = { initial: { opacity: 0, x: 8 }, animate: { opacity: 1, x: 0 }, exit: { opacity: 0, x: 8 }, transition: { duration: T.panel, ease: EASE_OUT } };
 
 export function RunView({ id, initialView }: { id: string; initialView?: StepKey }) {
-  const r = useRun(id);
+  const sp = useSearchParams();
+  const r = useRun(id, { instant: sp.get("instant") === "1" });
   const router = useRouter();
   const toast = useToast();
   const [manual, setManual] = useState<StepKey | null>(initialView ?? null);
@@ -42,6 +44,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
   const [gait, setGait] = useState<Gait>("walk");
   const [paused, setPaused] = useState(false);
   const [curves, setCurves] = useState<Record<string, number[]>>({});
+  const [curveMeta, setCurveMeta] = useState<Record<string, { judge?: string; candidates?: number; videoLabel?: string; policySuccess?: number }>>({});
 
   const parts = useMemo(() => r.run?.parts ?? [], [r.run?.parts]);
   const robot = r.run?.kind === "robot";
@@ -58,27 +61,38 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
   const view = manual ?? auto;
   const mode = modeFor(view, parts.length > 0);
   const part = parts.find((p) => p.id === selected) ?? parts[0];
+  const skillNow = r.rl?.skills.find((s) => s.name === gait) ?? r.rl?.skills[0];
+  const video = skillNow?.video ? r.asset(skillNow.video) : null;
 
   useEffect(() => {
     if (!r.rl) return;
     r.rl.skills.forEach((s) => {
       if (Array.isArray(s.curve)) setCurves((c) => ({ ...c, [s.name]: s.curve as number[] }));
-      else if (typeof s.curve === "string" && r.source === "api")
-        fetch(fileUrl(id, s.curve)).then((x) => x.json()).then((j) => {
-          const arr: number[] = Array.isArray(j) ? j.map((p: any) => (typeof p === "number" ? p : p.reward ?? p.r ?? 0)) : j.reward ?? j.rewards ?? [];
+      else if (typeof s.curve === "string" && r.asset(s.curve))
+        fetch(r.asset(s.curve)!).then((x) => x.json()).then((j) => {
+          const eps: any[] = Array.isArray(j) ? j : Array.isArray(j.episodes) ? j.episodes : [];
+          const scored = eps.filter((p) => typeof p === "number" || typeof p?.task_score === "number");
+          const raw: number[] = scored.length ? scored.map((p) => (typeof p === "number" ? p : p.task_score)) : (j.series ?? j.reward ?? j.rewards ?? []);
+          if (!Array.isArray(j)) setCurveMeta((m) => ({ ...m, [s.name]: {
+            judge: j.judge_backend, candidates: j.hacking ? Object.keys(j.hacking).length : undefined,
+            videoLabel: j.video_label, policySuccess: typeof j.policy_success === "number" ? j.policy_success : undefined,
+          } }));
+          // smooth + downsample to ~60 points for a calm line
+          const n = Math.max(1, Math.floor(raw.length / 60));
+          const arr = raw.length ? Array.from({ length: Math.ceil(raw.length / n) }, (_, i) => { const w = raw.slice(Math.max(0, i * n - n * 2), i * n + n); return w.reduce((a, b) => a + b, 0) / w.length; }) : [];
           const hi = Math.max(1, ...arr.map(Math.abs));
           setCurves((c) => ({ ...c, [s.name]: arr.map((v) => v / hi) }));
         }).catch(() => {});
     });
-  }, [r.rl, r.source, id]);
+  }, [r.rl, r.asset]);
 
-  const urlFor = useCallback((p: Part) => (r.source === "api" && p.stl ? fileUrl(id, p.stl) : null), [r.source, id]);
+  const urlFor = useCallback((p: Part) => (p.stl ? r.asset(p.stl) : null), [r]);
 
   const setParam = (pid: string, k: string, v: number) => setParams((s) => ({ ...s, [pid]: { ...(s[pid] || parts.find((x) => x.id === pid)?.params || {}), [k]: v } }));
 
   const download = useCallback(async () => {
-    if (r.source === "api" && parts.some((p) => p.stl)) {
-      parts.filter((p) => p.stl).forEach((p) => { const a = document.createElement("a"); a.href = fileUrl(id, p.stl!); a.download = p.stl!.split("/").pop()!; a.click(); });
+    if (parts.some((p) => p.stl && r.asset(p.stl))) {
+      parts.filter((p) => p.stl).forEach((p) => { const a = document.createElement("a"); a.href = r.asset(p.stl!)!; a.download = p.stl!.split("/").pop()!; a.click(); });
       toast(`Downloading ${parts.filter((p) => p.stl).length} STL file${parts.length > 1 ? "s" : ""}`);
       return;
     }
@@ -90,7 +104,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${p.id}.stl`; a.click();
     });
     toast(`Downloading ${parts.length} STL file${parts.length > 1 ? "s" : ""}`);
-  }, [r.source, parts, id, params, toast]);
+  }, [r, parts, params, toast]);
 
   const select = useCallback((k: StepKey) => { setManual(k); }, []);
 
@@ -120,7 +134,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
     <main className="fixed inset-0 overflow-hidden bg-bg">
       <div className="absolute inset-0">
         <Canvas3D parts={parts} kind={r.run?.kind} mode={mode} params={params} explode={explode} hovered={hovered} onHover={setHovered}
-          failing={r.verdict ? !r.verdict.pass : false} urlFor={urlFor} gait={gait} paused={paused || view !== "train"} locked={locked}
+          failing={r.verdict ? !r.verdict.pass : false} urlFor={urlFor} gait={(skillNow?.name ?? gait).replace("-", " ") as Gait} hideRobot={view === "train" && !!video} paused={paused || view !== "train"} locked={locked}
           onUserOrbit={() => setLocked(true)} showContext />
       </div>
 
@@ -134,10 +148,10 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
         </motion.div></div>
         <div className="pointer-events-auto relative flex items-center gap-3">
           {r.source && (
-            <HintTip label={r.source === "api" ? "Streaming from the pipeline" : "Recorded run, API offline"} side="bottom">
+            <HintTip label={r.recorded ? "Recorded pipeline run, replayed" : r.source === "api" ? "Streaming from the pipeline" : r.source === "static" ? "Recorded pipeline run" : "Sample run, API offline"} side="bottom">
               <span className="flex items-center gap-1.5 text-s text-text-3">
-                <span className={`h-1.5 w-1.5 rounded-full ${r.source === "api" ? (r.finished ? "bg-ok" : "bg-signal") : "bg-text-3"}`} />
-                <span className="lbl">{r.source === "api" ? (r.finished ? "done" : "live") : "replay"}</span>
+                <span className={`h-1.5 w-1.5 rounded-full ${r.source === "api" ? (r.finished || r.recorded ? "bg-ok" : "bg-signal") : "bg-text-3"}`} />
+                <span className="lbl">{r.source === "fixture" ? "sample" : r.recorded ? "replay" : r.finished ? "done" : "live"}</span>
               </span>
             </HintTip>
           )}
@@ -229,16 +243,29 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
         </div>
       )}
 
+      {/* policy video from the RL lane, when there is one */}
+      <AnimatePresence>
+        {view === "train" && video && (
+          <motion.div key={"vid" + gait} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: T.panel, ease: EASE_OUT }}
+            className="absolute inset-x-0 top-[128px] bottom-[236px] mx-auto flex w-fit items-center">
+            <div className="relative h-full">
+              <video autoPlay loop muted playsInline className="h-full max-w-[880px] rounded-panel border border-line bg-surface object-contain"
+                ref={(v) => { if (!v) return; if (paused) v.pause(); else v.play().catch(() => {}); }}>
+                <source src={video.replace(/\.mp4$/, ".webm")} type="video/webm" />
+                <source src={video} type="video/mp4" />
+              </video>
+              <span className="lbl absolute left-3 top-3 rounded-chip bg-black/60 px-1.5 py-0.5 text-text-2">MuJoCo · {curveMeta[skillNow?.name ?? ""]?.videoLabel ?? "policy rollout"}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* train */}
       <AnimatePresence>
         {view === "train" && (
           robot && r.rl ? (
             <motion.div key="train" className="absolute inset-x-0 bottom-6 mx-auto w-fit" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              {r.rl.skills.find((s) => s.name === gait)?.video && r.source === "api" && (
-                <video key={gait} src={fileUrl(id, r.rl.skills.find((s) => s.name === gait)!.video!)} autoPlay loop muted playsInline
-                  className="mb-3 w-[760px] rounded-panel border border-line" ref={(v) => { if (!v) return; if (paused) v.pause(); else v.play().catch(() => {}); }} />
-              )}
-              <TrainSheet rl={r.rl} gait={gait} onGait={setGait} paused={paused} onPause={() => setPaused((p) => !p)} curves={curves} />
+              <TrainSheet rl={r.rl} gait={gait} onGait={setGait} paused={paused} onPause={() => setPaused((p) => !p)} curves={curves} meta={curveMeta} />
             </motion.div>
           ) : (
             <motion.div key="notrain" className="absolute inset-x-0 top-[40%] text-center text-m text-text-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>

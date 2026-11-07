@@ -7,7 +7,7 @@ import { EASE_OUT, T } from "./motion";
 
 const EXAMPLES = ["My freezer door won't stay shut", "A mini robot dog that can play dead", "A Wi-Fi powder dispenser"];
 
-export function PromptBox({ onSubmit, busy, initial = "" }: { onSubmit: (prompt: string, photo?: File) => void; busy?: boolean; initial?: string }) {
+export function PromptBox({ onSubmit, onExample, busy, initial = "" }: { onSubmit: (prompt: string, photo?: File) => void; onExample?: (prompt: string) => void; busy?: boolean; initial?: string }) {
   const [value, setValue] = useState(initial);
   const [idle, setIdle] = useState(false);
   const [photo, setPhoto] = useState<{ file: File; url: string } | null>(null);
@@ -79,7 +79,7 @@ export function PromptBox({ onSubmit, busy, initial = "" }: { onSubmit: (prompt:
             <motion.button
               key={ex} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, transition: { duration: 0.12 } }}
               transition={{ duration: T.panel, ease: EASE_OUT, delay: i * 0.06 }}
-              onClick={() => { setValue(ex); go(ex); }}
+              onClick={() => { setValue(ex); if (onExample) onExample(ex); else go(ex); }}
               className="h-8 rounded-full border border-line px-3 text-s text-text-3 transition-colors duration-200 hover:border-[#3a3a40] hover:text-text"
             >
               {ex}

@@ -76,8 +76,8 @@ export const dogEvents: [number, RunEvent][] = [
   [500, t("verify", "start", "Building MJCF assembly", "gemini-argon")],
   [900, t("verify", "done", "Fits. 0.6 mm joint clearance", "gemini-argon")],
   [400, t("rl", "start", "4 reward candidates per skill", "muse")],
-  [900, t("rl", "progress", "SubQ judged reward v4 · picked 1 of 4", "subq")],
-  [900, t("rl", "progress", "PPO: walk 0.92, play dead 0.96", "subq")],
-  [500, t("rl", "done", "4 skills trained", "subq")],
+  [900, t("rl", "progress", "Judge picked one reward per skill", "subq")],
+  [900, t("rl", "progress", "PPO on MuJoCo: walk, trot, rollover, play dead", undefined)],
+  [500, t("rl", "done", "4 skills trained", undefined)],
   [400, t("make", "done", "Print 3 parts, cut 2", undefined)],
 ];

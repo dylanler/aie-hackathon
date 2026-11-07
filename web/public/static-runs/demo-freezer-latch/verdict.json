@@ -1,0 +1,65 @@
+{
+  "pass": true,
+  "fits_printer": "bambu-a1",
+  "checks": [
+    {
+      "name": "OpenSCAD compiles",
+      "pass": true,
+      "value": "1/1"
+    },
+    {
+      "name": "fits 256×256×256 mm bed",
+      "pass": true,
+      "value": 49,
+      "unit": "mm"
+    },
+    {
+      "name": "size ≥ 4×15×30 mm",
+      "pass": true,
+      "value": "15×38×49",
+      "unit": "mm"
+    },
+    {
+      "name": "size ≤ 35×60×100 mm",
+      "pass": true,
+      "value": "15×38×49",
+      "unit": "mm"
+    },
+    {
+      "name": "wall ≥ 1.6 mm",
+      "pass": true,
+      "value": 2.8,
+      "unit": "mm"
+    },
+    {
+      "name": "volume ≥ 1000 mm³",
+      "pass": true,
+      "value": 6126.9,
+      "unit": "mm3"
+    },
+    {
+      "name": "volume ≤ 60000 mm³",
+      "pass": true,
+      "value": 6126.9,
+      "unit": "mm3"
+    },
+    {
+      "name": "≥ 1 parts",
+      "pass": true,
+      "value": 1
+    },
+    {
+      "name": "subq_judge_p_satisfies",
+      "pass": false,
+      "value": 0.103,
+      "unit": "p",
+      "advisory": true
+    }
+  ],
+  "subq_p_satisfies": 0.103,
+  "heatmap": null,
+  "notes": "All 8 independent checks pass",
+  "round": 0,
+  "critic_model": "muse-wonder-1.0",
+  "sim": false
+}

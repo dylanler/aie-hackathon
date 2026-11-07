@@ -8,9 +8,11 @@ import { BottomSheet } from "../ui/Sheets";
 import { Sparkline } from "../ui/Sparkline";
 import type { Gait } from "../three/Canvas3D";
 
-export function TrainSheet({ rl, gait, onGait, paused, onPause, curves }: { rl: RLManifest; gait: Gait; onGait: (g: Gait) => void; paused: boolean; onPause: () => void; curves: Record<string, number[]> }) {
-  const skill = rl.skills.find((s) => s.name === gait) ?? rl.skills[0];
+export function TrainSheet({ rl, gait, onGait, paused, onPause, curves, meta = {} }: { rl: RLManifest; gait: Gait; onGait: (g: Gait) => void; paused: boolean; onPause: () => void; curves: Record<string, number[]>; meta?: Record<string, { judge?: string; candidates?: number; policySuccess?: number }> }) {
+  const skill = rl.skills.find((s) => s.name === gait || s.name.replace("-", " ") === gait) ?? rl.skills[0];
   const data = curves[skill.name] || [];
+  const m = meta[skill.name] || {};
+  const judge = m.judge ? (/subq/i.test(m.judge) ? "SubQ" : "Local judge") : modelName(rl.judge) || "SubQ";
   const [ep, setEp] = useState(0);
   useEffect(() => {
     if (paused) return;
@@ -24,7 +26,7 @@ export function TrainSheet({ rl, gait, onGait, paused, onPause, curves }: { rl: 
           {rl.skills.map((s) => (
             <button key={s.name} onClick={() => onGait(s.name as Gait)}
               className={`flex h-8 items-center gap-2 rounded-full px-3 text-s capitalize transition-colors ${s.name === skill.name ? "bg-raised text-text" : "text-text-3 hover:text-text-2"}`}>
-              {s.name}
+              {s.name.replace("-", " ")}
               <span className="num text-[11px] text-text-3">{Math.round(s.success * 100)}%</span>
             </button>
           ))}
@@ -37,7 +39,7 @@ export function TrainSheet({ rl, gait, onGait, paused, onPause, curves }: { rl: 
       </div>
       <div className="mt-3 flex items-end justify-between gap-6 border-t border-line pt-3">
         <div>
-          <div className="lbl text-text-3">Reward · {skill.name}</div>
+          <div className="lbl text-text-3">Task score · {skill.name.replace("-", " ")}</div>
           <div className="mt-2"><Sparkline data={data} width={380} height={44} marker={0.85} /></div>
         </div>
         <div className="flex gap-6 pb-1 pr-1">
@@ -45,6 +47,12 @@ export function TrainSheet({ rl, gait, onGait, paused, onPause, curves }: { rl: 
             <div className="lbl text-text-3">Success</div>
             <div className="num mt-1 text-l text-text">{Math.round(skill.success * 100)}%</div>
           </div>
+          {m.policySuccess !== undefined && (
+            <div>
+              <div className="lbl text-text-3">Policy</div>
+              <div className="num mt-1 text-l text-text-2">{Math.round(m.policySuccess * 100)}%</div>
+            </div>
+          )}
           <div>
             <div className="lbl text-text-3">Episode</div>
             <div className="num mt-1 text-l text-text">{(data.length * 250 + ep).toLocaleString()}</div>
@@ -52,7 +60,7 @@ export function TrainSheet({ rl, gait, onGait, paused, onPause, curves }: { rl: 
         </div>
       </div>
       <div className="mt-3 text-s text-text-3">
-        <span className="num">{modelName(rl.judge) || "SubQ"} judged reward v{skill.reward_version} · picked 1 of {skill.candidates ?? 4}</span>
+        <span className="num">{judge} judged reward v{skill.reward_version} · picked 1 of {m.candidates ?? skill.candidates ?? 4}</span>
       </div>
     </BottomSheet>
   );

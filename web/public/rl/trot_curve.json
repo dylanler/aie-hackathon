@@ -1,0 +1,540 @@
+{
+  "skill": "trot",
+  "reward_version": 2,
+  "algorithm": "PPO",
+  "backend": "stable-baselines3",
+  "device": "cpu",
+  "runtime_reason": "jax is not installed, so training uses stable-baselines3 PPO on CPU.",
+  "timesteps": 8192,
+  "episodes": [
+    {
+      "timestep": 200,
+      "ep_return": 188.4448,
+      "ep_len": 200,
+      "task_score": 0.7538177631880305
+    },
+    {
+      "timestep": 319,
+      "ep_return": 83.8527,
+      "ep_len": 119,
+      "task_score": 0.23305880501174603
+    },
+    {
+      "timestep": 444,
+      "ep_return": 111.1702,
+      "ep_len": 125,
+      "task_score": 0.4176103523966066
+    },
+    {
+      "timestep": 612,
+      "ep_return": 151.5263,
+      "ep_len": 168,
+      "task_score": 0.34977239381463543
+    },
+    {
+      "timestep": 651,
+      "ep_return": 24.8972,
+      "ep_len": 39,
+      "task_score": 0.11459354335418259
+    },
+    {
+      "timestep": 693,
+      "ep_return": 53.9707,
+      "ep_len": 42,
+      "task_score": 0.3854787829198857
+    },
+    {
+      "timestep": 758,
+      "ep_return": 42.2691,
+      "ep_len": 65,
+      "task_score": 0.18341269350361855
+    },
+    {
+      "timestep": 817,
+      "ep_return": 61.5407,
+      "ep_len": 59,
+      "task_score": 0.4594858035785473
+    },
+    {
+      "timestep": 937,
+      "ep_return": 110.4204,
+      "ep_len": 120,
+      "task_score": 0.3096738785528004
+    },
+    {
+      "timestep": 996,
+      "ep_return": 45.9949,
+      "ep_len": 59,
+      "task_score": 0.23343373243568033
+    },
+    {
+      "timestep": 1065,
+      "ep_return": 36.1356,
+      "ep_len": 69,
+      "task_score": 0.053689155678423306
+    },
+    {
+      "timestep": 1145,
+      "ep_return": 55.6787,
+      "ep_len": 80,
+      "task_score": 0.30658384908176384
+    },
+    {
+      "timestep": 1207,
+      "ep_return": 35.887,
+      "ep_len": 62,
+      "task_score": 0.16893176924150266
+    },
+    {
+      "timestep": 1380,
+      "ep_return": 176.0483,
+      "ep_len": 173,
+      "task_score": 0.3943736004786407
+    },
+    {
+      "timestep": 1414,
+      "ep_return": 24.2358,
+      "ep_len": 34,
+      "task_score": 0.1760388513120552
+    },
+    {
+      "timestep": 1547,
+      "ep_return": 94.2488,
+      "ep_len": 133,
+      "task_score": 0.22963141907026596
+    },
+    {
+      "timestep": 1623,
+      "ep_return": 37.9195,
+      "ep_len": 76,
+      "task_score": 0.24143137816598303
+    },
+    {
+      "timestep": 1648,
+      "ep_return": 5.3168,
+      "ep_len": 25,
+      "task_score": 0.0
+    },
+    {
+      "timestep": 1766,
+      "ep_return": 84.6633,
+      "ep_len": 118,
+      "task_score": 0.2456701534214607
+    },
+    {
+      "timestep": 1888,
+      "ep_return": 122.5419,
+      "ep_len": 122,
+      "task_score": 0.3892499641752073
+    },
+    {
+      "timestep": 1936,
+      "ep_return": 34.7891,
+      "ep_len": 48,
+      "task_score": 0.2327970837769705
+    },
+    {
+      "timestep": 2136,
+      "ep_return": 132.93,
+      "ep_len": 200,
+      "task_score": 0.1226837318908921
+    },
+    {
+      "timestep": 2336,
+      "ep_return": 177.0523,
+      "ep_len": 200,
+      "task_score": 0.7420038574511287
+    },
+    {
+      "timestep": 2474,
+      "ep_return": 144.0415,
+      "ep_len": 138,
+      "task_score": 0.3990710244242158
+    },
+    {
+      "timestep": 2650,
+      "ep_return": 166.4443,
+      "ep_len": 176,
+      "task_score": 0.3620619770545539
+    },
+    {
+      "timestep": 2850,
+      "ep_return": 217.4182,
+      "ep_len": 200,
+      "task_score": 0.8398903791260068
+    },
+    {
+      "timestep": 2885,
+      "ep_return": 21.042,
+      "ep_len": 35,
+      "task_score": 0.013377242284658752
+    },
+    {
+      "timestep": 3085,
+      "ep_return": 156.7995,
+      "ep_len": 200,
+      "task_score": 0.7089446002324569
+    },
+    {
+      "timestep": 3285,
+      "ep_return": 168.8558,
+      "ep_len": 200,
+      "task_score": 0.6152547760217398
+    },
+    {
+      "timestep": 3403,
+      "ep_return": 129.7654,
+      "ep_len": 118,
+      "task_score": 0.38407051469280495
+    },
+    {
+      "timestep": 3474,
+      "ep_return": 51.9733,
+      "ep_len": 71,
+      "task_score": 0.37098481755200485
+    },
+    {
+      "timestep": 3545,
+      "ep_return": 76.5803,
+      "ep_len": 71,
+      "task_score": 0.4937993101987569
+    },
+    {
+      "timestep": 3745,
+      "ep_return": 174.6747,
+      "ep_len": 200,
+      "task_score": 0.683859128260204
+    },
+    {
+      "timestep": 3817,
+      "ep_return": 62.8228,
+      "ep_len": 72,
+      "task_score": 0.24838081333009498
+    },
+    {
+      "timestep": 4017,
+      "ep_return": 199.2846,
+      "ep_len": 200,
+      "task_score": 0.7894841728935658
+    },
+    {
+      "timestep": 4053,
+      "ep_return": 37.8046,
+      "ep_len": 36,
+      "task_score": 0.40653229283125925
+    },
+    {
+      "timestep": 4192,
+      "ep_return": 109.8727,
+      "ep_len": 139,
+      "task_score": 0.2675296040592706
+    },
+    {
+      "timestep": 4282,
+      "ep_return": 55.5863,
+      "ep_len": 90,
+      "task_score": 0.10145569098474438
+    },
+    {
+      "timestep": 4351,
+      "ep_return": 59.8051,
+      "ep_len": 69,
+      "task_score": 0.20986994581556717
+    },
+    {
+      "timestep": 4546,
+      "ep_return": 167.2385,
+      "ep_len": 195,
+      "task_score": 0.26704237485216076
+    },
+    {
+      "timestep": 4630,
+      "ep_return": 70.0596,
+      "ep_len": 84,
+      "task_score": 0.198101070207504
+    },
+    {
+      "timestep": 4830,
+      "ep_return": 206.6248,
+      "ep_len": 200,
+      "task_score": 0.7891477174389079
+    },
+    {
+      "timestep": 5028,
+      "ep_return": 167.3,
+      "ep_len": 198,
+      "task_score": 0.3056626141811879
+    },
+    {
+      "timestep": 5200,
+      "ep_return": 165.3431,
+      "ep_len": 172,
+      "task_score": 0.38222709958195733
+    },
+    {
+      "timestep": 5278,
+      "ep_return": 42.649,
+      "ep_len": 78,
+      "task_score": 0.16846795817479188
+    },
+    {
+      "timestep": 5363,
+      "ep_return": 89.0449,
+      "ep_len": 85,
+      "task_score": 0.3966356846275728
+    },
+    {
+      "timestep": 5382,
+      "ep_return": 12.4081,
+      "ep_len": 19,
+      "task_score": 0.13338195809753128
+    },
+    {
+      "timestep": 5455,
+      "ep_return": 62.3872,
+      "ep_len": 73,
+      "task_score": 0.34105243162989407
+    },
+    {
+      "timestep": 5575,
+      "ep_return": 87.9354,
+      "ep_len": 120,
+      "task_score": 0.2022679659205543
+    },
+    {
+      "timestep": 5658,
+      "ep_return": 89.2076,
+      "ep_len": 83,
+      "task_score": 0.3704419125908789
+    },
+    {
+      "timestep": 5782,
+      "ep_return": 68.0172,
+      "ep_len": 124,
+      "task_score": 0.18256608058033708
+    },
+    {
+      "timestep": 5807,
+      "ep_return": 13.5901,
+      "ep_len": 25,
+      "task_score": 0.4824447310012919
+    },
+    {
+      "timestep": 6007,
+      "ep_return": 184.5565,
+      "ep_len": 200,
+      "task_score": 0.3800146860498542
+    },
+    {
+      "timestep": 6119,
+      "ep_return": 76.6951,
+      "ep_len": 112,
+      "task_score": 0.25577315500132314
+    },
+    {
+      "timestep": 6262,
+      "ep_return": 153.4823,
+      "ep_len": 143,
+      "task_score": 0.4533875827054117
+    },
+    {
+      "timestep": 6373,
+      "ep_return": 98.1725,
+      "ep_len": 111,
+      "task_score": 0.29678602088066774
+    },
+    {
+      "timestep": 6496,
+      "ep_return": 124.4876,
+      "ep_len": 123,
+      "task_score": 0.31802361183649774
+    },
+    {
+      "timestep": 6608,
+      "ep_return": 93.5751,
+      "ep_len": 112,
+      "task_score": 0.34519280766540883
+    },
+    {
+      "timestep": 6672,
+      "ep_return": 23.1848,
+      "ep_len": 64,
+      "task_score": 0.12151911681281269
+    },
+    {
+      "timestep": 6744,
+      "ep_return": 37.385,
+      "ep_len": 72,
+      "task_score": 0.01596927144402166
+    },
+    {
+      "timestep": 6921,
+      "ep_return": 118.2784,
+      "ep_len": 177,
+      "task_score": 0.1657062243870363
+    },
+    {
+      "timestep": 7004,
+      "ep_return": 82.1385,
+      "ep_len": 83,
+      "task_score": 0.21555861415468125
+    },
+    {
+      "timestep": 7204,
+      "ep_return": 174.7202,
+      "ep_len": 200,
+      "task_score": 0.6945791239930065
+    },
+    {
+      "timestep": 7240,
+      "ep_return": 27.3388,
+      "ep_len": 36,
+      "task_score": 0.11596539731782196
+    },
+    {
+      "timestep": 7361,
+      "ep_return": 68.8759,
+      "ep_len": 121,
+      "task_score": 0.24197645169563853
+    },
+    {
+      "timestep": 7518,
+      "ep_return": 137.9246,
+      "ep_len": 157,
+      "task_score": 0.32082255118326963
+    },
+    {
+      "timestep": 7570,
+      "ep_return": 34.248,
+      "ep_len": 52,
+      "task_score": 0.18213697650752203
+    },
+    {
+      "timestep": 7770,
+      "ep_return": 204.602,
+      "ep_len": 200,
+      "task_score": 0.8120792982359188
+    },
+    {
+      "timestep": 7803,
+      "ep_return": 29.9847,
+      "ep_len": 33,
+      "task_score": 0.36042359615319663
+    },
+    {
+      "timestep": 8003,
+      "ep_return": 166.8262,
+      "ep_len": 200,
+      "task_score": 0.7344715330693435
+    },
+    {
+      "timestep": 8136,
+      "ep_return": 142.7469,
+      "ep_len": 133,
+      "task_score": 0.3986200256161384
+    },
+    {
+      "timestep": 8158,
+      "ep_return": 15.7585,
+      "ep_len": 22,
+      "task_score": 0.42061184822701325
+    },
+    {
+      "timestep": 8192,
+      "ep_return": 35.3534,
+      "ep_len": 34,
+      "partial": true
+    }
+  ],
+  "series": [
+    188.4448,
+    83.8527,
+    111.1702,
+    151.5263,
+    24.8972,
+    53.9707,
+    42.2691,
+    61.5407,
+    110.4204,
+    45.9949,
+    36.1356,
+    55.6787,
+    35.887,
+    176.0483,
+    24.2358,
+    94.2488,
+    37.9195,
+    5.3168,
+    84.6633,
+    122.5419,
+    34.7891,
+    132.93,
+    177.0523,
+    144.0415,
+    166.4443,
+    217.4182,
+    21.042,
+    156.7995,
+    168.8558,
+    129.7654,
+    51.9733,
+    76.5803,
+    174.6747,
+    62.8228,
+    199.2846,
+    37.8046,
+    109.8727,
+    55.5863,
+    59.8051,
+    167.2385,
+    70.0596,
+    206.6248,
+    167.3,
+    165.3431,
+    42.649,
+    89.0449,
+    12.4081,
+    62.3872,
+    87.9354,
+    89.2076,
+    68.0172,
+    13.5901,
+    184.5565,
+    76.6951,
+    153.4823,
+    98.1725,
+    124.4876,
+    93.5751,
+    23.1848,
+    37.385,
+    118.2784,
+    82.1385,
+    174.7202,
+    27.3388,
+    68.8759,
+    137.9246,
+    34.248,
+    204.602,
+    29.9847,
+    166.8262,
+    142.7469,
+    15.7585,
+    35.3534
+  ],
+  "policy_success": 0.671793,
+  "scripted_success": 0.8929779145803683,
+  "success": 0.8929779145803683,
+  "video_source": "scripted-fallback",
+  "video_label": "scripted motion fallback",
+  "policy_checkpoint": "checkpoints/trot_v2.zip",
+  "judge_backend": "local-fallback",
+  "judge_winner": "r1",
+  "hacking": {
+    "r0": 0.12,
+    "r1": 0.12
+  },
+  "probe_gap": 0.038904,
+  "note": "success is the scripted demo that produced the manifest video. policy_success is the deterministic PPO rollout of the adopted reward. The mp4 is captioned so the fallback is visible.",
+  "onnx": "trot.onnx",
+  "firmware_header": "firmware/include/trot_policy.h"
+}

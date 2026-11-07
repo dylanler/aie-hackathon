@@ -17,6 +17,12 @@ function Inner() {
     const { id } = await createRun(prompt);
     router.push(`/runs/${encodeURIComponent(id)}`);
   };
+  // example chips open recorded pipeline runs so the demo never waits on a model; typed prompts run live
+  const example = (prompt: string) => {
+    if (/freezer/i.test(prompt)) return router.push("/runs/demo-freezer-latch");
+    if (/dog/i.test(prompt)) return router.push("/runs/demo-robot-dog");
+    submit(prompt);
+  };
   return (
     <main className="fixed inset-0 flex flex-col items-center justify-center bg-bg px-6">
       <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(60% 50% at 50% 42%, rgba(255,255,255,0.035), transparent 70%)" }} />
@@ -27,7 +33,7 @@ function Inner() {
       <motion.h1 initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: EASE_OUT }}
         className="mb-8 font-serif text-hero italic text-text">What should exist?</motion.h1>
       <motion.div layoutId="prompt" className="flex w-full justify-center" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: EASE_OUT, delay: 0.08 }}>
-        <PromptBox key={q} onSubmit={submit} busy={busy} initial={q} />
+        <PromptBox key={q} onSubmit={submit} onExample={example} busy={busy} initial={q} />
       </motion.div>
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2"><GetsBetter variant="quiet" /></div>
     </main>

@@ -7,7 +7,7 @@ import { freezerEvents, freezerFab, freezerRun, freezerVerdict } from "@/fixture
 import { dogEvents, dogFab, dogRL, dogRun, dogVerdict } from "@/fixtures/robot-dog";
 import { historyFixture } from "@/fixtures/evals-history";
 
-export type Source = "api" | "fixture";
+export type Source = "api" | "static" | "fixture";
 
 type Fixture = { run: Run; verdict: Verdict; fab: Fab; rl: RLManifest | null; events: [number, RunEvent][] };
 export const FIXTURES: Record<string, Fixture> = {
@@ -26,7 +26,7 @@ async function getJSON<T>(url: string, ms = 2500): Promise<T | null> {
   } catch { return null; } finally { clearTimeout(timer); }
 }
 
-export const fileUrl = (runId: string, rel: string) => `/api/runs/${encodeURIComponent(runId)}/files/${rel.split("/").map(encodeURIComponent).join("/")}`;
+export const fileUrl = (runId: string, rel: string) => `/api/runs/${encodeURIComponent(runId)}/files/${rel ? rel.split("/").map(encodeURIComponent).join("/") : ""}`;
 
 /** POST /api/runs → id. Falls back to a fixture id when the API is not reachable. */
 export async function createRun(prompt: string): Promise<{ id: string; source: Source }> {
@@ -49,6 +49,10 @@ export type RunState = {
   rl: RLManifest | null;
   diagnosis: any;
   finished: boolean;
+  /** URL for a file in this run (STL, mp4, curve), or null when none is served. */
+  asset: (rel: string) => string | null;
+  /** a finished run being replayed at reading pace */
+  recorded: boolean;
 };
 
 function stepsFrom(events: RunEvent[], kind?: string, finished?: boolean): Record<StepKey, StepState> {
@@ -69,7 +73,9 @@ function stepsFrom(events: RunEvent[], kind?: string, finished?: boolean): Recor
   return s;
 }
 
-export function useRun(id: string): RunState {
+const STATIC_BASE = (id: string) => `/static-runs/${encodeURIComponent(id)}/`;
+
+export function useRun(id: string, opts: { instant?: boolean } = {}): RunState {
   const [source, setSource] = useState<Source | null>(null);
   const [run, setRun] = useState<Run | null>(null);
   const [events, setEvents] = useState<RunEvent[]>([]);
@@ -77,46 +83,80 @@ export function useRun(id: string): RunState {
   const [fab, setFab] = useState<Fab | null>(null);
   const [rl, setRl] = useState<RLManifest | null>(null);
   const [finished, setFinished] = useState(false);
+  const [assetBase, setAssetBase] = useState<string>("");
+  const [recorded, setRecorded] = useState(false);
+  const instant = !!opts.instant;
+
   useEffect(() => {
     const alive = { current: true };
-    setSource(null); setRun(null); setEvents([]); setVerdict(null); setFab(null); setRl(null); setFinished(false);
+    setSource(null); setRun(null); setEvents([]); setVerdict(null); setFab(null); setRl(null); setFinished(false); setRecorded(false);
     let es: EventSource | null = null;
     const timers: ReturnType<typeof setTimeout>[] = [];
+    const later = (ms: number, f: () => void) => timers.push(setTimeout(() => alive.current && f(), ms));
 
-    const loadArtifacts = async (r: Run) => {
-      if (r.verdict) getJSON<Verdict>(fileUrl(id, r.verdict), 15000).then((v) => alive.current && v && setVerdict(v));
-      if (r.fab) getJSON<Fab>(fileUrl(id, r.fab), 15000).then((v) => alive.current && v && setFab(v));
-      if (r.rl) getJSON<RLManifest>(fileUrl(id, r.rl), 15000).then((v) => alive.current && v && setRl(v));
+    /** Replay a finished run at a readable pace, revealing artifacts as their events arrive. */
+    const pacedReplay = (evs: RunEvent[], full: Run, art: { verdict: Verdict | null; fab: Fab | null; rl: RLManifest | null }) => {
+      setRun({ ...full, parts: [] });
+      let at = 250;
+      let partsShown = false;
+      evs.forEach((ev) => {
+        const gap = instant ? 0 : ev.phase === "done" && ev.stage === "diagnose" ? 1700 : ev.phase === "done" && ev.stage === "verify" ? 1100 : ev.stage === "rl" || ev.stage === "improve" ? 260 : 520;
+        at += gap;
+        later(at, () => {
+          setEvents((p) => [...p, { ...ev, ts: ev.ts || Date.now() }]);
+          if (!partsShown && (ev.stage === "cad" && (ev.phase === "artifact" || ev.phase === "done"))) { partsShown = true; setRun(full); }
+          if (ev.stage === "verify" && ev.phase === "done") setVerdict(art.verdict);
+          if (ev.stage === "rl" && ev.phase === "start") setRl(art.rl);
+          if (ev.stage === "make") setFab(art.fab);
+        });
+      });
+      later(at + 250, () => { setRun(full); setVerdict(art.verdict); setFab(art.fab); setRl(art.rl); setFinished(true); });
     };
 
-    const replayFixture = (fx: Fixture) => {
+    const replayFixture = async (fx: Fixture) => {
       setSource("fixture");
-      setRun({ ...fx.run, parts: [] });
-      let at = 0;
-      fx.events.forEach(([d, ev]) => {
-        at += d;
-        timers.push(setTimeout(() => {
-          if (!alive.current) return;
-          setEvents((p) => [...p, { ...ev, ts: Date.now() }]);
-          if (ev.stage === "design" && ev.phase === "artifact") setRun(fx.run);
-          if (ev.stage === "verify" && ev.phase === "done") setVerdict(fx.verdict);
-          if (ev.stage === "rl" && ev.phase === "start") setRl(fx.rl);
-          if (ev.stage === "make") setFab(fx.fab);
-        }, at));
-      });
-      timers.push(setTimeout(() => alive.current && setFinished(true), at + 200));
+      let rlReal: RLManifest | null = null;
+      if (fx.run.kind === "robot") {
+        rlReal = await getJSON<RLManifest>("/rl/manifest.json", 8000);
+        if (rlReal) { setAssetBase("/rl/"); rlReal = { ...rlReal, judge: rlReal.judge || "subq-snap-1.1" }; }
+      }
+      if (!alive.current) return;
+      pacedReplay(fx.events.map(([, e]) => e), fx.run, { verdict: fx.verdict, fab: fx.fab, rl: rlReal ?? fx.rl });
+    };
+
+    const loadDone = async (r: Run, base: string) => {
+      setRecorded(true);
+      const [txt, v, f, rlm] = await Promise.all([
+        fetch(base + "events.jsonl", { cache: "no-store" }).then((x) => (x.ok ? x.text() : "")).catch(() => ""),
+        r.verdict ? getJSON<Verdict>(base + r.verdict, 15000) : Promise.resolve(null),
+        r.fab ? getJSON<Fab>(base + r.fab, 15000) : Promise.resolve(null),
+        r.rl ? getJSON<RLManifest>(base + r.rl, 15000) : Promise.resolve(null),
+      ]);
+      if (!alive.current) return;
+      const evs = txt.split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l) as RunEvent; } catch { return null; } }).filter(Boolean) as RunEvent[];
+      pacedReplay(evs, r, { verdict: v, fab: f, rl: rlm });
     };
 
     (async () => {
       const r = await getJSON<Run>(`/api/runs/${encodeURIComponent(id)}`, 15000);
       if (!alive.current) return;
       if (!r) {
+        const sr = await getJSON<Run>(STATIC_BASE(id) + "run.json", 5000);
+        if (!alive.current) return;
+        if (sr) { setSource("static"); setAssetBase(STATIC_BASE(id)); loadDone(sr, STATIC_BASE(id)); return; }
         replayFixture(FIXTURES[id] || FIXTURES["demo-freezer-latch"]);
         return;
       }
       setSource("api");
+      const base = fileUrl(id, "");
+      setAssetBase(base);
+      if (r.status === "done" || r.status === "error") { loadDone(r, base); return; }
       setRun(r);
-      if (r.status === "done" || r.status === "error") loadArtifacts(r);
+      const loadArtifacts = (nr: Run) => {
+        if (nr.verdict) getJSON<Verdict>(base + nr.verdict, 15000).then((v) => alive.current && v && setVerdict(v));
+        if (nr.fab) getJSON<Fab>(base + nr.fab, 15000).then((v) => alive.current && v && setFab(v));
+        if (nr.rl) getJSON<RLManifest>(base + nr.rl, 15000).then((v) => alive.current && v && setRl(v));
+      };
       try {
         es = new EventSource(`/api/runs/${encodeURIComponent(id)}/stream`);
         es.onmessage = (m) => {
@@ -132,16 +172,16 @@ export function useRun(id: string): RunState {
           try { const nr = JSON.parse(m.data) as Run; setRun(nr); loadArtifacts(nr); } catch {}
           setFinished(true); es?.close();
         });
-        es.onerror = () => { /* browser retries; end event closes */ };
       } catch {}
     })();
 
     return () => { alive.current = false; es?.close(); timers.forEach(clearTimeout); };
-  }, [id]);
+  }, [id, instant]);
 
   const steps = useMemo(() => stepsFrom(events, run?.kind, finished), [events, run?.kind, finished]);
   const diagnosis = useMemo(() => events.find((e) => e.stage === "diagnose" && e.phase === "done")?.data ?? null, [events]);
-  return { source, run, events, steps, verdict, fab, rl, diagnosis, finished };
+  const asset = useMemo(() => (rel: string) => (assetBase ? assetBase + rel.split("/").map(encodeURIComponent).join("/") : null), [assetBase]);
+  return { source, run, events, steps, verdict, fab, rl, diagnosis, finished, asset, recorded };
 }
 
 /** Held-out history of design-skill versions. API first, fixture fallback. */
@@ -151,8 +191,12 @@ export function useHistory(): { history: HistoryEntry[]; current: string | null;
     let on = true;
     getJSON<{ current: string; history: HistoryEntry[] }>("/api/evals", 15000).then((j) => {
       if (!on) return;
-      if (j && Array.isArray(j.history) && j.history.length) setState({ history: j.history, current: j.current, source: "api" });
-      else setState({ history: historyFixture, current: [...historyFixture].reverse().find((h) => h.adopted)?.version ?? null, source: "fixture" });
+      if (j && Array.isArray(j.history) && j.history.length) { setState({ history: j.history, current: j.current, source: "api" }); return; }
+      getJSON<HistoryEntry[]>("/static-runs/evals-history.json", 5000).then((h) => {
+        if (!on) return;
+        if (h && h.length) { setState({ history: h, current: [...h].reverse().find((x) => x.adopted)?.version ?? null, source: "static" }); return; }
+        setState({ history: historyFixture, current: [...historyFixture].reverse().find((x) => x.adopted)?.version ?? null, source: "fixture" });
+      });
     });
     return () => { on = false; };
   }, []);

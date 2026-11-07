@@ -13,15 +13,20 @@ export type Run = {
   parts: Part[]; verdict?: string | null; rl?: string | null; fab?: string | null; skillVersion?: string;
   createdAt?: number;
 };
-export type Check = { name: string; pass: boolean; value: number | string; unit?: string };
+export type Check = { name: string; pass: boolean; value: number | string; unit?: string; advisory?: boolean };
 export type Verdict = { pass: boolean; fits_printer?: string; checks: Check[]; heatmap?: string | null; notes?: string; critic_model?: string };
 export type RLSkill = { name: string; policy?: string; reward_fn?: string; reward_version: number; curve?: string | number[]; video?: string | null; success: number; candidates?: number };
 export type RLManifest = { robot: string; mjcf?: string; skills: RLSkill[]; firmware?: string; judge?: string };
-export type FabPart = { part: string; name: string; stl?: string; material: string; dims_mm: number[]; est_grams?: number; fits?: string[]; process?: string; vendor?: string; quote_usd?: number; lead_days?: number };
+export type FabQuote = { vendor?: string; vendorName?: string; status?: string; price?: number; total?: number; leadTime?: string; checkoutUrl?: string; cartUrl?: string; reason?: string };
+export type FabPart = {
+  part?: string; id?: string; name: string; stl?: string; material: string; materialFamily?: string; dims_mm: number[]; est_grams?: number; fits?: string[];
+  process?: string; vendor?: string; quote_usd?: number; lead_days?: number; route?: string;
+  downloads?: { format: string; path: string; role?: string }[]; quotes?: FabQuote[]; notes?: string;
+};
 export type Fab = {
   route: string; printer?: string; parts: FabPart[]; note?: string;
   print?: { orientation?: string; supports?: boolean; infill_pct?: number; hours?: number; plates?: number; cost_usd?: number };
-  quotes?: { vendor: string; usd: number; days?: number; note?: string }[];
+  quotes?: { vendor: string; usd: number; days?: number; note?: string; url?: string }[];
 };
 export type HistoryEntry = {
   version: string; parent: string | null; trainPass: number; heldoutPass: number; adopted: boolean;

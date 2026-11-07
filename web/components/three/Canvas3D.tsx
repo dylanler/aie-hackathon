@@ -229,7 +229,7 @@ function Rig({ size, mode, locked }: { size: number; mode: Mode; locked: boolean
 export type Canvas3DProps = {
   parts: Part[]; kind?: string; mode: Mode; params: Record<string, Record<string, number>>; explode: boolean;
   hovered: string | null; onHover: (id: string | null) => void; failing?: boolean; urlFor?: (p: Part) => string | null;
-  gait?: Gait; paused?: boolean; locked: boolean; onUserOrbit: () => void; showContext?: boolean;
+  gait?: Gait; paused?: boolean; locked: boolean; hideRobot?: boolean; onUserOrbit: () => void; showContext?: boolean;
 };
 
 export default function Canvas3D(p: Canvas3DProps) {
@@ -263,7 +263,7 @@ export default function Canvas3D(p: Canvas3DProps) {
         <shadowMaterial transparent opacity={0.35} />
       </mesh>
       {p.mode === "sketch" && !p.parts.length && <SketchBox />}
-      {robot && p.parts.length > 0 && (
+      {robot && p.parts.length > 0 && !p.hideRobot && (
         <Dog gait={p.gait ?? "walk"} paused={!!p.paused} hovered={p.hovered} onHover={p.onHover} mode={p.mode} explode={ex} chassis={p.params["chassis"]} />
       )}
       {!robot && placed.map(({ part, pos }) => {
