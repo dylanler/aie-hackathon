@@ -69,7 +69,7 @@ export function analyzeMesh(mesh: Mesh): Analysis {
     }
   }
   let watertight = true;
-  for (const c of edges.values()) if (c !== 2) { watertight = false; break; }
+  for (const c of Array.from(edges.values())) if (c !== 2) { watertight = false; break; }
 
   const dims = [mx[0] - mn[0], mx[1] - mn[1], mx[2] - mn[2]] as [number, number, number];
   const maxDim = Math.max(...dims);

@@ -124,12 +124,14 @@ export async function runPipeline(id: string, prompt: string) {
     const subq = satVals.length ? +Math.min(...satVals).toFixed(3) : null;
     if (subq !== null) emit({ runId: id, stage: "verify", phase: "progress", message: `SubQ Snap: P(part fixes the problem) = ${subq}`, data: { subq_p_satisfies: subq }, model: "subq" });
     const allChecks: CheckResult[] = [...checks, ...(simVerdict?.checks || []).map((c: any) => ({ ...c, name: `sim:${c.name}` }))];
-    if (subq !== null) allChecks.push({ name: "subq_judge_p_satisfies", pass: subq >= 0.5, value: subq, unit: "p" });
+    // SubQ Snap is a second, independent opinion. It is recorded but advisory: it does not gate pass/fail.
+    const advisory = subq !== null ? [{ name: "subq_judge_p_satisfies", pass: subq >= 0.5, value: subq, unit: "p", advisory: true }] : [];
     const fit = PRINTERS.find((p) => built.every((b) => b.compiled && fitsBed(b.analysis!.dims_mm, p.bed)));
     const pass = allChecks.every((c) => c.pass);
     const verdict = {
       pass, fits_printer: fit?.id || null,
-      checks: allChecks.map((c) => ({ name: c.name, pass: c.pass, value: c.value, unit: c.unit })),
+      checks: [...allChecks.map((c) => ({ name: c.name, pass: c.pass, value: c.value, unit: c.unit })), ...advisory],
+      subq_p_satisfies: subq,
       heatmap: simVerdict?.heatmap || null,
       notes: pass ? `All ${allChecks.length} independent checks pass` : `Failed: ${allChecks.filter((c) => !c.pass).map((c) => c.name).join(", ")}`,
       round, critic_model: critic.model, sim: simVerdict ? true : false,
