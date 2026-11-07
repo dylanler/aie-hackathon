@@ -138,10 +138,9 @@ export async function runPipeline(id: string, prompt: string) {
     const satVals = sat.filter((x): x is number => typeof x === "number");
     const subq = satVals.length ? +Math.min(...satVals).toFixed(3) : null;
     if (subq !== null) emit({ runId: id, stage: "verify", phase: "progress", message: `SubQ Snap: P(part fixes the problem) = ${subq}`, data: { subq_p_satisfies: subq }, model: "subq" });
-    // Physics checks from the MuJoCo lane gate the verdict only when SIM_GATE=1 (verifier still being calibrated);
-    // otherwise they are reported alongside as advisory.
-    const simChecks: CheckResult[] = (simVerdict?.checks || []).map((c: any) => ({ name: `sim:${c.name}`, pass: !!c.pass, value: c.value ?? null, unit: c.unit }));
-    const simGate = process.env.SIM_GATE === "1";
+    // Physics checks from the MuJoCo lane (sim/verify.py) gate the verdict (SIM_GATE=0 makes them advisory).
+    const simChecks: (CheckResult & { detail?: string })[] = (simVerdict?.checks || []).map((c: any) => ({ name: `sim:${c.name}`, pass: !!c.pass, value: c.value ?? null, unit: c.unit, detail: c.detail }));
+    const simGate = process.env.SIM_GATE !== "0"; // physics gates pass/fail by default
     const allChecks: CheckResult[] = [...checks, ...(simGate ? simChecks : [])];
     // SubQ Snap is a second, independent opinion. It is recorded but advisory: it does not gate pass/fail.
     const advisory: any[] = subq !== null ? [{ name: "subq_judge_p_satisfies", pass: subq >= 0.5, value: subq, unit: "p", advisory: true }] : [];
@@ -150,7 +149,8 @@ export async function runPipeline(id: string, prompt: string) {
     const pass = allChecks.every((c) => c.pass);
     const verdict = {
       pass, fits_printer: fit?.id || null,
-      checks: [...allChecks.map((c) => ({ name: c.name, pass: c.pass, value: c.value, unit: c.unit })), ...advisory],
+      checks: [...allChecks.map((c: any) => ({ name: c.name, pass: c.pass, value: c.value, unit: c.unit, ...(c.detail ? { detail: c.detail } : {}), by: c.name.startsWith("sim:") ? "mujoco" : "critic" })), ...advisory],
+      critic_pass: checks.every((c) => c.pass), physics_pass: simVerdict ? simChecks.every((c) => c.pass) : null,
       subq_p_satisfies: subq,
       heatmap: simVerdict?.heatmap || null,
       sim_media: ["sim.png", "sim.mp4"].filter((f) => fs.existsSync(path.join(dir, f))),
@@ -158,7 +158,15 @@ export async function runPipeline(id: string, prompt: string) {
       round, critic_model: critic.model, sim: simVerdict ? true : false,
     };
     writeJSON(id, "verdict.json", verdict);
-    if (round > 0) writeJSON(id, `verdict.round${round}.json`, verdict);
+    // keep every round's real outputs side by side
+    writeJSON(id, `verdict.round${round}.json`, verdict);
+    const rd = path.join(dir, "rounds", `round${round}`);
+    fs.mkdirSync(path.join(rd, "parts"), { recursive: true });
+    for (const b of built) for (const f of [b.scadPath, b.stlPath]) if (fs.existsSync(f)) fs.copyFileSync(f, path.join(rd, "parts", path.basename(f)));
+    for (const f of ["sim_verdict.json", "sim.png", "sim.mp4"]) if (fs.existsSync(path.join(dir, f))) {
+      fs.copyFileSync(path.join(dir, f), path.join(rd, f));
+      const ext = path.extname(f); fs.copyFileSync(path.join(dir, f), path.join(dir, `${path.basename(f, ext)}.round${round}${ext}`));
+    }
     void saveVerdict(id, verdict);
     run.verdict = "verdict.json";
     run.verdictSummary = { pass, passed: allChecks.filter((c) => c.pass).length, total: allChecks.length, round };
@@ -167,26 +175,35 @@ export async function runPipeline(id: string, prompt: string) {
     return { verdict, allChecks };
   };
   run.stages.verify.status = "running"; save();
-  let v = await doVerify(cad.built, cad.simVerdict, 0);
+  let v = await doVerify(cad.built, cad.simVerdict, 1);
   run.stages.verify.status = "done"; save();
 
-  // 5. IMPROVE — one repair round if anything failed.
-  await stage("improve", v.verdict.pass ? "Nothing to repair" : "Repairing failed checks (1 round)", async () => {
+  // 5. IMPROVE — repair rounds driven by every failed check (critic + MuJoCo physics), up to MAX_REPAIRS.
+  const maxRepairs = Number(process.env.MAX_REPAIRS || 2);
+  await stage("improve", v.verdict.pass ? "Nothing to repair" : "Repairing failed checks", async () => {
     if (v.verdict.pass) { emit({ runId: id, stage: "improve", phase: "done", message: "Passed first time, no repair needed" }); return; }
-    const failures = [
-      ...cad.built.filter((b) => !b.compiled).map((b) => `${b.id} does not compile: ${b.log.slice(0, 300)}`),
-      ...v.allChecks.filter((c) => !c.pass).map((c) => `${c.name} FAILED (measured ${c.value ?? "n/a"}${c.unit ? " " + c.unit : ""})`),
-    ];
-    fs.renameSync(path.join(dir, "design.json"), path.join(dir, "design.round0.json"));
-    const rep = await repairDesign(prompt, skill.text, design, cad.built, failures);
-    rep.design.kind = design.kind;
-    design = rep.design;
-    persistDesign(id, design, rep.model, skill.version);
-    emit({ runId: id, stage: "improve", phase: "progress", message: `Designer revised ${design.parts.length} part(s) against ${failures.length} failure(s)`, model: rep.provider });
-    cad = await doCad(design, "Recompiling repaired parts");
-    run.stages.improve.status = "running";
-    v = await doVerify(cad.built, cad.simVerdict, 1);
-    emit({ runId: id, stage: "improve", phase: "done", message: v.verdict.pass ? "Repair fixed every failed check" : `Still failing after repair: ${v.allChecks.filter((c) => !c.pass).map((c) => c.name).join(", ")}`.slice(0, 160) });
+    let round = 1;
+    while (!v.verdict.pass && round <= maxRepairs) {
+      const failures = [
+        ...cad.built.filter((b) => !b.compiled).map((b) => `${b.id} does not compile: ${b.log.slice(0, 300)}`),
+        ...v.allChecks.filter((c) => !c.pass).map((c: any) => `${c.name.startsWith("sim:") ? "PHYSICS (MuJoCo) " : ""}${c.name} FAILED (measured ${c.value ?? "n/a"}${c.unit ? " " + c.unit : ""})${c.detail ? ` — ${c.detail}` : ""}`),
+      ];
+      if (cad.simVerdict?.notes) failures.push(`Physics verifier notes: ${String(cad.simVerdict.notes).slice(0, 400)}`);
+      if (cad.simVerdict?.info) failures.push(`Physics fixture/measurements: ${JSON.stringify(cad.simVerdict.info).slice(0, 900)}`);
+      fs.copyFileSync(path.join(dir, "design.json"), path.join(dir, `design.round${round}.json`));
+      emit({ runId: id, stage: "improve", phase: "progress", message: `Round ${round + 1}: repairing ${failures.length} failure(s)${v.verdict.critic_pass && v.verdict.physics_pass === false ? " — critic passed, physics said no" : ""}`, data: { failures } });
+      const rep = await repairDesign(prompt, skill.text, design, cad.built, failures);
+      rep.design.kind = design.kind;
+      design = rep.design;
+      persistDesign(id, design, rep.model, skill.version);
+      emit({ runId: id, stage: "improve", phase: "progress", message: `Designer revised ${design.parts.length} part(s)`, model: rep.provider });
+      cad = await doCad(design, `Recompiling repaired parts (round ${round + 1})`);
+      run.stages.improve.status = "running";
+      round++;
+      v = await doVerify(cad.built, cad.simVerdict, round);
+    }
+    run.rounds = round;
+    emit({ runId: id, stage: "improve", phase: "done", message: v.verdict.pass ? `Repair fixed every failed check (round ${round})` : `Still failing after ${round - 1} repair round(s): ${v.allChecks.filter((c) => !c.pass).map((c) => c.name).join(", ")}`.slice(0, 160) });
   });
 
   // 6. RL — robots only: point at the RL lane's manifest.

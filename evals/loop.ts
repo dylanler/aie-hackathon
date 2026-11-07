@@ -74,15 +74,35 @@ function saveResults(version: string, data: any) {
 function writeHistory(h: HistoryEntry[]) { fs.writeFileSync(historyPath(), JSON.stringify(h, null, 2)); }
 const loadResults = (v: string) => { try { return JSON.parse(fs.readFileSync(path.join(EV, "results", `${v}.json`), "utf8")); } catch { return null; } };
 
+/** Lessons from the MuJoCo physics verifier on real pipeline runs (data/runs/*): failed physics checks with their details.
+ *  These are failures the size/hole critic missed (e.g. screw hole buried under the part, geometry intruding into a mating channel). */
+function physicsLessons(): string[] {
+  const runs = path.join(ROOT, "data", "runs");
+  const seen = new Map<string, string>();
+  try {
+    for (const r of fs.readdirSync(runs)) {
+      const d = path.join(runs, r);
+      const files = [path.join(d, "sim_verdict.json"), ...(fs.existsSync(path.join(d, "rounds")) ? fs.readdirSync(path.join(d, "rounds")).map((x) => path.join(d, "rounds", x, "sim_verdict.json")) : [])];
+      for (const f of files) {
+        if (!fs.existsSync(f)) continue;
+        const v = JSON.parse(fs.readFileSync(f, "utf8"));
+        for (const c of v.checks || []) if (!c.pass && !seen.has(c.name)) seen.set(c.name, `${c.name}: ${c.detail || ""} (measured ${c.value} ${c.unit || ""})`.trim());
+      }
+    }
+  } catch {}
+  return Array.from(seen.values()).slice(0, 10);
+}
+
 async function proposePatch(parentVersion: string, parentSkill: string, failures: CaseResult[], newVersion: string, rejected: HistoryEntry[] = []): Promise<{ text: string; diffSummary: string }> {
   const report = failures.slice(0, 24).map((f) => ({ case: f.case, failed: f.failed, measured: f.measured, compile_log: f.compileLog?.slice(0, 500) }));
   // Memory of rolled-back patches: what was tried from this parent, and how it did on train vs the hidden held-out set.
+  const physics = process.env.PHYSICS_LESSONS === "0" ? [] : physicsLessons();
   const tried = rejected.map((r) => `- ${r.version}: "${r.diffSummary}" → train ${(r.trainPass * 100).toFixed(0)}%, held-out ${(r.heldoutPass * 100).toFixed(0)}% (parent held-out ${((readHistory().find((h) => h.version === parentVersion)?.heldoutPass ?? 0) * 100).toFixed(0)}%) — ROLLED BACK`).join("\n");
   const r = await callLLM({
     role: "improver", json: true, effort: "medium",
     messages: [
       { role: "system", content: `You improve the system "skill" (instructions) given to an AI that writes OpenSCAD for 3D-printed household repair parts. You get the current skill and machine-measured failures from a training set. Write the next version of the skill. Rules: fix the ROOT CAUSES with GENERAL design rules (they must transfer to unseen household parts that are scored on a hidden held-out set); never mention specific training cases or their exact dimensions; keep everything in the current skill that still helps; be concise (under 450 words). Return JSON {"skill":"full markdown of the new skill, starting with '# Designer skill ${newVersion}'","diffSummary":"one sentence: what changed and why"}` },
-      { role: "user", content: `CURRENT SKILL (${parentVersion}):\n${parentSkill}\n\nTRAIN FAILURES (criterion → measured):\n${JSON.stringify(report, null, 1)}${tried ? `\n\nPATCHES ALREADY TRIED FROM THIS SKILL AND ROLLED BACK (they raised train but hurt held-out, i.e. they overfit or added rules that broke other parts). Do something different: fewer, more general rules; do not add hard numeric margins that shrink or grow parts; keep the skill short:\n${tried}` : ""}` },
+      { role: "user", content: `CURRENT SKILL (${parentVersion}):\n${parentSkill}\n\nTRAIN FAILURES (criterion → measured):\n${JSON.stringify(report, null, 1)}${physics.length ? `\n\nPHYSICS VERIFIER LESSONS (MuJoCo, from real pipeline runs; the size/hole critic missed these). Turn them into general rules if they help:\n- ${physics.join("\n- ")}` : ""}${tried ? `\n\nPATCHES ALREADY TRIED FROM THIS SKILL AND ROLLED BACK (they raised train but hurt held-out, i.e. they overfit or added rules that broke other parts). Do something different: fewer, more general rules; do not add hard numeric margins that shrink or grow parts; keep the skill short:\n${tried}` : ""}` },
     ],
   });
   const j = parseJSON<{ skill: string; diffSummary: string }>(r.text);
@@ -126,7 +146,7 @@ async function main() {
     const ho = await evalSet(next, patch.text, "heldout");
     saveResults(next, { version: next, parent: current.version, train: tr, heldout: ho });
     const adopted = ho.pass > current.heldoutPass;
-    const e: HistoryEntry = { version: next, parent: current.version, trainPass: tr.pass, heldoutPass: ho.pass, trainN: tr.n, heldoutN: ho.n, adopted, diffSummary: patch.diffSummary, ts: Date.now(), subqMean: ho.subqMean, rejectedPatchesSeen: rejected.length,
+    const e: HistoryEntry = { version: next, parent: current.version, trainPass: tr.pass, heldoutPass: ho.pass, trainN: tr.n, heldoutN: ho.n, adopted, diffSummary: patch.diffSummary, ts: Date.now(), subqMean: ho.subqMean, rejectedPatchesSeen: rejected.length, physicsLessons: process.env.PHYSICS_LESSONS === "0" ? 0 : physicsLessons().length,
       failures: tr.results.filter((r) => !r.pass).map((r) => ({ case: r.case, failed: r.failed })) };
     history.push(e); writeHistory(history); void saveEvalResult(e); void saveSkillVersion(next, patch.text, e);
     console.log(`  held-out ${(current.heldoutPass * 100).toFixed(1)}% → ${(ho.pass * 100).toFixed(1)}%: ${adopted ? "ADOPTED" : `ROLLED BACK to ${current.version}`}`);
