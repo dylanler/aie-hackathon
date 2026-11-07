@@ -17,29 +17,29 @@
       "type": "bbox_min",
       "mm": [
         4,
-        15,
-        30
+        12,
+        20
       ]
     },
     {
       "type": "bbox_max",
       "mm": [
-        35,
-        60,
-        100
+        25,
+        45,
+        80
       ]
     },
     {
       "type": "min_wall",
-      "mm": 1.6
+      "mm": 1.2
     },
     {
       "type": "volume_min",
-      "mm3": 1000
+      "mm3": 500
     },
     {
       "type": "volume_max",
-      "mm3": 60000
+      "mm3": 20000
     },
     {
       "type": "parts_min",
@@ -48,12 +48,12 @@
   ],
   "rationale": [
     "Part must compile to a printable STL without errors.",
-    "Part must fit within a standard 256 mm household printer bed.",
-    "Must be large enough in all dimensions to span and engage a freezer door latch.",
-    "Must remain small enough to fit a typical freezer door latch recess without interference.",
-    "Spring clip needs at least 1.6 mm walls to flex repeatedly without snapping in PETG/PLA.",
-    "Must contain enough material to be a functional load-bearing clip, not a token shell.",
-    "Must not be an oversized solid block that would prevent door closure or latch movement.",
-    "At least one complete physical part must be produced."
+    "Part must fit on a standard 256 mm home printer bed.",
+    "Must be at least large enough to engage a freezer door latch and be handled.",
+    "Must stay clip-sized and not exceed a plausible freezer latch envelope.",
+    "Walls at least 1.2 mm for PETG/PLA strength and flex durability.",
+    "Must have enough material to resist repeated latch loads.",
+    "Must not be an oversized solid block incompatible with a latch clip.",
+    "Must produce at least one solid part."
   ]
 }

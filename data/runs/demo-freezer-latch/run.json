@@ -1,68 +1,71 @@
 {
   "id": "demo-freezer-latch",
-  "prompt": "My freezer door won't stay shut — the latch clip snapped. Make me a replacement clip.",
+  "prompt": "My freezer door won't stay shut \u2014 the latch clip snapped. Make me a replacement clip.",
   "status": "done",
-  "createdAt": 1794089742486,
+  "createdAt": 1794092491149,
   "skillVersion": "v1",
   "stages": {
     "diagnose": {
       "status": "done",
-      "startedAt": 1794089742495,
-      "ms": 5929
+      "startedAt": 1794092491156,
+      "ms": 9087
     },
     "design": {
       "status": "done",
-      "startedAt": 1794089748428,
-      "ms": 16782
+      "startedAt": 1794092500259,
+      "ms": 19466
     },
     "cad": {
       "status": "done",
-      "startedAt": 1794089765227,
-      "ms": 12241
+      "startedAt": 1794092617677,
+      "ms": 40374
     },
     "verify": {
       "status": "done",
-      "startedAt": 1794089777471,
-      "ms": 8012
+      "startedAt": 1794092571944,
+      "ms": 8486
     },
     "improve": {
       "status": "done",
-      "startedAt": 1794089786010,
-      "ms": 45
+      "startedAt": 1794092580841,
+      "ms": 77614
     },
     "rl": {
       "status": "done",
-      "startedAt": 1794089786066,
-      "ms": 32
+      "startedAt": 1794092658457,
+      "ms": 5
     },
     "make": {
       "status": "done",
-      "startedAt": 1794089786124,
-      "ms": 152
+      "startedAt": 1794092658463,
+      "ms": 72
     }
   },
   "kind": "static",
   "parts": [
     {
-      "id": "freezer_latch_clip",
+      "id": "freezer_door_latch_clip",
       "name": "Freezer Door Latch Clip",
-      "scad": "parts/freezer_latch_clip.scad",
-      "stl": "parts/freezer_latch_clip.stl",
+      "scad": "parts/freezer_door_latch_clip.scad",
+      "stl": "parts/freezer_door_latch_clip.stl",
       "material": "PETG",
       "dims_mm": [
-        38,
-        49,
-        15
+        40,
+        20,
+        14.5
       ],
       "printable": true,
-      "purpose": "Screws to door with M4 screws and hooks striker to hold door shut",
+      "purpose": "screws flat to freezer door and captures \u00d86mm striker to hold door shut",
       "params": {
-        "overall_length_mm": 38,
-        "overall_width_mm": 22,
-        "base_thickness_mm": 3,
-        "hook_overhang_mm": 8,
-        "mounting_hole_diameter_mm": 4.2,
-        "mounting_hole_spacing_mm": 25
+        "overall_length_mm": 40,
+        "overall_width_mm": 20,
+        "base_thickness_mm": 4,
+        "channel_width_mm": 7,
+        "channel_height_mm": 7,
+        "tunnel_wall_mm": 3.5,
+        "roof_thickness_mm": 3.5,
+        "mounting_hole_diameter_mm": 4.5,
+        "mounting_hole_spacing_mm": 28
       },
       "compiled": true
     }
@@ -70,11 +73,12 @@
   "verdict": "verdict.json",
   "verdictSummary": {
     "pass": true,
-    "passed": 8,
-    "total": 8,
-    "round": 0
+    "passed": 16,
+    "total": 16,
+    "round": 2
   },
+  "rounds": 2,
   "rl": null,
   "fab": "fab.json",
-  "finishedAt": 1794089786278
+  "finishedAt": 1794092658537
 }

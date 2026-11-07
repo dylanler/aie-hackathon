@@ -5,136 +5,135 @@
     {
       "name": "OpenSCAD compiles",
       "pass": true,
-      "value": "1/1"
+      "value": "1/1",
+      "by": "critic"
     },
     {
-      "name": "fits 256\u00d7256\u00d7256 mm bed",
+      "name": "fits 256×256×256 mm bed",
       "pass": true,
-      "value": 49,
-      "unit": "mm"
+      "value": 40,
+      "unit": "mm",
+      "by": "critic"
     },
     {
-      "name": "size \u2265 4\u00d715\u00d730 mm",
+      "name": "size ≥ 4×12×20 mm",
       "pass": true,
-      "value": "15\u00d738\u00d749",
-      "unit": "mm"
+      "value": "14.5×20×40",
+      "unit": "mm",
+      "by": "critic"
     },
     {
-      "name": "size \u2264 35\u00d760\u00d7100 mm",
+      "name": "size ≤ 25×45×80 mm",
       "pass": true,
-      "value": "15\u00d738\u00d749",
-      "unit": "mm"
+      "value": "14.5×20×40",
+      "unit": "mm",
+      "by": "critic"
     },
     {
-      "name": "wall \u2265 1.6 mm",
+      "name": "wall ≥ 1.2 mm",
       "pass": true,
-      "value": 2.8,
-      "unit": "mm"
+      "value": 3.2,
+      "unit": "mm",
+      "by": "critic"
     },
     {
-      "name": "volume \u2265 1000 mm\u00b3",
+      "name": "volume ≥ 500 mm³",
       "pass": true,
-      "value": 6126.9,
-      "unit": "mm3"
+      "value": 4963,
+      "unit": "mm3",
+      "by": "critic"
     },
     {
-      "name": "volume \u2264 60000 mm\u00b3",
+      "name": "volume ≤ 20000 mm³",
       "pass": true,
-      "value": 6126.9,
-      "unit": "mm3"
+      "value": 4963,
+      "unit": "mm3",
+      "by": "critic"
     },
     {
-      "name": "\u2265 1 parts",
+      "name": "≥ 1 parts",
       "pass": true,
-      "value": 1
+      "value": 1,
+      "by": "critic"
+    },
+    {
+      "name": "sim:screw_access",
+      "pass": true,
+      "value": "2/2",
+      "unit": "holes",
+      "detail": "clear vertical path to every mounting hole",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:hole_fit",
+      "pass": true,
+      "value": 0.257,
+      "unit": "mm",
+      "detail": "radial gap, M4 screw in measured Ø4.51 hole (exact STL section)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:fit_penetration",
+      "pass": true,
+      "value": 0.026,
+      "unit": "mm",
+      "detail": "max penetration vs striker, screw heads, door (mj_geomDistance on CoACD hulls)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:min_clearance",
+      "pass": true,
+      "value": 0.375,
+      "unit": "mm",
+      "detail": "part vs Ø6 mm striker across the full engagement width (mj_geomDistance)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:load_hold",
+      "pass": true,
+      "value": 20,
+      "unit": "N",
+      "detail": "held 20 N pull on Ø6 mm striker; part moved 0.257 mm",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:seated_displacement",
+      "pass": true,
+      "value": 0.257,
+      "unit": "mm",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:settle_on_base",
+      "pass": true,
+      "value": 0.001,
+      "unit": "deg",
+      "detail": "dropped 20 mm flat; must rest on its base (printable, stable)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:drop_settle",
+      "pass": true,
+      "value": 0.381,
+      "unit": "s",
+      "detail": "dropped 300 mm tilted 35°/20°; time to come to rest",
+      "by": "mujoco"
     },
     {
       "name": "subq_judge_p_satisfies",
-      "pass": false,
-      "value": 0.103,
+      "pass": true,
+      "value": 0.783,
       "unit": "p",
-      "advisory": true
-    },
-    {
-      "name": "screw_access",
-      "pass": false,
-      "value": "1/2",
-      "unit": "holes",
-      "by": "mujoco",
-      "detail": "1 hole(s) covered by the part itself 1.0 mm above the seat \u2014 screw/driver cannot reach",
-      "advisory": true
-    },
-    {
-      "name": "hole_fit",
-      "pass": true,
-      "value": 0.073,
-      "unit": "mm",
-      "by": "mujoco",
-      "detail": "radial gap, M4 screw in measured \u00d84.15 hole (exact STL section)",
-      "advisory": true
-    },
-    {
-      "name": "fit_penetration",
-      "pass": false,
-      "value": 0.379,
-      "unit": "mm",
-      "by": "mujoco",
-      "detail": "max penetration vs striker, screw heads, door (mj_geomDistance on CoACD hulls)",
-      "advisory": true
-    },
-    {
-      "name": "min_clearance",
-      "pass": false,
-      "value": -0.379,
-      "unit": "mm",
-      "by": "mujoco",
-      "detail": "part vs \u00d86 mm striker across the full engagement width (mj_geomDistance)",
-      "advisory": true
-    },
-    {
-      "name": "load_hold",
-      "pass": false,
-      "value": 4.2,
-      "unit": "N",
-      "by": "mujoco",
-      "detail": "part unseated (> 0.5 mm) at 4.2 N of the 20 N door pull; striker retained=False",
-      "advisory": true
-    },
-    {
-      "name": "seated_displacement",
-      "pass": false,
-      "value": ">0.5",
-      "unit": "mm",
-      "by": "mujoco",
-      "advisory": true
-    },
-    {
-      "name": "settle_on_base",
-      "pass": true,
-      "value": 0.004,
-      "unit": "deg",
-      "by": "mujoco",
-      "detail": "dropped 20 mm flat; must rest on its base (printable, stable)",
-      "advisory": true
-    },
-    {
-      "name": "drop_settle",
-      "pass": true,
-      "value": 0.398,
-      "unit": "s",
-      "by": "mujoco",
-      "detail": "dropped 300 mm tilted 35\u00b0/20\u00b0; time to come to rest",
       "advisory": true
     }
   ],
-  "subq_p_satisfies": 0.103,
+  "critic_pass": true,
+  "physics_pass": true,
+  "subq_p_satisfies": 0.783,
   "heatmap": null,
-  "notes": "All 8 independent checks pass | MuJoCo failed: screw_access, fit_penetration, min_clearance, load_hold, seated_displacement",
-  "round": 0,
+  "sim_media": [],
+  "notes": "All 16 independent checks pass",
+  "round": 2,
   "critic_model": "muse-wonder-1.0",
-  "sim": true,
-  "sim_gate": false,
-  "sim_verdict": "sim_verdict.json",
-  "sim_render": "sim.png",
-  "sim_video": "sim.mp4"
+  "sim": true
 }

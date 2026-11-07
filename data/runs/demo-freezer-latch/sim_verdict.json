@@ -1,60 +1,60 @@
 {
-  "pass": false,
+  "pass": true,
   "by": "mujoco",
   "mujoco_version": "4.0.0",
-  "part": "freezer_latch_clip",
+  "part": "freezer_door_latch_clip",
   "checks": [
     {
       "name": "screw_access",
-      "pass": false,
-      "value": "1/2",
+      "pass": true,
+      "value": "2/2",
       "unit": "holes",
       "by": "mujoco",
-      "detail": "1 hole(s) covered by the part itself 1.0 mm above the seat \u2014 screw/driver cannot reach"
+      "detail": "clear vertical path to every mounting hole"
     },
     {
       "name": "hole_fit",
       "pass": true,
-      "value": 0.073,
+      "value": 0.257,
       "unit": "mm",
       "by": "mujoco",
-      "detail": "radial gap, M4 screw in measured \u00d84.15 hole (exact STL section)"
+      "detail": "radial gap, M4 screw in measured \u00d84.51 hole (exact STL section)"
     },
     {
       "name": "fit_penetration",
-      "pass": false,
-      "value": 0.379,
+      "pass": true,
+      "value": 0.026,
       "unit": "mm",
       "by": "mujoco",
       "detail": "max penetration vs striker, screw heads, door (mj_geomDistance on CoACD hulls)"
     },
     {
       "name": "min_clearance",
-      "pass": false,
-      "value": -0.379,
+      "pass": true,
+      "value": 0.375,
       "unit": "mm",
       "by": "mujoco",
       "detail": "part vs \u00d86 mm striker across the full engagement width (mj_geomDistance)"
     },
     {
       "name": "load_hold",
-      "pass": false,
-      "value": 4.2,
+      "pass": true,
+      "value": 20.0,
       "unit": "N",
       "by": "mujoco",
-      "detail": "part unseated (> 0.5 mm) at 4.2 N of the 20 N door pull; striker retained=False"
+      "detail": "held 20 N pull on \u00d86 mm striker; part moved 0.257 mm"
     },
     {
       "name": "seated_displacement",
-      "pass": false,
-      "value": ">0.5",
+      "pass": true,
+      "value": 0.257,
       "unit": "mm",
       "by": "mujoco"
     },
     {
       "name": "settle_on_base",
       "pass": true,
-      "value": 0.004,
+      "value": 0.001,
       "unit": "deg",
       "by": "mujoco",
       "detail": "dropped 20 mm flat; must rest on its base (printable, stable)"
@@ -62,44 +62,44 @@
     {
       "name": "drop_settle",
       "pass": true,
-      "value": 0.398,
+      "value": 0.381,
       "unit": "s",
       "by": "mujoco",
       "detail": "dropped 300 mm tilted 35\u00b0/20\u00b0; time to come to rest"
     }
   ],
-  "render": "sim.png",
-  "video": "sim.mp4",
-  "notes": "MuJoCo failed: screw_access, fit_penetration, min_clearance, load_hold, seated_displacement",
+  "render": null,
+  "video": null,
+  "notes": "MuJoCo: all 8 physics checks pass",
   "info": {
     "holes": [
       {
-        "x": -12.5,
+        "x": -14.0,
         "y": 0.0,
-        "d_mm": 4.145929793656026,
+        "d_mm": 4.51351666838205,
         "obstruction_above_mm": null
       },
       {
-        "x": 12.5,
+        "x": 14.0,
         "y": 0.0,
-        "d_mm": 4.145929793656026,
-        "obstruction_above_mm": 1.025
+        "d_mm": 4.51351666838205,
+        "obstruction_above_mm": null
       }
     ],
     "pocket": {
-      "x": 8.875,
+      "x": 1.875,
       "y": 0.0,
-      "z": 8.375,
-      "r_in_mm": 2.75,
+      "z": 6.875,
+      "r_in_mm": 3.5,
       "y_span": [
-        -11.0,
-        11.0
+        -10.0,
+        10.0
       ]
     },
-    "n_convex_hulls": 46,
-    "hull_volume_mm3": 6142.1,
-    "mesh_volume_mm3": 6126.9,
-    "mass_g": 7.78,
+    "n_convex_hulls": 28,
+    "hull_volume_mm3": 4973.1,
+    "mesh_volume_mm3": 4963.0,
+    "mass_g": 6.3,
     "material": "PETG",
     "assumptions": {
       "screw_d_mm": 4.0,
@@ -111,21 +111,21 @@
       "penetration_tol_mm": 0.05
     },
     "nominal_distance_mm": {
-      "striker": -0.379,
+      "striker": 0.375,
       "door": -0.0,
-      "screwhead_0": -0.025
+      "screwhead_0": -0.026,
+      "screwhead_1": -0.026
     },
-    "hole_radial_clearance_mm": 0.073,
-    "load_striker_d_mm": 5.2,
+    "hole_radial_clearance_mm": 0.257,
     "load": {
-      "striker_travel_mm": 6.861,
-      "striker_retained": false,
-      "part_max_disp_under_load_mm": 4.634,
-      "part_disp_from_nominal_mm": 4.624,
-      "contacts_at_end": 28,
-      "force_at_unseat_N": 4.2
+      "striker_travel_mm": 1.847,
+      "striker_retained": true,
+      "part_max_disp_under_load_mm": 0.257,
+      "part_disp_from_nominal_mm": 0.243,
+      "contacts_at_end": 83,
+      "force_at_unseat_N": null
     },
     "drop_final_z_mm": -0.0
   },
-  "elapsed_s": 63.3
+  "elapsed_s": 36.2
 }

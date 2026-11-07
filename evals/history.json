@@ -157,5 +157,45 @@
         ]
       }
     ]
+  },
+  {
+    "version": "v6",
+    "parent": "v1",
+    "trainPass": 0.8,
+    "heldoutPass": 0.6875,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": false,
+    "diffSummary": "Added qualitative through-cut, correct-size-and-count, envelope, and access/clearance/retention rules to fix blind/missing/undersized holes, oversize boxes, and seating failures without brittle numeric margins.",
+    "ts": 1794092632000,
+    "subqMean": 0.514,
+    "rejectedPatchesSeen": 4,
+    "physicsLessons": 5,
+    "failures": [
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.25 mm; 2 match(es), found 1)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.48 mm; 2 match(es), found 1)"
+        ]
+      },
+      {
+        "case": "shelf-pin",
+        "failed": [
+          "size ≤ 16×16×30 mm (measured 14×15×34.5 mm)"
+        ]
+      },
+      {
+        "case": "toilet-seat-hinge-cap",
+        "failed": [
+          "wall ≥ 1.2 mm (measured 0.8 mm)"
+        ]
+      }
+    ]
   }
 ]
