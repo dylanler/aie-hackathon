@@ -129,9 +129,18 @@ export async function runPipeline(id: string, prompt: string) {
         p.on("close", (code) => { clearTimeout(t); resolve({ status: code, stderr: err }); });
         p.on("error", () => { clearTimeout(t); resolve({ status: -1, stderr: err }); });
       });
-      let r = await runSim();
-      // killed by a signal (out of memory on a busy box) with no verdict: one retry after a pause — same checks
-      if (!fs.existsSync(path.join(dir, "sim_verdict.json")) && r.status === null) { await new Promise((ok) => setTimeout(ok, 4000)); r = await runSim(process.env.MUJOCO_GL || "disable"); }
+      // one verifier at a time, started only when the box has memory for it (mesh queries peak ~1.3 GB)
+      await simLock();
+      let r: { status: number | null; stderr: string };
+      try {
+        await waitForMemory(1500, 90_000);
+        r = await runSim();
+        // killed by a signal (out of memory on a busy box) with no verdict: retry after memory frees — same checks
+        for (let k = 0; k < 2 && !fs.existsSync(path.join(dir, "sim_verdict.json")) && r.status === null; k++) {
+          await waitForMemory(1700, 60_000);
+          r = await runSim(process.env.MUJOCO_GL || "disable");
+        }
+      } finally { simUnlock(); }
       // no GL on this box (EGL/OSMesa missing): rerun physics with rendering disabled — checks are identical, only media is skipped
       if (!fs.existsSync(path.join(dir, "sim_verdict.json")) && /EGL|OSMesa|glGetError|GLFW|OpenGL/i.test(r.stderr)) r = await runSim("disable");
       for (const f of ["sim_verdict.json", "verdict.json"]) {
@@ -211,6 +220,11 @@ export async function runPipeline(id: string, prompt: string) {
     if (v.verdict.pass) { emit({ runId: id, stage: "improve", phase: "done", message: "Passed first time, no repair needed" }); return; }
     let round = 1;
     while (!v.verdict.pass && round <= maxRepairs) {
+      // a verifier that never ran is an infrastructure failure, not a design flaw: don't burn repair rounds on it
+      if (v.allChecks.filter((c) => !c.pass).every((c) => c.name === "sim:verifier_ran") && cad.built.every((b) => b.compiled)) {
+        emit({ runId: id, stage: "improve", phase: "progress", message: "Only the physics verifier failed to run (infrastructure, not the design); no repair" });
+        break;
+      }
       const failures = [
         ...cad.built.filter((b) => !b.compiled).map((b) => `${b.id} does not compile: ${b.log.slice(0, 300)}`),
         ...v.allChecks.filter((c) => !c.pass).map((c: any) => `${c.name.startsWith("sim:") ? "PHYSICS (MuJoCo) " : ""}${c.name} FAILED (measured ${c.value ?? "n/a"}${c.unit ? " " + c.unit : ""})${c.detail ? ` — ${c.detail}` : ""}`),
@@ -312,6 +326,27 @@ export async function runPipeline(id: string, prompt: string) {
   run.finishedAt = Date.now();
   save();
   return run;
+}
+
+let simBusy: Promise<void> = Promise.resolve();
+let simRelease: (() => void) | null = null;
+async function simLock() {
+  const prev = simBusy;
+  let rel!: () => void;
+  simBusy = new Promise<void>((ok) => (rel = ok));
+  await prev;
+  simRelease = rel;
+}
+function simUnlock() { const r = simRelease; simRelease = null; r?.(); }
+async function waitForMemory(mb: number, maxMs: number) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < maxMs) {
+    try {
+      const m = /MemAvailable:\s+(\d+)/.exec(fs.readFileSync("/proc/meminfo", "utf8"));
+      if (!m || Number(m[1]) / 1024 >= mb) return;
+    } catch { return; }
+    await new Promise((ok) => setTimeout(ok, 1500));
+  }
 }
 
 function persistDesign(id: string, d: Design, model: string, skillVersion: string) {
