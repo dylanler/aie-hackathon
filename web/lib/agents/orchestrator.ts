@@ -9,6 +9,7 @@ import { writeAcceptanceTests } from "./critic";
 import { buildParts, repairDesign, writeDesign, type BuiltPart, type Design } from "./designer";
 import { repoRoot, runDir } from "./paths";
 import { currentSkill } from "./skills";
+import { physicsMode, verifyRemote } from "../sim-remote";
 import { emit, ensureRun, newRunId, readRun, writeJSON, writeRun, type Stage } from "./store";
 
 export const PRINTERS: { id: string; name: string; bed: [number, number, number] }[] = [
@@ -104,7 +105,20 @@ export async function runPipeline(id: string, prompt: string) {
     const verifyPy = path.join(repoRoot(), "sim", "verify.py");
     run.parts = partsManifest(built, d);
     save();
-    if (fs.existsSync(verifyPy)) {
+    const mode = physicsMode(verifyPy);
+    run.physics = mode;
+    if (mode === "remote") {
+      emit({ runId: id, stage: "cad", phase: "progress", message: "MuJoCo physics verifier running remotely (independent of the designer)" });
+      for (const f of ["sim_verdict.json"]) try { fs.unlinkSync(path.join(dir, f)); } catch {}
+      const rr = await verifyRemote(dir);
+      simVerdict = rr.verdict;
+      emit({ runId: id, stage: "cad", phase: simVerdict ? "artifact" : "progress",
+        message: simVerdict ? `MuJoCo verifier: ${(simVerdict.checks || []).filter((c: any) => c.pass).length}/${(simVerdict.checks || []).length} physics checks pass` : `Remote physics verifier unreachable (${rr.error}); physics not verified`,
+        data: simVerdict ? { sim_verdict: "sim_verdict.json", media: [], checks: simVerdict.checks } : { error: rr.error } });
+    } else if (mode === "unavailable") {
+      emit({ runId: id, stage: "cad", phase: "progress", message: "Physics (MuJoCo) unavailable in this environment, not verified", data: { physics: "unavailable" } });
+    }
+    if (mode === "local") {
       emit({ runId: id, stage: "cad", phase: "progress", message: "MuJoCo physics verifier running (independent of the designer)" });
       for (const f of ["sim_verdict.json", "verdict.json"]) try { fs.unlinkSync(path.join(dir, f)); } catch {}
       const runSim = (gl?: string) => new Promise<{ status: number | null; stderr: string }>((resolve) => {
@@ -116,6 +130,8 @@ export async function runPipeline(id: string, prompt: string) {
         p.on("error", () => { clearTimeout(t); resolve({ status: -1, stderr: err }); });
       });
       let r = await runSim();
+      // killed by a signal (out of memory on a busy box) with no verdict: one retry after a pause — same checks
+      if (!fs.existsSync(path.join(dir, "sim_verdict.json")) && r.status === null) { await new Promise((ok) => setTimeout(ok, 4000)); r = await runSim(process.env.MUJOCO_GL || "disable"); }
       // no GL on this box (EGL/OSMesa missing): rerun physics with rendering disabled — checks are identical, only media is skipped
       if (!fs.existsSync(path.join(dir, "sim_verdict.json")) && /EGL|OSMesa|glGetError|GLFW|OpenGL/i.test(r.stderr)) r = await runSim("disable");
       for (const f of ["sim_verdict.json", "verdict.json"]) {
@@ -149,7 +165,7 @@ export async function runPipeline(id: string, prompt: string) {
     const simChecks: (CheckResult & { detail?: string })[] = (simVerdict?.checks || []).map((c: any) => ({ name: `sim:${c.name}`, pass: !!c.pass, value: c.value ?? null, unit: c.unit, detail: c.detail }));
     const simGate = process.env.SIM_GATE !== "0"; // physics gates pass/fail by default
     // If the physics verifier exists but produced nothing, the part is NOT physics-verified: that fails the gate.
-    if (!simVerdict && fs.existsSync(path.join(repoRoot(), "sim", "verify.py")))
+    if (!simVerdict && run.physics !== "unavailable" && (run.physics === "remote" || fs.existsSync(path.join(repoRoot(), "sim", "verify.py"))))
       simChecks.push({ name: "sim:verifier_ran", pass: false, value: null, detail: "MuJoCo verifier did not produce sim_verdict.json" });
     const allChecks: CheckResult[] = [...checks, ...(simGate ? simChecks : [])];
     // SubQ Snap is a second, independent opinion. It is recorded but advisory: it does not gate pass/fail.
@@ -161,10 +177,11 @@ export async function runPipeline(id: string, prompt: string) {
       pass, fits_printer: fit?.id || null,
       checks: [...allChecks.map((c: any) => ({ name: c.name, pass: c.pass, value: c.value, unit: c.unit, ...(c.detail ? { detail: c.detail } : {}), by: c.name.startsWith("sim:") ? "mujoco" : "critic" })), ...advisory],
       critic_pass: checks.every((c) => c.pass), physics_pass: simVerdict ? simChecks.every((c) => c.pass) : null,
+      physics: simVerdict ? "verified" : run.physics === "unavailable" ? "unavailable in this environment" : "not verified",
       subq_p_satisfies: subq,
       heatmap: simVerdict?.heatmap || null,
       sim_media: ["sim.png", "sim.mp4"].filter((f) => fs.existsSync(path.join(dir, f))),
-      notes: pass ? `All ${allChecks.length} independent checks pass` : `Failed: ${allChecks.filter((c) => !c.pass).map((c) => c.name).join(", ")}`,
+      notes: (pass ? `All ${allChecks.length} independent checks pass` : `Failed: ${allChecks.filter((c) => !c.pass).map((c) => c.name).join(", ")}`) + (!simVerdict && run.physics === "unavailable" ? " (physics unavailable in this environment)" : ""),
       round, critic_model: critic.model, sim: simVerdict ? true : false,
     };
     writeJSON(id, "verdict.json", verdict);
@@ -199,7 +216,8 @@ export async function runPipeline(id: string, prompt: string) {
         ...v.allChecks.filter((c) => !c.pass).map((c: any) => `${c.name.startsWith("sim:") ? "PHYSICS (MuJoCo) " : ""}${c.name} FAILED (measured ${c.value ?? "n/a"}${c.unit ? " " + c.unit : ""})${c.detail ? ` — ${c.detail}` : ""}`),
       ];
       if (cad.simVerdict?.notes) failures.push(`Physics verifier notes: ${String(cad.simVerdict.notes).slice(0, 400)}`);
-      if (v.allChecks.some((c) => !c.pass && c.name.startsWith("sim:"))) failures.push(PHYSICS_FIXTURE_BRIEF);
+      // the latch rig brief only applies when the latch-rig checks themselves failed (not for knobs, robots, or a verifier that never ran)
+      if (v.allChecks.some((c) => !c.pass && /^sim:(screw_access|hole_fit|fit_penetration|min_clearance|load_hold|seated_displacement)$/.test(c.name))) failures.push(PHYSICS_FIXTURE_BRIEF);
       if (cad.simVerdict?.info) failures.push(`Physics fixture/measurements: ${JSON.stringify(cad.simVerdict.info).slice(0, 900)}`);
       fs.copyFileSync(path.join(dir, "design.json"), path.join(dir, `design.round${round}.json`));
       emit({ runId: id, stage: "improve", phase: "progress", message: `Round ${round + 1}: repairing ${failures.length} failure(s)${v.verdict.critic_pass && v.verdict.physics_pass === false ? " — critic passed, physics said no" : ""}`, data: { failures } });

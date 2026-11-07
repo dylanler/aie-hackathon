@@ -27,7 +27,9 @@ export async function POST(req: Request) {
   const why = liveReady();
   if (why) return NextResponse.json({ error: why, fallback: "static-replay" }, { status: 503 });
   try {
-    const id = startRun(prompt.slice(0, 4000));
+    // recording the demo runs: allow a fixed demo-<slug> id outside production
+    const want = String(body?.id || "");
+    const id = startRun(prompt.slice(0, 4000), process.env.NODE_ENV !== "production" && /^demo-[a-z0-9-]{2,40}$/.test(want) ? { id: want } : {});
     return NextResponse.json({ id });
   } catch (e) {
     return NextResponse.json({ error: String((e as Error)?.message || e).slice(0, 200), fallback: "static-replay" }, { status: 503 });
