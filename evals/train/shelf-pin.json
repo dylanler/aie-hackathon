@@ -1,0 +1,37 @@
+{
+ "id": "shelf-pin",
+ "prompt": "The little shelf support pins in my bookcase keep breaking. The holes are 5 mm diameter and the shelf needs a 10 mm ledge to sit on. Make me a stronger shelf pin.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 1.6
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    16,
+    16,
+    30
+   ]
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    4.5,
+    8,
+    15
+   ]
+  }
+ ]
+}

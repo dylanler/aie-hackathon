@@ -1,0 +1,42 @@
+{
+ "id": "hose-reel-spacer",
+ "prompt": "My garden hose reel wobbles because a spacer washer is missing: 20 mm outer diameter, 8 mm hole for the axle, 6 mm thick.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "through_hole",
+   "d": 8.0,
+   "tol": 0.6
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    5,
+    18,
+    18
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    7,
+    22,
+    22
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 1.6
+  }
+ ]
+}

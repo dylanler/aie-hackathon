@@ -1,0 +1,34 @@
+{
+ "id": "cable-clip",
+ "prompt": "The cable clip that held my desk power cords to the underside of the desk broke. The cord bundle is about 12 mm thick and it screws in with one 3.5 mm wood screw.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 1.2
+  },
+  {
+   "type": "through_hole",
+   "d": 3.5,
+   "tol": 1.0
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    40,
+    40,
+    60
+   ]
+  }
+ ]
+}

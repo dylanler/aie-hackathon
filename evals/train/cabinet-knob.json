@@ -1,0 +1,37 @@
+{
+ "id": "cabinet-knob",
+ "prompt": "One of my kitchen cabinet knobs fell off and got lost. It was a round knob about 30 mm across that takes an M4 bolt from behind.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 1.6
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    15,
+    25,
+    25
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    40,
+    40,
+    40
+   ]
+  }
+ ]
+}

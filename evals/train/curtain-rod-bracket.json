@@ -1,0 +1,35 @@
+{
+ "id": "curtain-rod-bracket",
+ "prompt": "A wall bracket for my 25 mm diameter curtain rod broke. I need a new one that screws to the wall with two 5 mm screws.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 2.0
+  },
+  {
+   "type": "through_hole",
+   "d": 5.0,
+   "tol": 1.0,
+   "count": 2
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    80,
+    80,
+    120
+   ]
+  }
+ ]
+}

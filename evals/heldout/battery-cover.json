@@ -1,0 +1,37 @@
+{
+ "id": "battery-cover",
+ "prompt": "The battery cover on my TV remote is lost. The opening is 46 mm by 34 mm and the cover is about 2 mm thick.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 1.0
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    1.5,
+    30,
+    42
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    8,
+    40,
+    52
+   ]
+  }
+ ]
+}

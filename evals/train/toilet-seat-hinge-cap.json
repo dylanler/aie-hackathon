@@ -1,0 +1,37 @@
+{
+ "id": "toilet-seat-hinge-cap",
+ "prompt": "The cover cap over my toilet seat hinge bolt broke off. The bolt head area it covers is a 16 x 16 mm square, about 10 mm tall.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 1.2
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    10,
+    17,
+    17
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    25,
+    30,
+    30
+   ]
+  }
+ ]
+}

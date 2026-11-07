@@ -1,0 +1,37 @@
+{
+ "id": "table-leg-foot",
+ "prompt": "One of my dining chair's plastic feet is missing so it wobbles. The leg is a round tube 22 mm outer diameter; I need a cap foot that pushes on.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 1.6
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    10,
+    23,
+    23
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    40,
+    34,
+    34
+   ]
+  }
+ ]
+}

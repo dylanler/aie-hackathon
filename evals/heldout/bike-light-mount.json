@@ -1,0 +1,37 @@
+{
+ "id": "bike-light-mount",
+ "prompt": "My bike light's handlebar mount cracked. The handlebar is 31.8 mm diameter. I need a clamp ring that fits around it, tightened by one M5 bolt.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 2.0
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    8,
+    36,
+    36
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    40,
+    80,
+    80
+   ]
+  }
+ ]
+}

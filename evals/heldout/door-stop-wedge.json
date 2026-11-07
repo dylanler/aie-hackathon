@@ -1,0 +1,37 @@
+{
+ "id": "door-stop-wedge",
+ "prompt": "My door keeps swinging shut. Make a door stop wedge, about 120 mm long and 30 mm tall at the thick end, with a hole so I can hang it on a hook.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 1.6
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    20,
+    25,
+    100
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    60,
+    50,
+    140
+   ]
+  }
+ ]
+}

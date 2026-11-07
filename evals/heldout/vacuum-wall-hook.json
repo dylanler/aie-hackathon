@@ -1,0 +1,35 @@
+{
+ "id": "vacuum-wall-hook",
+ "prompt": "The wall hook that holds my cordless vacuum broke. It mounts with two 4 mm screws and the vacuum handle slot is about 30 mm wide.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 2.0
+  },
+  {
+   "type": "through_hole",
+   "d": 4.0,
+   "tol": 1.0,
+   "count": 2
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    80,
+    100,
+    150
+   ]
+  }
+ ]
+}

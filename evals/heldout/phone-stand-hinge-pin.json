@@ -1,0 +1,33 @@
+{
+ "id": "phone-stand-hinge-pin",
+ "prompt": "The hinge pin on my folding phone stand fell out and is lost. The hinge holes are 3 mm diameter and the hinge is 40 mm wide. I need a pin with a head so it doesn't slide out.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    2.6,
+    2.6,
+    40
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    10,
+    10,
+    50
+   ]
+  }
+ ]
+}

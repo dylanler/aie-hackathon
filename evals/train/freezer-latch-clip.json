@@ -1,0 +1,42 @@
+{
+ "id": "freezer-latch-clip",
+ "prompt": "My freezer door won't stay shut \u2014 the latch clip snapped. It was about 40 mm long, 15 mm wide, held on by one 4 mm screw. Make me a replacement clip.",
+ "criteria": [
+  {
+   "type": "compiles"
+  },
+  {
+   "type": "fits_bed",
+   "bed_mm": [
+    256,
+    256,
+    256
+   ]
+  },
+  {
+   "type": "min_wall",
+   "mm": 1.6
+  },
+  {
+   "type": "through_hole",
+   "d": 4.2,
+   "tol": 0.8
+  },
+  {
+   "type": "bbox_min",
+   "mm": [
+    5,
+    12,
+    30
+   ]
+  },
+  {
+   "type": "bbox_max",
+   "mm": [
+    30,
+    30,
+    60
+   ]
+  }
+ ]
+}
