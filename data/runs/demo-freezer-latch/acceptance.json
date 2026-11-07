@@ -1,0 +1,59 @@
+{
+  "written_from": "user prompt only (critic never sees the designer's reasoning or code)",
+  "model": "muse-wonder-1.0",
+  "criteria": [
+    {
+      "type": "compiles"
+    },
+    {
+      "type": "fits_bed",
+      "bed_mm": [
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "type": "bbox_min",
+      "mm": [
+        4,
+        15,
+        30
+      ]
+    },
+    {
+      "type": "bbox_max",
+      "mm": [
+        35,
+        60,
+        100
+      ]
+    },
+    {
+      "type": "min_wall",
+      "mm": 1.6
+    },
+    {
+      "type": "volume_min",
+      "mm3": 1000
+    },
+    {
+      "type": "volume_max",
+      "mm3": 60000
+    },
+    {
+      "type": "parts_min",
+      "n": 1
+    }
+  ],
+  "rationale": [
+    "Part must compile to a printable STL without errors.",
+    "Part must fit within a standard 256 mm household printer bed.",
+    "Must be large enough in all dimensions to span and engage a freezer door latch.",
+    "Must remain small enough to fit a typical freezer door latch recess without interference.",
+    "Spring clip needs at least 1.6 mm walls to flex repeatedly without snapping in PETG/PLA.",
+    "Must contain enough material to be a functional load-bearing clip, not a token shell.",
+    "Must not be an oversized solid block that would prevent door closure or latch movement.",
+    "At least one complete physical part must be produced."
+  ]
+}

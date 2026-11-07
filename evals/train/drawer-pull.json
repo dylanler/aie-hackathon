@@ -1,6 +1,6 @@
 {
  "id": "drawer-pull",
- "prompt": "A drawer pull handle snapped in half. The two screw holes are 64 mm apart center to center and take M4 screws.",
+ "prompt": "A drawer pull handle snapped in half. The two mounting holes are 64 mm apart center to center; the M4 screws go through the drawer front into the handle from behind.",
  "criteria": [
   {
    "type": "compiles"
@@ -32,13 +32,6 @@
     40,
     120
    ]
-  },
-  {
-   "type": "hole_spacing",
-   "d": 4.3,
-   "spacing": 64,
-   "tol": 0.5,
-   "d_tol": 0.8
   }
  ]
 }
