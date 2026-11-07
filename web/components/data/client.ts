@@ -26,7 +26,15 @@ export const EXAMPLE_PROMPTS = EXAMPLES.map((e) => e.prompt);
 
 export type Health = { live: boolean; reason?: string | null; capabilities?: Record<string, unknown> };
 /** GET /api/health — is the full pipeline (LLM + compile + physics) reachable here? null when the API is unreachable. */
-export const getHealth = () => getJSON<Health>("/api/health", 3500);
+export const getHealth = async (): Promise<Health | null> => {
+  // demo safety switch: /?replay=1 (remembered for the tab) forces the recorded runs even when live is available
+  try {
+    const q = new URLSearchParams(window.location.search).get("replay");
+    if (q !== null) sessionStorage.setItem("t2r_replay", q === "0" ? "0" : "1");
+    if (sessionStorage.getItem("t2r_replay") === "1") return { live: false, reason: "replay forced" };
+  } catch {}
+  return getJSON<Health>("/api/health", 3500);
+};
 
 /** Example chip → a run route. Live run when the backend is fully available, else the recorded real run of that prompt. */
 export async function startExample(prompt: string): Promise<string> {
