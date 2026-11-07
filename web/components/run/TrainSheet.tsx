@@ -20,27 +20,27 @@ export function TrainSheet({ rl, gait, onGait, paused, onPause, curves, meta = {
     return () => clearInterval(t);
   }, [paused]);
   return (
-    <BottomSheet className="w-[760px] p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex gap-1">
+    <BottomSheet className="w-[calc(100vw-24px)] p-3 md:w-[760px] md:p-4">
+      <div className="flex items-center justify-between gap-2">
+        <div data-allow-overflow className="no-scrollbar flex min-w-0 gap-1 overflow-x-auto">
           {rl.skills.map((s) => (
             <button key={s.name} onClick={() => onGait(s.name as Gait)}
-              className={`flex h-8 items-center gap-2 rounded-full px-3 text-s capitalize transition-colors ${s.name === skill.name ? "bg-raised text-text" : "text-text-3 hover:text-text-2"}`}>
+              className={`flex h-11 shrink-0 items-center gap-2 rounded-full px-3 text-s capitalize md:h-8 transition-colors ${s.name === skill.name ? "bg-raised text-text" : "text-text-3 hover:text-text-2"}`}>
               {s.name.replace("-", " ")}
               <span className="num text-[11px] text-text-3">{Math.round(s.success * 100)}%</span>
             </button>
           ))}
         </div>
         <HintTip label={paused ? "Resume" : "Pause"} kbd="Space" side="top">
-          <button aria-label={paused ? "Resume" : "Pause"} onClick={onPause} className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-text hover:bg-raised">
+          <button aria-label={paused ? "Resume" : "Pause"} onClick={onPause} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-text hover:bg-raised md:h-8 md:w-8">
             {paused ? <Play size={14} /> : <Pause size={14} />}
           </button>
         </HintTip>
       </div>
-      <div className="mt-3 flex items-end justify-between gap-6 border-t border-line pt-3">
+      <div className="mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-3 overflow-hidden border-t border-line pt-3">
         <div>
           <div className="lbl text-text-3">Task score · {skill.name.replace("-", " ")}</div>
-          <div className="mt-2"><Sparkline data={data} width={380} height={44} marker={0.85} /></div>
+          <div className="mt-2 max-w-[calc(100vw-56px)] overflow-hidden"><Sparkline data={data} width={380} height={44} marker={0.85} /></div>
         </div>
         <div className="flex gap-6 pb-1 pr-1">
           <div>

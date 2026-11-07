@@ -50,7 +50,7 @@ export function ParamSlider({ label, value, min, max, step = 0.1, unit = "mm", o
       <div
         ref={ref} role="slider" tabIndex={0} aria-label={label} aria-valuemin={min} aria-valuemax={max} aria-valuenow={value}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onKeyDown={onKey}
-        className="relative h-6 cursor-ew-resize touch-none"
+        className="relative h-10 cursor-ew-resize touch-none md:h-6"
       >
         <div className="absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-line" />
         <div className="absolute left-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-text-2 transition-colors group-hover:bg-text" style={{ width: `${frac * 100}%` }} />

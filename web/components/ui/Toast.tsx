@@ -22,8 +22,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         <AnimatePresence>
           {toasts.map((t) => (
             <motion.div key={t.id} layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} transition={{ duration: T.ui, ease: EASE_OUT }}
-              className="pointer-events-auto flex h-10 items-center gap-4 rounded-full border border-line bg-raised pl-4 pr-2 text-s shadow-float">
-              <span className="text-text">{t.text}</span>
+              className="pointer-events-auto flex h-10 max-w-[calc(100vw-24px)] items-center gap-4 rounded-full border border-line bg-raised pl-4 pr-2 text-s shadow-float">
+              <span className="truncate text-text">{t.text}</span>
               {t.undo && (
                 <button onClick={() => { t.undo!(); setToasts((p) => p.filter((x) => x.id !== t.id)); }} className="h-7 rounded-full px-3 text-text-2 hover:bg-surface hover:text-text">Undo</button>
               )}

@@ -27,7 +27,7 @@ export function CommandPalette({ commands }: { commands: Cmd[] }) {
       {open && (
         <motion.div className="fixed inset-0 z-[70] flex justify-center bg-black/40 pt-[18vh]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: T.micro }} onClick={() => setOpen(false)}>
           <motion.div initial={{ y: -6, opacity: 0, scale: 0.99 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: T.ui, ease: EASE_OUT }}
-            onClick={(e) => e.stopPropagation()} className="h-fit w-[520px] overflow-hidden rounded-panel border border-line bg-surface shadow-float">
+            onClick={(e) => e.stopPropagation()} className="h-fit w-[min(520px,calc(100vw-24px))] overflow-hidden rounded-panel border border-line bg-surface shadow-float">
             <input ref={input} value={q} onChange={(e) => { setQ(e.target.value); setI(0); }} placeholder="Type a command"
               onKeyDown={(e) => {
                 if (e.key === "ArrowDown") { e.preventDefault(); setI((x) => Math.min(list.length - 1, x + 1)); }

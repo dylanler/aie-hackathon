@@ -7,7 +7,7 @@ import { EASE_OUT, T } from "../ui/motion";
 export function ThoughtLine({ events }: { events: RunEvent[] }) {
   const shown = events.map((e, idx) => ({ ...e, idx })).filter((e) => e.message && !/^muse \d{3}|api_key/i.test(e.message)).slice(-3);
   return (
-    <div className="pointer-events-none flex w-[460px] flex-col gap-1">
+    <div className="pointer-events-none flex w-[calc(100vw-32px)] flex-col gap-1 md:w-[460px]">
       <AnimatePresence initial={false}>
         {shown.map((e, i) => {
           const age = shown.length - 1 - i;

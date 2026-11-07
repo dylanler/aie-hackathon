@@ -140,9 +140,9 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       </div>
 
       {/* top bar */}
-      <header className="pointer-events-none absolute inset-x-0 top-0 flex h-14 items-center justify-between px-6">
+      <header className="pointer-events-none absolute inset-x-0 top-0 flex h-14 items-center justify-between px-4 md:px-6">
         <Link href="/" className="pointer-events-auto text-s text-text-2 transition-colors hover:text-text">Thought to Reality</Link>
-        <div className="pointer-events-none absolute inset-x-0 flex justify-center"><motion.div initial={{ opacity: 0, y: 12, scale: 1.04 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: T.panel, ease: EASE_OUT }} className="glass pointer-events-auto flex h-9 max-w-[520px] items-center gap-2 rounded-full px-4">
+        <div className="pointer-events-none absolute inset-x-0 hidden justify-center md:flex"><motion.div initial={{ opacity: 0, y: 12, scale: 1.04 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: T.panel, ease: EASE_OUT }} className="glass pointer-events-auto flex h-9 max-w-[520px] items-center gap-2 rounded-full px-4">
           <HintTip label="Start over with a new prompt" side="bottom">
             <button onClick={() => router.push(`/?q=${encodeURIComponent(r.run?.prompt || "")}`)} className="max-w-[460px] truncate text-s text-text">{r.run?.prompt ?? "…"}</button>
           </HintTip>
@@ -157,16 +157,16 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
             </HintTip>
           )}
           <HintTip label={locked ? "Camera follows steps" : "Hold this view"} kbd="L" side="bottom">
-            <button aria-label="Lock camera" onClick={() => setLocked((x) => !x)} className={`flex h-8 w-8 items-center justify-center rounded-btn transition-colors hover:bg-raised ${locked ? "text-signal" : "text-text-3"}`}>
+            <button aria-label="Lock camera" onClick={() => setLocked((x) => !x)} className={`flex h-11 w-11 items-center justify-center rounded-btn transition-colors hover:bg-raised md:h-8 md:w-8 ${locked ? "text-signal" : "text-text-3"}`}>
               {locked ? <Lock size={14} /> : <Unlock size={14} />}
             </button>
           </HintTip>
-          <HintTip label="Commands" side="bottom"><span className="flex gap-1"><KbdKey>⌘</KbdKey><KbdKey>K</KbdKey></span></HintTip>
+          <HintTip label="Commands" side="bottom"><span className="hidden gap-1 md:flex"><KbdKey>⌘</KbdKey><KbdKey>K</KbdKey></span></HintTip>
         </div>
       </header>
 
       {/* plan strip */}
-      <div className="absolute left-1/2 top-[68px] -translate-x-1/2">
+      <div data-allow-overflow className="no-scrollbar absolute inset-x-2 top-[60px] flex justify-start overflow-x-auto md:inset-x-auto md:left-1/2 md:top-[68px] md:-translate-x-1/2 md:justify-center md:overflow-visible">
         <PlanStrip steps={r.steps} active={view} onSelect={select} kind={r.run?.kind} />
       </div>
 
@@ -174,16 +174,16 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       <AnimatePresence>
         {view === "verify" && r.verdict && (
           <motion.div key="verdict" {...panel} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-            className="absolute inset-x-0 top-[128px] mx-auto flex w-fit flex-col items-center gap-2.5">
+            className="absolute inset-x-0 top-[124px] mx-auto flex w-fit max-w-[calc(100vw-24px)] flex-col items-center gap-2.5 md:top-[128px]">
             <VerdictChip verdict={r.verdict} />
-            <div className="font-serif text-[17px] italic text-text-2">Designed by one model. Checked by physics.</div>
+            <div className="text-center font-serif text-[17px] italic text-text-2">Designed by one model. Checked by physics.</div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* left rail */}
       {mode !== "sketch" && view !== "train" && (
-        <div className="absolute left-6 top-1/2 -translate-y-1/2">
+        <div className="absolute left-6 top-1/2 hidden -translate-y-1/2 md:block">
           <PartRail parts={parts} selected={part?.id ?? null} hovered={hovered} onSelect={(pid) => { setSelected(pid); setManual("design"); }} onHover={setHovered} />
         </div>
       )}
@@ -192,7 +192,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       <AnimatePresence>
         {view === "diagnose" && (
           <motion.div key="dx" {...panel} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
-            className="absolute inset-x-0 top-[34%] mx-auto w-[560px] text-center">
+            className="absolute inset-x-0 top-[34%] mx-auto w-[min(560px,calc(100vw-32px))] text-center">
             {r.diagnosis ? (
               <>
                 <div className="lbl text-text-3">{r.diagnosis.object}</div>
@@ -216,7 +216,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       </AnimatePresence>
 
       {/* right panel */}
-      <div className="absolute right-6 top-[128px]">
+      <div className="absolute inset-x-0 bottom-0 z-20 max-h-[58vh] overflow-y-auto md:inset-x-auto md:bottom-auto md:right-6 md:top-[128px] md:max-h-none md:overflow-visible">
         <AnimatePresence initial={false}>
           {view === "design" && part && (
             <motion.div key={"insp" + part.id} {...panel}>
@@ -230,14 +230,14 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
             <motion.div key="make" {...panel}><MakePanel fab={r.fab} parts={parts} onDownload={download} /></motion.div>
           )}
           {view === "make" && !r.fab && r.steps.make !== "done" && (
-            <motion.div key="make-wait" {...panel} className="glass w-[296px] rounded-panel p-4 text-s text-text-3">Routing to fabrication</motion.div>
+            <motion.div key="make-wait" {...panel} className="glass w-full rounded-panel p-4 text-s text-text-3 md:w-[296px]">Routing to fabrication</motion.div>
           )}
         </AnimatePresence>
       </div>
 
       {/* heatmap legend */}
       {view === "verify" && mode === "fit" && (
-        <div className="absolute right-6 top-[128px] flex items-center gap-2 rounded-full px-1 text-s text-text-3">
+        <div className="absolute right-6 top-[128px] hidden items-center gap-2 rounded-full px-1 text-s text-text-3 md:flex">
           <span className="lbl">clearance</span>
           <span className="h-1.5 w-20 rounded-full" style={{ background: "linear-gradient(90deg,#3DD68C,#F5B544,#F2555A)" }} />
           <span className="lbl">contact</span>
@@ -247,7 +247,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       {/* repair rounds: critic pass → physics fail → repaired */}
       <AnimatePresence>
         {view === "verify" && r.verdict && (
-          <motion.div key="rounds" {...panel} className="absolute right-6 top-[164px]"><FitRounds asset={r.asset} /></motion.div>
+          <motion.div key="rounds" {...panel} className="absolute inset-x-3 bottom-3 flex justify-center md:inset-x-auto md:bottom-auto md:right-6 md:top-[164px] md:block"><FitRounds asset={r.asset} /></motion.div>
         )}
       </AnimatePresence>
 
@@ -255,9 +255,9 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       <AnimatePresence>
         {view === "train" && video && (
           <motion.div key={"vid" + gait} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: T.panel, ease: EASE_OUT }}
-            className="absolute inset-x-0 top-[128px] bottom-[236px] mx-auto flex w-fit items-center">
+            className="absolute inset-x-0 top-[120px] bottom-[300px] mx-auto flex w-fit max-w-[calc(100vw-24px)] items-center md:top-[128px] md:bottom-[236px]">
             <div className="relative h-full">
-              <video autoPlay loop muted playsInline className="h-full max-w-[880px] rounded-panel border border-line bg-surface object-contain"
+              <video autoPlay loop muted playsInline className="h-full max-w-[calc(100vw-24px)] rounded-panel md:max-w-[880px] border border-line bg-surface object-contain"
                 ref={(v) => { if (!v) return; if (paused) v.pause(); else v.play().catch(() => {}); }}>
                 <source src={video.replace(/\.mp4$/, ".webm")} type="video/webm" />
                 <source src={video} type="video/mp4" />
@@ -272,7 +272,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       <AnimatePresence>
         {view === "train" && (
           robot && r.rl ? (
-            <motion.div key="train" className="absolute inset-x-0 bottom-6 mx-auto w-fit" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div key="train" className="absolute inset-x-0 bottom-3 mx-auto w-fit max-w-[calc(100vw-24px)] md:bottom-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <TrainSheet rl={r.rl} gait={gait} onGait={setGait} paused={paused} onPause={() => setPaused((p) => !p)} curves={curves} meta={curveMeta} />
             </motion.div>
           ) : (
@@ -286,11 +286,11 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       {/* bottom */}
       {view !== "train" && (
         <>
-          <div className="absolute bottom-6 left-6"><ThoughtLine events={r.events} /></div>
-          <div className="absolute bottom-6 right-6"><GetsBetter /></div>
+          <div className={`absolute bottom-4 left-4 md:bottom-6 md:left-6 ${view === "design" || view === "make" || view === "verify" ? "hidden md:block" : ""}`}><ThoughtLine events={r.events} /></div>
+          <div className="absolute bottom-6 right-6 hidden lg:block"><GetsBetter /></div>
         </>
       )}
-      {view === "train" && <div className="absolute left-6 top-[128px]"><ThoughtLine events={r.events.filter((e) => e.stage === "rl")} /></div>}
+      {view === "train" && <div className="absolute left-6 top-[128px] hidden md:block"><ThoughtLine events={r.events.filter((e) => e.stage === "rl")} /></div>}
 
       <CommandPalette commands={commands} />
     </main>

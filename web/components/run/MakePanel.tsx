@@ -46,7 +46,7 @@ export function MakePanel({ fab, parts, onDownload }: { fab: Fab; parts: Part[];
   const fmtH = (h: number) => (h < 1 ? `${Math.round(h * 60)} min` : `${Math.floor(h)} h ${Math.round((h % 1) * 60)} min`);
 
   return (
-    <div className="glass w-[320px] rounded-panel p-4">
+    <div className="glass w-full rounded-b-none rounded-t-panel p-4 pb-[max(16px,env(safe-area-inset-bottom))] md:w-[320px] md:rounded-panel md:pb-4">
       <div className="lbl text-text-3">Make</div>
       <div className="mt-1.5 text-m text-text">{fab.note || "Ready to make."}</div>
       <div className="mt-3 border-t border-line pt-2">
@@ -68,9 +68,9 @@ export function MakePanel({ fab, parts, onDownload }: { fab: Fab; parts: Part[];
         </div>
       )}
       <div className="mt-4 flex gap-2">
-        <button onClick={() => setOpen(true)} className="h-9 flex-1 rounded-btn bg-signal text-s font-medium text-black transition hover:brightness-110">Order print</button>
+        <button onClick={() => setOpen(true)} className="h-11 flex-1 rounded-btn bg-signal md:h-9 text-s font-medium text-black transition hover:brightness-110">Order print</button>
         <HintTip label="STL files for your slicer" side="top">
-          <button onClick={onDownload} className="flex h-9 items-center gap-1.5 rounded-btn border border-line px-3 text-s text-text-2 transition-colors hover:bg-raised hover:text-text">
+          <button onClick={onDownload} className="flex h-11 items-center gap-1.5 rounded-btn border border-line px-3 md:h-9 text-s text-text-2 transition-colors hover:bg-raised hover:text-text">
             <Download size={14} strokeWidth={1.75} />Download
           </button>
         </HintTip>

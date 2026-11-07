@@ -19,14 +19,14 @@ export function Inspector({ part, values, onChange, onCommit, onReset, explode, 
   const [x, y, z] = part.dims_mm;
   const starts = useRef<Record<string, number>>({});
   return (
-    <div className="glass w-[296px] rounded-panel p-4">
+    <div className="glass w-full rounded-b-none rounded-t-panel p-4 pb-[max(16px,env(safe-area-inset-bottom))] md:w-[296px] md:rounded-panel md:pb-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="truncate text-m font-medium text-text">{part.name}</div>
           <div className="num mt-0.5 text-s text-text-3">{+x.toFixed(1)} × {+y.toFixed(1)} × {+z.toFixed(1)} mm · {part.material}</div>
         </div>
         <HintTip label={explode ? "Collapse parts" : "Explode parts"} kbd="E" side="left">
-          <button aria-label="Explode" onClick={onExplode} className={`flex h-8 w-8 items-center justify-center rounded-btn transition-colors ${explode ? "bg-raised text-signal" : "text-text-3 hover:bg-raised hover:text-text"}`}>
+          <button aria-label="Explode" onClick={onExplode} className={`flex h-11 w-11 items-center justify-center rounded-btn transition-colors md:h-8 md:w-8 ${explode ? "bg-raised text-signal" : "text-text-3 hover:bg-raised hover:text-text"}`}>
             <Boxes size={16} strokeWidth={1.75} />
           </button>
         </HintTip>
@@ -49,7 +49,7 @@ export function Inspector({ part, values, onChange, onCommit, onReset, explode, 
           <div className="flex items-center justify-between pt-1">
             <span className="text-s text-text-3">Drag to resize. <span className="text-text-3/80">⇧ fine</span></span>
             <HintTip label="Back to the model's values" side="left">
-              <button onClick={onReset} className="flex h-7 items-center gap-1.5 rounded-chip px-2 text-s text-text-3 hover:bg-raised hover:text-text"><RotateCcw size={12} />Reset</button>
+              <button onClick={onReset} className="flex h-11 items-center gap-1.5 rounded-chip px-2 text-s text-text-3 hover:bg-raised hover:text-text md:h-7"><RotateCcw size={12} />Reset</button>
             </HintTip>
           </div>
         </div>
