@@ -1,11 +1,11 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AnimatePresence, motion } from "framer-motion";
-import { Lock, Unlock } from "lucide-react";
+import { Link2, Lock, Unlock } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRun } from "../data/client";
 import { useSearchParams } from "next/navigation";
 import type { Part, StepKey } from "../data/types";
@@ -16,6 +16,7 @@ import { GetsBetter } from "../ui/GetsBetter";
 import { HintTip, KbdKey } from "../ui/HintTip";
 import { EASE_OUT, T } from "../ui/motion";
 import { PlanStrip } from "../ui/PlanStrip";
+import { Shortcuts } from "../ui/Shortcuts";
 import { useToast } from "../ui/Toast";
 import { VerdictChip } from "../ui/VerdictChip";
 import { FitRounds } from "./FitRounds";
@@ -89,6 +90,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
 
   const urlFor = useCallback((p: Part) => (p.stl ? r.asset(p.stl) : null), [r]);
 
+  const undoStack = useRef<{ pid: string; k: string; prev: number }[]>([]);
   const setParam = (pid: string, k: string, v: number) => setParams((s) => ({ ...s, [pid]: { ...(s[pid] || parts.find((x) => x.id === pid)?.params || {}), [k]: v } }));
 
   const download = useCallback(async () => {
@@ -112,7 +114,17 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || e.metaKey || e.ctrlKey) return;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z" && !e.shiftKey) {
+        const u = undoStack.current.pop();
+        if (u) { e.preventDefault(); setParams((s) => ({ ...s, [u.pid]: { ...(s[u.pid] || {}), [u.k]: u.prev } })); toast(`Undid ${u.k.replace(/_mm$/, "").replace(/_/g, " ")}`); }
+        return;
+      }
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const at = STEPS.findIndex((s) => s.key === view);
+      const onSlider = (e.target as HTMLElement)?.getAttribute?.("role") === "slider";
+      if (!onSlider && e.key === "ArrowRight" && at < STEPS.length - 1) { e.preventDefault(); select(STEPS[at + 1].key); }
+      if (!onSlider && e.key === "ArrowLeft" && at > 0) { e.preventDefault(); select(STEPS[at - 1].key); }
       const n = Number(e.key);
       if (n >= 1 && n <= 5) select(STEPS[n - 1].key);
       if (e.key === "e") setExplode((x) => !x);
@@ -121,7 +133,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [select, view]);
+  }, [select, view, toast]);
 
   const commands: Cmd[] = [
     ...STEPS.map((s, i) => ({ id: s.key, label: `Go to ${s.label}`, kbd: String(i + 1), run: () => select(s.key) })),
@@ -129,6 +141,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
     { id: "lock", label: locked ? "Unlock camera" : "Lock camera", kbd: "L", run: () => setLocked((x) => !x) },
     { id: "dl", label: "Download STL files", run: download },
     { id: "new", label: "New prompt", run: () => router.push("/") },
+    { id: "keys", label: "Keyboard shortcuts", kbd: "?", run: () => window.dispatchEvent(new KeyboardEvent("keydown", { key: "?" })) },
   ];
 
   return (
@@ -156,6 +169,14 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
               </span>
             </HintTip>
           )}
+          <HintTip label="Copy link to this run" side="bottom">
+            <button aria-label="Copy link" onClick={() => {
+              const u = new URL(window.location.href); u.searchParams.delete("instant"); u.searchParams.set("view", view);
+              navigator.clipboard?.writeText(u.toString()).then(() => toast("Link copied"), () => toast(u.toString()));
+            }} className="flex h-11 w-11 items-center justify-center rounded-btn text-text-3 transition-colors hover:bg-raised hover:text-text md:h-8 md:w-8">
+              <Link2 size={14} />
+            </button>
+          </HintTip>
           <HintTip label={locked ? "Camera follows steps" : "Hold this view"} kbd="L" side="bottom">
             <button aria-label="Lock camera" onClick={() => setLocked((x) => !x)} className={`flex h-11 w-11 items-center justify-center rounded-btn transition-colors hover:bg-raised md:h-8 md:w-8 ${locked ? "text-signal" : "text-text-3"}`}>
               {locked ? <Lock size={14} /> : <Unlock size={14} />}
@@ -222,7 +243,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
             <motion.div key={"insp" + part.id} {...panel}>
               <Inspector part={part} values={params[part.id] || part.params || {}} explode={explode} onExplode={() => setExplode((x) => !x)}
                 onChange={(k, v) => setParam(part.id, k, v)}
-                onCommit={(k, prev, v) => { if (prev !== v) toast(`${k.replace(/_mm$/, "").replace(/_/g, " ")} ${v.toFixed(1)} mm`, () => setParam(part.id, k, prev)); }}
+                onCommit={(k, prev, v) => { if (prev !== v) undoStack.current.push({ pid: part.id, k, prev }); if (prev !== v) toast(`${k.replace(/_mm$/, "").replace(/_/g, " ")} ${v.toFixed(1)} mm`, () => setParam(part.id, k, prev)); }}
                 onReset={() => setParams((s) => ({ ...s, [part.id]: { ...(part.params || {}) } }))} />
             </motion.div>
           )}
@@ -287,12 +308,13 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
       {view !== "train" && (
         <>
           <div className={`absolute bottom-4 left-4 md:bottom-6 md:left-6 ${view === "design" || view === "make" || view === "verify" ? "hidden md:block" : ""}`}><ThoughtLine events={r.events} /></div>
-          <div className="absolute bottom-6 right-6 hidden lg:block"><GetsBetter /></div>
+          <div className={`absolute bottom-6 right-6 hidden lg:block ${view === "design" || view === "make" ? "[@media(max-height:860px)]:hidden" : ""}`}><GetsBetter /></div>
         </>
       )}
       {view === "train" && <div className="absolute left-6 top-[128px] hidden md:block"><ThoughtLine events={r.events.filter((e) => e.stage === "rl")} /></div>}
 
       <CommandPalette commands={commands} />
+      <Shortcuts />
     </main>
   );
 }
