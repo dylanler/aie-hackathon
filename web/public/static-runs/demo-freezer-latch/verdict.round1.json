@@ -1,0 +1,139 @@
+{
+  "pass": false,
+  "fits_printer": "bambu-a1",
+  "checks": [
+    {
+      "name": "OpenSCAD compiles",
+      "pass": true,
+      "value": "1/1",
+      "by": "critic"
+    },
+    {
+      "name": "fits 256×256×256 mm bed",
+      "pass": true,
+      "value": 45,
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "size ≥ 4×12×20 mm",
+      "pass": true,
+      "value": "12×20×45",
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "size ≤ 25×45×80 mm",
+      "pass": true,
+      "value": "12×20×45",
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "wall ≥ 1.2 mm",
+      "pass": true,
+      "value": 2.8,
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "volume ≥ 500 mm³",
+      "pass": true,
+      "value": 5388.4,
+      "unit": "mm3",
+      "by": "critic"
+    },
+    {
+      "name": "volume ≤ 20000 mm³",
+      "pass": true,
+      "value": 5388.4,
+      "unit": "mm3",
+      "by": "critic"
+    },
+    {
+      "name": "≥ 1 parts",
+      "pass": true,
+      "value": 1,
+      "by": "critic"
+    },
+    {
+      "name": "sim:screw_access",
+      "pass": false,
+      "value": "1/2",
+      "unit": "holes",
+      "detail": "1 hole(s) covered by the part itself 3.0 mm above the seat — screw/driver cannot reach",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:hole_fit",
+      "pass": true,
+      "value": 0.034,
+      "unit": "mm",
+      "detail": "radial gap, M4 screw in measured Ø4.07 hole (exact STL section)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:fit_penetration",
+      "pass": false,
+      "value": 0.871,
+      "unit": "mm",
+      "detail": "max penetration vs striker, screw heads, door (mj_geomDistance on CoACD hulls)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:min_clearance",
+      "pass": false,
+      "value": -0.871,
+      "unit": "mm",
+      "detail": "part vs Ø6 mm striker across the full engagement width (mj_geomDistance)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:load_hold",
+      "pass": false,
+      "value": 3.44,
+      "unit": "N",
+      "detail": "part unseated (> 0.5 mm) at 3.44 N of the 20 N door pull; striker retained=False",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:seated_displacement",
+      "pass": false,
+      "value": ">0.5",
+      "unit": "mm",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:settle_on_base",
+      "pass": true,
+      "value": 0.001,
+      "unit": "deg",
+      "detail": "dropped 20 mm flat; must rest on its base (printable, stable)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:drop_settle",
+      "pass": true,
+      "value": 0.386,
+      "unit": "s",
+      "detail": "dropped 300 mm tilted 35°/20°; time to come to rest",
+      "by": "mujoco"
+    },
+    {
+      "name": "subq_judge_p_satisfies",
+      "pass": false,
+      "value": 0.12,
+      "unit": "p",
+      "advisory": true
+    }
+  ],
+  "critic_pass": true,
+  "physics_pass": false,
+  "subq_p_satisfies": 0.12,
+  "heatmap": null,
+  "sim_media": [],
+  "notes": "Failed: sim:screw_access, sim:fit_penetration, sim:min_clearance, sim:load_hold, sim:seated_displacement",
+  "round": 1,
+  "critic_model": "muse-wonder-1.0",
+  "sim": true
+}

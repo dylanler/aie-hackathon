@@ -1,0 +1,25 @@
+{
+  "kind": "static",
+  "object": "freezer door latch clip",
+  "failure": "plastic latch clip snapped at thin flex section from fatigue and cold embrittlement, so door no longer stays shut",
+  "dimensions": {
+    "overall_length": "45 mm (assumed)",
+    "overall_width": "20 mm (assumed)",
+    "base_thickness": "4 mm (assumed)",
+    "hook_height": "8 mm (assumed)",
+    "mounting_hole_diameter": "4 mm (assumed)",
+    "mounting_hole_spacing": "30 mm (assumed)"
+  },
+  "requirements": [
+    "snap-fit onto freezer door catch and retain door shut against gasket pressure",
+    "withstand repeated clipping load without cracking at freezer temperature",
+    "maintain dimensional fit with existing catch and mounting screws"
+  ],
+  "assumptions": [
+    "upright / top-freezer household door with plastic snap latch, assumed",
+    "original material was ABS / PLA-brittle plastic, replacement in PETG / ABS for cold toughness, assumed",
+    "mounting with 2x M4 screws on 30 mm centers, assumed",
+    "service temperature -25C to +30C, assumed"
+  ],
+  "model": "muse-spark-1.3"
+}

@@ -1,0 +1,84 @@
+{
+  "id": "demo-freezer-latch",
+  "prompt": "My freezer door won't stay shut \u2014 the latch clip snapped. Make me a replacement clip.",
+  "status": "done",
+  "createdAt": 1794092491149,
+  "skillVersion": "v1",
+  "stages": {
+    "diagnose": {
+      "status": "done",
+      "startedAt": 1794092491156,
+      "ms": 9087
+    },
+    "design": {
+      "status": "done",
+      "startedAt": 1794092500259,
+      "ms": 19466
+    },
+    "cad": {
+      "status": "done",
+      "startedAt": 1794092617677,
+      "ms": 40374
+    },
+    "verify": {
+      "status": "done",
+      "startedAt": 1794092571944,
+      "ms": 8486
+    },
+    "improve": {
+      "status": "done",
+      "startedAt": 1794092580841,
+      "ms": 77614
+    },
+    "rl": {
+      "status": "done",
+      "startedAt": 1794092658457,
+      "ms": 5
+    },
+    "make": {
+      "status": "done",
+      "startedAt": 1794092658463,
+      "ms": 72
+    }
+  },
+  "kind": "static",
+  "parts": [
+    {
+      "id": "freezer_door_latch_clip",
+      "name": "Freezer Door Latch Clip",
+      "scad": "parts/freezer_door_latch_clip.scad",
+      "stl": "parts/freezer_door_latch_clip.stl",
+      "material": "PETG",
+      "dims_mm": [
+        40,
+        20,
+        14.5
+      ],
+      "printable": true,
+      "purpose": "screws flat to freezer door and captures \u00d86mm striker to hold door shut",
+      "params": {
+        "overall_length_mm": 40,
+        "overall_width_mm": 20,
+        "base_thickness_mm": 4,
+        "channel_width_mm": 7,
+        "channel_height_mm": 7,
+        "tunnel_wall_mm": 3.5,
+        "roof_thickness_mm": 3.5,
+        "mounting_hole_diameter_mm": 4.5,
+        "mounting_hole_spacing_mm": 28
+      },
+      "compiled": true
+    }
+  ],
+  "verdict": "verdict.json",
+  "verdictSummary": {
+    "pass": true,
+    "passed": 16,
+    "total": 16,
+    "round": 2
+  },
+  "rounds": 2,
+  "rl": null,
+  "fab": "fab.json",
+  "finishedAt": 1794092658537
+}

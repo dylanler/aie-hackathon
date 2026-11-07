@@ -1,0 +1,139 @@
+{
+  "pass": true,
+  "fits_printer": "bambu-a1",
+  "checks": [
+    {
+      "name": "OpenSCAD compiles",
+      "pass": true,
+      "value": "1/1",
+      "by": "critic"
+    },
+    {
+      "name": "fits 256×256×256 mm bed",
+      "pass": true,
+      "value": 40,
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "size ≥ 4×12×20 mm",
+      "pass": true,
+      "value": "14.5×20×40",
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "size ≤ 25×45×80 mm",
+      "pass": true,
+      "value": "14.5×20×40",
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "wall ≥ 1.2 mm",
+      "pass": true,
+      "value": 3.2,
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "volume ≥ 500 mm³",
+      "pass": true,
+      "value": 4963,
+      "unit": "mm3",
+      "by": "critic"
+    },
+    {
+      "name": "volume ≤ 20000 mm³",
+      "pass": true,
+      "value": 4963,
+      "unit": "mm3",
+      "by": "critic"
+    },
+    {
+      "name": "≥ 1 parts",
+      "pass": true,
+      "value": 1,
+      "by": "critic"
+    },
+    {
+      "name": "sim:screw_access",
+      "pass": true,
+      "value": "2/2",
+      "unit": "holes",
+      "detail": "clear vertical path to every mounting hole",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:hole_fit",
+      "pass": true,
+      "value": 0.257,
+      "unit": "mm",
+      "detail": "radial gap, M4 screw in measured Ø4.51 hole (exact STL section)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:fit_penetration",
+      "pass": true,
+      "value": 0.026,
+      "unit": "mm",
+      "detail": "max penetration vs striker, screw heads, door (mj_geomDistance on CoACD hulls)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:min_clearance",
+      "pass": true,
+      "value": 0.375,
+      "unit": "mm",
+      "detail": "part vs Ø6 mm striker across the full engagement width (mj_geomDistance)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:load_hold",
+      "pass": true,
+      "value": 20,
+      "unit": "N",
+      "detail": "held 20 N pull on Ø6 mm striker; part moved 0.257 mm",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:seated_displacement",
+      "pass": true,
+      "value": 0.257,
+      "unit": "mm",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:settle_on_base",
+      "pass": true,
+      "value": 0.001,
+      "unit": "deg",
+      "detail": "dropped 20 mm flat; must rest on its base (printable, stable)",
+      "by": "mujoco"
+    },
+    {
+      "name": "sim:drop_settle",
+      "pass": true,
+      "value": 0.381,
+      "unit": "s",
+      "detail": "dropped 300 mm tilted 35°/20°; time to come to rest",
+      "by": "mujoco"
+    },
+    {
+      "name": "subq_judge_p_satisfies",
+      "pass": true,
+      "value": 0.783,
+      "unit": "p",
+      "advisory": true
+    }
+  ],
+  "critic_pass": true,
+  "physics_pass": true,
+  "subq_p_satisfies": 0.783,
+  "heatmap": null,
+  "sim_media": [],
+  "notes": "All 16 independent checks pass",
+  "round": 2,
+  "critic_model": "muse-wonder-1.0",
+  "sim": true
+}

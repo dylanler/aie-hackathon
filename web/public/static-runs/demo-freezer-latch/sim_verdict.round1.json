@@ -1,0 +1,131 @@
+{
+  "pass": false,
+  "by": "mujoco",
+  "mujoco_version": "4.0.0",
+  "part": "freezer_door_latch_clip",
+  "checks": [
+    {
+      "name": "screw_access",
+      "pass": false,
+      "value": "1/2",
+      "unit": "holes",
+      "by": "mujoco",
+      "detail": "1 hole(s) covered by the part itself 3.0 mm above the seat \u2014 screw/driver cannot reach"
+    },
+    {
+      "name": "hole_fit",
+      "pass": true,
+      "value": 0.034,
+      "unit": "mm",
+      "by": "mujoco",
+      "detail": "radial gap, M4 screw in measured \u00d84.07 hole (exact STL section)"
+    },
+    {
+      "name": "fit_penetration",
+      "pass": false,
+      "value": 0.871,
+      "unit": "mm",
+      "by": "mujoco",
+      "detail": "max penetration vs striker, screw heads, door (mj_geomDistance on CoACD hulls)"
+    },
+    {
+      "name": "min_clearance",
+      "pass": false,
+      "value": -0.871,
+      "unit": "mm",
+      "by": "mujoco",
+      "detail": "part vs \u00d86 mm striker across the full engagement width (mj_geomDistance)"
+    },
+    {
+      "name": "load_hold",
+      "pass": false,
+      "value": 3.44,
+      "unit": "N",
+      "by": "mujoco",
+      "detail": "part unseated (> 0.5 mm) at 3.44 N of the 20 N door pull; striker retained=False"
+    },
+    {
+      "name": "seated_displacement",
+      "pass": false,
+      "value": ">0.5",
+      "unit": "mm",
+      "by": "mujoco"
+    },
+    {
+      "name": "settle_on_base",
+      "pass": true,
+      "value": 0.001,
+      "unit": "deg",
+      "by": "mujoco",
+      "detail": "dropped 20 mm flat; must rest on its base (printable, stable)"
+    },
+    {
+      "name": "drop_settle",
+      "pass": true,
+      "value": 0.386,
+      "unit": "s",
+      "by": "mujoco",
+      "detail": "dropped 300 mm tilted 35\u00b0/20\u00b0; time to come to rest"
+    }
+  ],
+  "render": null,
+  "video": null,
+  "notes": "MuJoCo failed: screw_access, fit_penetration, min_clearance, load_hold, seated_displacement",
+  "info": {
+    "holes": [
+      {
+        "x": -15.0,
+        "y": 0.0,
+        "d_mm": 4.068428945128219,
+        "obstruction_above_mm": null
+      },
+      {
+        "x": 15.0,
+        "y": 0.0,
+        "d_mm": 4.068428945128219,
+        "obstruction_above_mm": 3.025
+      }
+    ],
+    "pocket": {
+      "x": 8.625,
+      "y": 0.0,
+      "z": 7.375,
+      "r_in_mm": 2.3048861143232218,
+      "y_span": [
+        -10.0,
+        10.0
+      ]
+    },
+    "n_convex_hulls": 30,
+    "hull_volume_mm3": 5404.2,
+    "mesh_volume_mm3": 5388.4,
+    "mass_g": 6.84,
+    "material": "PETG",
+    "assumptions": {
+      "screw_d_mm": 4.0,
+      "screw_head_d_mm": 7.0,
+      "striker_d_mm": 6.0,
+      "load_N": 20.0,
+      "seat_tol_mm": 0.5,
+      "clearance_min_mm": 0.05,
+      "penetration_tol_mm": 0.05
+    },
+    "nominal_distance_mm": {
+      "striker": -0.871,
+      "door": -0.0,
+      "screwhead_0": -0.025
+    },
+    "hole_radial_clearance_mm": 0.034,
+    "load_striker_d_mm": 4.31,
+    "load": {
+      "striker_travel_mm": 9.226,
+      "striker_retained": false,
+      "part_max_disp_under_load_mm": 6.415,
+      "part_disp_from_nominal_mm": 6.403,
+      "contacts_at_end": 26,
+      "force_at_unseat_N": 3.44
+    },
+    "drop_final_z_mm": -0.0
+  },
+  "elapsed_s": 45.8
+}

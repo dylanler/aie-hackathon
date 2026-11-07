@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "generatedAt": "2026-11-07T23:04:18.528Z",
+  "source": "fab lane (web/lib/fab) + core printer-fit",
+  "printers": [
+    {
+      "id": "bambu-a1",
+      "name": "Bambu Lab A1",
+      "build_mm": [
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "id": "prusa-mk4",
+      "name": "Prusa MK4",
+      "build_mm": [
+        250,
+        210,
+        220
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "part": "freezer_door_latch_clip",
+      "name": "Freezer Door Latch Clip",
+      "stl": "parts/freezer_door_latch_clip.stl",
+      "material": "PETG",
+      "dims_mm": [
+        40,
+        20,
+        14.5
+      ],
+      "est_grams": 3.8,
+      "fits": [
+        "bambu-a1",
+        "prusa-mk4",
+        "ender-3",
+        "bambu-a1-mini"
+      ]
+    }
+  ],
+  "summary": {
+    "partCount": 1,
+    "printableHere": 1,
+    "quoted": 0,
+    "quoteUnavailable": 1,
+    "downloadCount": 2
+  },
+  "orderPlaced": false,
+  "autoPay": false,
+  "route": "home-print",
+  "printer": "bambu-a1",
+  "printers_checked": [
+    {
+      "id": "bambu-a1",
+      "name": "Bambu Lab A1",
+      "bed_mm": [
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "id": "prusa-mk4",
+      "name": "Prusa MK4",
+      "bed_mm": [
+        250,
+        210,
+        220
+      ]
+    },
+    {
+      "id": "ender-3",
+      "name": "Creality Ender-3",
+      "bed_mm": [
+        220,
+        220,
+        250
+      ]
+    },
+    {
+      "id": "bambu-a1-mini",
+      "name": "Bambu Lab A1 mini",
+      "bed_mm": [
+        180,
+        180,
+        180
+      ]
+    }
+  ],
+  "print": {
+    "orientation": "flat on base plate, tunnel axis across Y, no overhangs over holes",
+    "supports": false,
+    "infill_pct": 60
+  },
+  "note": "Prints on a Bambu Lab A1. Download the STL and slice.",
+  "core": {
+    "route": "home-print",
+    "printer": "bambu-a1",
+    "parts": [
+      {
+        "part": "freezer_door_latch_clip",
+        "name": "Freezer Door Latch Clip",
+        "stl": "parts/freezer_door_latch_clip.stl",
+        "material": "PETG",
+        "dims_mm": [
+          40,
+          20,
+          14.5
+        ],
+        "est_grams": 3.8,
+        "fits": [
+          "bambu-a1",
+          "prusa-mk4",
+          "ender-3",
+          "bambu-a1-mini"
+        ]
+      }
+    ],
+    "note": "Prints on a Bambu Lab A1."
+  }
+}
