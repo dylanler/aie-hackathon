@@ -145,6 +145,9 @@ export async function runPipeline(id: string, prompt: string) {
     // Physics checks from the MuJoCo lane (sim/verify.py) gate the verdict (SIM_GATE=0 makes them advisory).
     const simChecks: (CheckResult & { detail?: string })[] = (simVerdict?.checks || []).map((c: any) => ({ name: `sim:${c.name}`, pass: !!c.pass, value: c.value ?? null, unit: c.unit, detail: c.detail }));
     const simGate = process.env.SIM_GATE !== "0"; // physics gates pass/fail by default
+    // If the physics verifier exists but produced nothing, the part is NOT physics-verified: that fails the gate.
+    if (!simVerdict && fs.existsSync(path.join(repoRoot(), "sim", "verify.py")))
+      simChecks.push({ name: "sim:verifier_ran", pass: false, value: null, detail: "MuJoCo verifier did not produce sim_verdict.json" });
     const allChecks: CheckResult[] = [...checks, ...(simGate ? simChecks : [])];
     // SubQ Snap is a second, independent opinion. It is recorded but advisory: it does not gate pass/fail.
     const advisory: any[] = subq !== null ? [{ name: "subq_judge_p_satisfies", pass: subq >= 0.5, value: subq, unit: "p", advisory: true }] : [];
