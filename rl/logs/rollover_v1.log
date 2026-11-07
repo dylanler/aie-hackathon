@@ -1,0 +1,58 @@
+skill=rollover version=1 timesteps=8192
+backend=stable-baselines3 device=cpu algorithm=PPO
+reward_fn=/workspace/rl/rewards/versions/rollover_v1.py
+checkpoint=/workspace/rl/checkpoints/rollover_v1.zip
+EPISODE {"timestep": 160, "ep_return": 39.6714, "ep_len": 160, "task_score": 0.19342566135815573}
+EPISODE {"timestep": 320, "ep_return": 31.869, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 480, "ep_return": 23.0076, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 640, "ep_return": 172.4582, "ep_len": 160, "task_score": 0.9299999999999999}
+EPISODE {"timestep": 800, "ep_return": 116.8601, "ep_len": 160, "task_score": 0.8096875}
+EPISODE {"timestep": 960, "ep_return": 118.3498, "ep_len": 160, "task_score": 0.811875}
+EPISODE {"timestep": 1120, "ep_return": 73.9258, "ep_len": 160, "task_score": 0.7046875}
+EPISODE {"timestep": 1280, "ep_return": 112.3244, "ep_len": 160, "task_score": 0.72875}
+EPISODE {"timestep": 1440, "ep_return": 41.3047, "ep_len": 160, "task_score": 0.6675}
+EPISODE {"timestep": 1600, "ep_return": 109.5461, "ep_len": 160, "task_score": 0.7615625}
+EPISODE {"timestep": 1760, "ep_return": 134.5472, "ep_len": 160, "task_score": 0.8184375}
+EPISODE {"timestep": 1920, "ep_return": 23.9934, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 2080, "ep_return": 37.0236, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 2240, "ep_return": 153.5309, "ep_len": 160, "task_score": 0.890625}
+EPISODE {"timestep": 2400, "ep_return": 65.4289, "ep_len": 160, "task_score": 0.71125}
+EPISODE {"timestep": 2560, "ep_return": 68.0408, "ep_len": 160, "task_score": 0.71125}
+EPISODE {"timestep": 2720, "ep_return": 28.5743, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 2880, "ep_return": 145.9011, "ep_len": 160, "task_score": 0.846875}
+EPISODE {"timestep": 3040, "ep_return": 24.7987, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 3200, "ep_return": 76.9342, "ep_len": 160, "task_score": 0.7353125}
+EPISODE {"timestep": 3360, "ep_return": 176.8482, "ep_len": 160, "task_score": 0.943125}
+EPISODE {"timestep": 3520, "ep_return": 97.3593, "ep_len": 160, "task_score": 0.7703125}
+EPISODE {"timestep": 3680, "ep_return": 139.6876, "ep_len": 160, "task_score": 0.8731249999999999}
+EPISODE {"timestep": 3840, "ep_return": 130.6472, "ep_len": 160, "task_score": 0.8403125}
+EPISODE {"timestep": 4000, "ep_return": 125.9702, "ep_len": 160, "task_score": 0.8228125000000001}
+EPISODE {"timestep": 4160, "ep_return": 71.3078, "ep_len": 160, "task_score": 0.72875}
+EPISODE {"timestep": 4320, "ep_return": 90.1821, "ep_len": 160, "task_score": 0.7353125}
+EPISODE {"timestep": 4480, "ep_return": 64.6717, "ep_len": 160, "task_score": 0.7221875}
+EPISODE {"timestep": 4640, "ep_return": 157.3159, "ep_len": 160, "task_score": 0.9015625}
+EPISODE {"timestep": 4800, "ep_return": 131.8688, "ep_len": 160, "task_score": 0.846875}
+EPISODE {"timestep": 4960, "ep_return": 23.4501, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 5120, "ep_return": 135.5427, "ep_len": 160, "task_score": 0.8446875}
+EPISODE {"timestep": 5280, "ep_return": 165.755, "ep_len": 160, "task_score": 0.88625}
+EPISODE {"timestep": 5440, "ep_return": 42.9713, "ep_len": 160, "task_score": 0.6609375000000001}
+EPISODE {"timestep": 5600, "ep_return": 125.0772, "ep_len": 160, "task_score": 0.820625}
+EPISODE {"timestep": 5760, "ep_return": 152.8529, "ep_len": 160, "task_score": 0.8884375}
+EPISODE {"timestep": 5920, "ep_return": 116.1705, "ep_len": 160, "task_score": 0.8096875}
+EPISODE {"timestep": 6080, "ep_return": 25.0675, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 6240, "ep_return": 25.2104, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 6400, "ep_return": 29.6984, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 6560, "ep_return": 156.7428, "ep_len": 160, "task_score": 0.8709375}
+EPISODE {"timestep": 6720, "ep_return": 118.3479, "ep_len": 160, "task_score": 0.8228125000000001}
+EPISODE {"timestep": 6880, "ep_return": 39.4557, "ep_len": 160, "task_score": 0.6653125}
+EPISODE {"timestep": 7040, "ep_return": 161.7873, "ep_len": 160, "task_score": 0.916875}
+EPISODE {"timestep": 7200, "ep_return": 81.0898, "ep_len": 160, "task_score": 0.7134375000000001}
+EPISODE {"timestep": 7360, "ep_return": 131.5708, "ep_len": 160, "task_score": 0.8403125}
+EPISODE {"timestep": 7520, "ep_return": 108.3485, "ep_len": 160, "task_score": 0.794375}
+EPISODE {"timestep": 7680, "ep_return": 93.0992, "ep_len": 160, "task_score": 0.7528125}
+EPISODE {"timestep": 7840, "ep_return": 22.5517, "ep_len": 160, "task_score": 0.0}
+EPISODE {"timestep": 8000, "ep_return": 129.8101, "ep_len": 160, "task_score": 0.846875}
+EPISODE {"timestep": 8160, "ep_return": 57.4231, "ep_len": 160, "task_score": 0.698125}
+EPISODE {"timestep": 8192, "ep_return": 4.6144, "ep_len": 32, "partial": true}
+EVAL {"steps": 160, "mean_reward": 0.000678, "ep_return": 0.108466, "mean_vx": 0.000742, "upright_fraction": 1.0, "inverted_fraction": 0.0, "still_fraction": 0.99375, "min_up_z": 0.999792, "max_up_z": 0.999998, "min_height": 0.129792, "fell": 0.0, "inverted_reached": 0.0, "action_jitter": 0.000201, "reward_errors": 0, "task_score": 0.0, "probe_scripted_reward": 0.891733, "probe_bad_reward": 0.0, "probe_gap": 0.891733, "timesteps": 8192, "backend": "stable-baselines3", "device": "cpu", "version": 1}
+PROBE scripted_mean_reward=0.891733 bad_mean_reward=0.000000 gap=0.891733

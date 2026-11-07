@@ -1,0 +1,43 @@
+{
+  "robot": "mini-dog-12dof",
+  "mjcf": "robot.xml",
+  "skills": [
+    {
+      "name": "walk",
+      "policy": "walk.onnx",
+      "reward_fn": "rewards/walk.py",
+      "reward_version": 2,
+      "curve": "walk_curve.json",
+      "video": "walk.mp4",
+      "success": 0.9731
+    },
+    {
+      "name": "trot",
+      "policy": "trot.onnx",
+      "reward_fn": "rewards/trot.py",
+      "reward_version": 2,
+      "curve": "trot_curve.json",
+      "video": "trot.mp4",
+      "success": 0.893
+    },
+    {
+      "name": "rollover",
+      "policy": "rollover.onnx",
+      "reward_fn": "rewards/rollover.py",
+      "reward_version": 1,
+      "curve": "rollover_curve.json",
+      "video": "rollover.mp4",
+      "success": 0.8644
+    },
+    {
+      "name": "play-dead",
+      "policy": "play-dead.onnx",
+      "reward_fn": "rewards/play_dead.py",
+      "reward_version": 2,
+      "curve": "play-dead_curve.json",
+      "video": "play-dead.mp4",
+      "success": 0.6944
+    }
+  ],
+  "firmware": "firmware/README.md"
+}
