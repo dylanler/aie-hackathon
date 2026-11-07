@@ -1,0 +1,53 @@
+[
+  {
+    "version": "v1",
+    "parent": null,
+    "trainPass": 0.7,
+    "heldoutPass": 0.6875,
+    "trainN": 20,
+    "heldoutN": 16,
+    "adopted": true,
+    "diffSummary": "baseline hand-written skill",
+    "ts": 1794090498813,
+    "subqMean": 0.447,
+    "failures": [
+      {
+        "case": "cable-clip",
+        "failed": [
+          "through-hole Ø3.8±0.5 mm (measured 1.69 mm; 1 match(es), found 0)"
+        ]
+      },
+      {
+        "case": "cable-clip",
+        "failed": [
+          "through-hole Ø3.8±0.5 mm (measured n/a mm; 1 match(es), found 0)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.46 mm; 2 match(es), found 1)",
+          "size ≤ 80×80×120 mm (measured 60×88×90 mm)"
+        ]
+      },
+      {
+        "case": "curtain-rod-bracket",
+        "failed": [
+          "2× through-hole Ø5.3±0.6 mm (measured 5.02 mm; 2 match(es), found 1)"
+        ]
+      },
+      {
+        "case": "drawer-pull",
+        "failed": [
+          "size ≤ 40×40×120 mm (measured 18×43.99×116.99 mm)"
+        ]
+      },
+      {
+        "case": "pegboard-hook-plate",
+        "failed": [
+          "through-hole Ø20.5±1.5 mm (measured n/a mm; 1 match(es), found 0)"
+        ]
+      }
+    ]
+  }
+]
