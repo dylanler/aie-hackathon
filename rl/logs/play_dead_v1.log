@@ -1,0 +1,47 @@
+skill=play-dead version=1 timesteps=8192
+backend=stable-baselines3 device=cpu algorithm=PPO
+reward_fn=/workspace/rl/rewards/versions/play_dead_v1.py
+checkpoint=/workspace/rl/checkpoints/play_dead_v1.zip
+EPISODE {"timestep": 200, "ep_return": 231.3717, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 400, "ep_return": 229.1663, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 600, "ep_return": 229.2771, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 800, "ep_return": 225.8897, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 1000, "ep_return": 229.7482, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 1200, "ep_return": 229.7896, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 1400, "ep_return": 230.7133, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 1600, "ep_return": 227.0703, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 1800, "ep_return": 227.5401, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 2000, "ep_return": 231.0165, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 2200, "ep_return": 229.6474, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 2400, "ep_return": 230.0982, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 2600, "ep_return": 231.3583, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 2800, "ep_return": 227.238, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 3000, "ep_return": 232.814, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 3200, "ep_return": 229.9463, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 3400, "ep_return": 229.4826, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 3600, "ep_return": 230.1933, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 3800, "ep_return": 228.141, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 4000, "ep_return": 229.3084, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 4200, "ep_return": 230.1812, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 4400, "ep_return": 233.0379, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 4600, "ep_return": 229.4033, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 4800, "ep_return": 230.0604, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 5000, "ep_return": 229.9103, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 5200, "ep_return": 228.8214, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 5400, "ep_return": 229.8986, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 5600, "ep_return": 233.2618, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 5800, "ep_return": 226.8005, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 6000, "ep_return": 231.0129, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 6200, "ep_return": 228.4446, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 6400, "ep_return": 230.336, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 6600, "ep_return": 227.6837, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 6800, "ep_return": 231.4445, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 7000, "ep_return": 229.7247, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 7200, "ep_return": 229.6515, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 7400, "ep_return": 229.7975, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 7600, "ep_return": 226.6322, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 7800, "ep_return": 228.2018, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 8000, "ep_return": 225.3894, "ep_len": 200, "task_score": 0.55}
+EPISODE {"timestep": 8192, "ep_return": 220.3276, "ep_len": 192, "partial": true}
+EVAL {"steps": 200, "mean_reward": 1.74688, "ep_return": 349.375914, "mean_vx": -8e-06, "upright_fraction": 0.0, "inverted_fraction": 1.0, "still_fraction": 0.985, "min_up_z": -1.0, "max_up_z": -0.94653, "min_height": 0.040679, "fell": 0.0, "inverted_reached": 1.0, "action_jitter": 0.000393, "reward_errors": 0, "task_score": 0.99325, "probe_scripted_reward": 0.352682, "probe_bad_reward": -0.109697, "probe_gap": 0.462379, "timesteps": 8192, "backend": "stable-baselines3", "device": "cpu", "version": 1}
+PROBE scripted_mean_reward=0.352682 bad_mean_reward=-0.109697 gap=0.462379
