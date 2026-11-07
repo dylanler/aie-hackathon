@@ -1,0 +1,59 @@
+{
+  "pass": false,
+  "fits_printer": "bambu-a1",
+  "checks": [
+    {
+      "name": "OpenSCAD compiles",
+      "pass": true,
+      "value": "1/1"
+    },
+    {
+      "name": "fits 256\u00d7256\u00d7256 mm bed",
+      "pass": true,
+      "value": 32,
+      "unit": "mm"
+    },
+    {
+      "name": "size \u2265 4\u00d712\u00d720 mm",
+      "pass": true,
+      "value": "14\u00d720\u00d732",
+      "unit": "mm"
+    },
+    {
+      "name": "size \u2264 35\u00d770\u00d7110 mm",
+      "pass": true,
+      "value": "14\u00d720\u00d732",
+      "unit": "mm"
+    },
+    {
+      "name": "wall \u2265 1.2 mm",
+      "pass": true,
+      "value": 2.5,
+      "unit": "mm"
+    },
+    {
+      "name": "volume \u2265 800 mm\u00b3",
+      "pass": true,
+      "value": 3669.7,
+      "unit": "mm3"
+    },
+    {
+      "name": "volume \u2264 50000 mm\u00b3",
+      "pass": true,
+      "value": 3669.7,
+      "unit": "mm3"
+    },
+    {
+      "name": "\u2265 1 parts",
+      "pass": true,
+      "value": 1
+    },
+    {
+      "name": "subq_judge_p_satisfies",
+      "pass": false,
+      "value": 0.085,
+      "unit": "p"
+    }
+  ],
+  "notes": "Failed: subq_judge_p_satisfies"
+}
