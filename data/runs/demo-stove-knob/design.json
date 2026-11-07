@@ -1,0 +1,33 @@
+{
+  "kind": "static",
+  "summary": "Replacement stove control knob with reinforced D-bore hub for 6mm D-shaft, rated for high heat in ASA.",
+  "assumptions": [
+    "6.0mm D-shaft with 4.5mm flat-to-back dimension",
+    "42mm OD x 28mm tall knob body assumed",
+    "20mm bore depth with 0.1mm total clearance for ASA press-fit",
+    "120C ambient requires ASA, not PETG/PLA"
+  ],
+  "parts": [
+    {
+      "id": "stove_knob",
+      "name": "Stove Control Knob",
+      "material": "ASA",
+      "purpose": "press-fits onto 6mm metal D-shaft and transmits turning torque without cracking",
+      "params": {
+        "outer_diameter_mm": 42,
+        "overall_height_mm": 28,
+        "bore_diameter_mm": 6,
+        "flat_to_back_mm": 4.5,
+        "bore_depth_mm": 20
+      },
+      "scad": "parts/stove_knob.scad"
+    }
+  ],
+  "print": {
+    "orientation": "print flat top face down on bed, bore opening facing up, no brim needed",
+    "supports": false,
+    "infill_pct": 60
+  },
+  "model": "muse-spark-1.3",
+  "skillVersion": "v1"
+}

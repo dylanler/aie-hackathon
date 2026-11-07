@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "generatedAt": "2026-11-07T23:41:45.925Z",
+  "source": "fab lane (web/lib/fab) + core printer-fit",
+  "printers": [
+    {
+      "id": "bambu-a1",
+      "name": "Bambu Lab A1",
+      "build_mm": [
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "id": "prusa-mk4",
+      "name": "Prusa MK4",
+      "build_mm": [
+        250,
+        210,
+        220
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "part": "stove_knob",
+      "name": "Stove Control Knob",
+      "stl": "parts/stove_knob.stl",
+      "material": "ASA",
+      "dims_mm": [
+        42,
+        42,
+        28
+      ],
+      "est_grams": 20,
+      "fits": [
+        "bambu-a1",
+        "prusa-mk4",
+        "ender-3",
+        "bambu-a1-mini"
+      ]
+    }
+  ],
+  "summary": {
+    "partCount": 1,
+    "printableHere": 1,
+    "quoted": 0,
+    "quoteUnavailable": 1,
+    "downloadCount": 2
+  },
+  "orderPlaced": false,
+  "autoPay": false,
+  "route": "home-print",
+  "printer": "bambu-a1",
+  "printers_checked": [
+    {
+      "id": "bambu-a1",
+      "name": "Bambu Lab A1",
+      "bed_mm": [
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "id": "prusa-mk4",
+      "name": "Prusa MK4",
+      "bed_mm": [
+        250,
+        210,
+        220
+      ]
+    },
+    {
+      "id": "ender-3",
+      "name": "Creality Ender-3",
+      "bed_mm": [
+        220,
+        220,
+        250
+      ]
+    },
+    {
+      "id": "bambu-a1-mini",
+      "name": "Bambu Lab A1 mini",
+      "bed_mm": [
+        180,
+        180,
+        180
+      ]
+    }
+  ],
+  "print": {
+    "orientation": "print flat top face down on bed, bore opening facing up, no brim needed",
+    "supports": false,
+    "infill_pct": 60
+  },
+  "note": "Prints on a Bambu Lab A1. Download the STL and slice.",
+  "core": {
+    "route": "home-print",
+    "printer": "bambu-a1",
+    "parts": [
+      {
+        "part": "stove_knob",
+        "name": "Stove Control Knob",
+        "stl": "parts/stove_knob.stl",
+        "material": "ASA",
+        "dims_mm": [
+          42,
+          42,
+          28
+        ],
+        "est_grams": 20,
+        "fits": [
+          "bambu-a1",
+          "prusa-mk4",
+          "ender-3",
+          "bambu-a1-mini"
+        ]
+      }
+    ],
+    "note": "Prints on a Bambu Lab A1."
+  }
+}
