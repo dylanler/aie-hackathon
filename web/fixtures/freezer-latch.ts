@@ -61,7 +61,7 @@ export const freezerEvents: [number, RunEvent][] = [
     kind: "static", object: "Freezer door latch", failure: "Retaining hook snapped from cold fatigue",
     assumptions: ["Striker pin Ø6 mm", "Two M4 screws, 24 mm apart", "PETG for -20 °C toughness"],
   })],
-  [500, t("design", "start", "Designing with skill v5", "muse")],
+  [500, t("design", "start", "Designing with the adopted skill", "muse")],
   [1100, t("design", "progress", "Ramped lip so the door snaps, not slams", "muse")],
   [800, t("design", "artifact", "2 parts: latch clip, hinge shim", "muse")],
   [400, t("cad", "start", "Compiling OpenSCAD to STL")],

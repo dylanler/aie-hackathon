@@ -12,11 +12,14 @@ export function GetsBetter({ variant = "strip" }: { variant?: "strip" | "quiet" 
   if (!history.length) return null;
   const first = history[0];
   const best = [...history].reverse().find((h) => h.version === current) ?? history[history.length - 1];
-  const W = 36 * (history.length - 1);
+  const n0 = history.length;
+  const W = Math.max(144, 36 * (n0 - 1));
+  const step = n0 > 1 ? W / (n0 - 1) : 0;
+  const X = (i: number) => (n0 > 1 ? i * step : W / 2);
   const H = 40;
   const y = (h: HistoryEntry) => H - pct(h) * H;
   const adopted = history.map((h, i) => ({ h, i })).filter((x) => x.h.adopted);
-  const line = adopted.map((x, k) => `${k ? "L" : "M"}${x.i * 36},${y(x.h)}`).join(" ");
+  const line = adopted.map((x, k) => `${k ? "L" : "M"}${X(x.i)},${y(x.h)}`).join(" ");
   const n = best.heldoutN;
   const frac = (h: HistoryEntry) => (h.heldoutN ? `${Math.round(pct(h) * h.heldoutN)}/${h.heldoutN}` : `${Math.round(pct(h) * 100)}%`);
 
@@ -25,7 +28,7 @@ export function GetsBetter({ variant = "strip" }: { variant?: "strip" | "quiet" 
       <div className="flex items-center gap-3 text-s text-text-3">
         <span className="lbl">skill {best.version}{source === "fixture" ? " · sample" : ""}</span>
         <span className="num">{frac(best)} held-out</span>
-        <span className="num text-text-2">↑ from {frac(first)}</span>
+        {history.length > 1 && pct(best) !== pct(first) && <span className="num text-text-2">{pct(best) > pct(first) ? "↑" : "↓"} from {frac(first)}</span>}
       </div>
     );
   }
@@ -48,16 +51,16 @@ export function GetsBetter({ variant = "strip" }: { variant?: "strip" | "quiet" 
           const isCur = h.version === current;
           return (
             <g key={h.version + i} onPointerEnter={() => setHover(h)} className="cursor-default">
-              <rect x={i * 36 - 14} y={-6} width={28} height={H + 30} fill="transparent" />
-              {!h.adopted && h.parent && <line x1={i * 36} x2={i * 36} y1={y(h)} y2={H} stroke="#5E5E66" strokeDasharray="1.5 2.5" />}
+              <rect x={X(i) - 14} y={-6} width={28} height={H + 30} fill="transparent" />
+              {!h.adopted && h.parent && <line x1={X(i)} x2={X(i)} y1={y(h)} y2={H} stroke="#5E5E66" strokeDasharray="1.5 2.5" />}
               <motion.circle
-                cx={i * 36} cy={y(h)} r={isCur ? 5 : 4}
+                cx={X(i)} cy={y(h)} r={isCur ? 5 : 4}
                 fill={h.adopted ? "#FF5A1F" : "#0B0B0C"} stroke={h.adopted ? "#FF5A1F" : "#9A9AA1"} strokeWidth={1.25}
                 initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.15 + i * 0.06, duration: 0.32, ease: EASE_OUT }}
-                style={{ transformOrigin: `${i * 36}px ${y(h)}px` }}
+                style={{ transformOrigin: `${X(i)}px ${y(h)}px` }}
               />
-              {isCur && <circle cx={i * 36} cy={y(h)} r={9} fill="none" stroke="#FF5A1F" strokeOpacity={0.35} />}
-              <text x={i * 36} y={H + 16} textAnchor="middle" fontSize="11" fill={hover === h ? "#EDEDEF" : h.adopted ? "#9A9AA1" : "#5E5E66"}
+              {isCur && <circle cx={X(i)} cy={y(h)} r={9} fill="none" stroke="#FF5A1F" strokeOpacity={0.35} />}
+              <text x={X(i)} y={H + 16} textAnchor="middle" fontSize="11" fill={hover === h ? "#EDEDEF" : h.adopted ? "#9A9AA1" : "#5E5E66"}
                 className="num" textDecoration={h.adopted ? undefined : "line-through"}>{h.version}</text>
             </g>
           );

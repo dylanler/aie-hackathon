@@ -69,7 +69,7 @@ export const dogEvents: [number, RunEvent][] = [
     kind: "robot", object: "Mini robot dog", failure: "New product, four behaviours",
     assumptions: ["12 × SG90 micro servos", "ESP32 controller", "Under 400 g"],
   })],
-  [500, t("design", "start", "Designing with skill v5", "muse")],
+  [500, t("design", "start", "Designing with the adopted skill", "muse")],
   [1100, t("design", "artifact", "5 parts: chassis, head, thigh, shin, deck", "muse")],
   [700, t("cad", "done", "5/5 parts compiled")],
   [300, t("design", "done", "Chassis with 12 servo pockets", "muse")],
