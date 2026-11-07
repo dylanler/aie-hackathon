@@ -26,6 +26,7 @@ export async function writeDesign(prompt: string, skill: string, context?: strin
   ];
   const r = await callLLM({ role: "designer", messages, json: true, effort: "low" });
   const design = parseJSON<Design>(r.text);
+  if (Array.isArray(design.parts)) design.parts = design.parts.filter((p) => p && typeof p.scad === "string" && p.scad.trim().length > 10);
   if (!Array.isArray(design.parts) || !design.parts.length) throw new Error("designer returned no parts");
   design.parts = design.parts.map((p, i) => ({ ...p, id: String(p.id || `part_${i + 1}`).replace(/[^a-z0-9_-]/gi, "_").toLowerCase() }));
   return { design, model: r.model, provider: r.provider };
@@ -56,6 +57,7 @@ export async function repairDesign(prompt: string, skill: string, design: Design
   ];
   const r = await callLLM({ role: "designer", messages, json: true, effort: "low" });
   const d = parseJSON<Design>(r.text);
+  if (Array.isArray(d.parts)) d.parts = d.parts.filter((p) => p && typeof p.scad === "string" && p.scad.trim().length > 10);
   if (!Array.isArray(d.parts) || !d.parts.length) throw new Error("repair returned no parts");
   d.parts = d.parts.map((p, i) => ({ ...p, id: String(p.id || `part_${i + 1}`).replace(/[^a-z0-9_-]/gi, "_").toLowerCase() }));
   return { design: d, model: r.model, provider: r.provider };
