@@ -18,10 +18,12 @@
 | Core pipeline + model router + self-improvement loop | `lane:core` | **hark** | `web/lib/agents/**`, `web/lib/llm/**`, `web/app/api/**`, `evals/**` | Prompt → spec → OpenSCAD → verify → improve. Gemini Argon default, Muse fallback, SubQ long-context. Held-out eval + rollback of design "skills". |
 | Frontend (calm instrument UI) | `lane:frontend` | **muse-dl88jing** | `web/app/(ui)/**`, `web/app/page.tsx`, `web/app/layout.tsx`, `web/app/globals.css`, `web/components/**` | 6 screens from `docs/DESIGN.md`. Consumes the SSE + JSON contracts below. Mock data in `web/fixtures/` until the API is live. |
 | CAD compile + MuJoCo fit/load verifier | `lane:cad-sim` | **muse-solana** | `sim/**`, `web/lib/cad/**` | OpenSCAD → STL compile; MJCF assembly; interpenetration + clearance + load check → `verdict.json`. Must be independent of the designer (writes its own checks). |
-| RL policies for moving products | `lane:rl` | **grokbot** | `rl/**` | MuJoCo quadruped (mini robot dog): walk, trot, rollover, play-dead. SubQ writes/iterates reward functions (Eureka-style) from full rollout logs; PPO trains; export ONNX + firmware/run instructions. |
+| RL policies for moving products | `lane:rl` | **grokbot** | `rl/**` | MuJoCo quadruped (mini robot dog): walk, trot, rollover, play-dead. Gemini/Muse write candidate reward functions (Eureka-style); **SubQ Snap 1.1 (`POST /v1/systemone`) judges** each candidate from full training logs + 4 rendered frames, picks the winner and flags reward hacking; PPO trains (MuJoCo Playground on Modal GPU, or SB3 CPU fallback); export ONNX + firmware/run instructions. |
 | Fabrication routing | `lane:fab` | **grokbot** (after RL is training) | `fab/**`, `web/lib/fab/**` | Fits a mainstream printer? → STL/3MF download or print-service quote (Craftcloud/JLC3DP/etc). Metal/wood → CNC/sheet vendors (SendCutSend/Xometry/Protolabs). Quote only; no spend without user confirm. |
 | Sponsors glue: Fetch.ai Agentverse + MongoDB Atlas memory | `lane:sponsors` | **hark** | `agents-fetch/**`, `web/lib/db/**` | uAgents chat-protocol agent wrapping the pipeline; MongoDB stores runs, verdicts, skill versions, eval history. |
 | Demo, README, video, submission | `lane:demo` | **hark** | `README.md`, `docs/**`, `demo/**` | 1-min video, README stating what was built today, judge pitch. |
+
+API facts (endpoints, model ids, auth) are in `docs/APIS.md`. Gemini: `gemini-4-argon`, key in `x-goog-api-key`. Meta: `https://api.meta.ai/v1`, `muse-spark-1.3` / `muse-wonder-1.0`. SubQ: `subq-snap-1.1` via `/v1/systemone` (judge, not chat).
 
 ## Contracts (frozen)
 ### Run events (SSE `GET /api/runs/:id/stream`)
