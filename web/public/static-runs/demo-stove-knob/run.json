@@ -1,0 +1,81 @@
+{
+  "id": "demo-stove-knob",
+  "prompt": "My stove knob cracked off",
+  "kind": "static",
+  "parts": [
+    {
+      "id": "stove_knob",
+      "name": "Stove Control Knob",
+      "scad": "parts/stove_knob.scad",
+      "stl": "parts/stove_knob.stl",
+      "material": "ASA",
+      "dims_mm": [
+        42,
+        42,
+        28
+      ],
+      "printable": true,
+      "purpose": "press-fits onto 6mm metal D-shaft and transmits turning torque without cracking",
+      "params": {
+        "outer_diameter_mm": 42,
+        "overall_height_mm": 28,
+        "bore_diameter_mm": 6,
+        "flat_to_back_mm": 4.5,
+        "bore_depth_mm": 20
+      },
+      "compiled": true
+    }
+  ],
+  "verdict": "verdict.json",
+  "rl": null,
+  "fab": "fab.json",
+  "skillVersion": "v1",
+  "status": "done",
+  "createdAt": 1794094630711,
+  "stages": {
+    "diagnose": {
+      "status": "done",
+      "startedAt": 1794094630718,
+      "ms": 8583
+    },
+    "design": {
+      "status": "done",
+      "startedAt": 1794094639303,
+      "ms": 24813
+    },
+    "cad": {
+      "status": "done",
+      "startedAt": 1794094664119,
+      "ms": 234945
+    },
+    "verify": {
+      "status": "done",
+      "startedAt": 1794094899068,
+      "ms": 6279
+    },
+    "improve": {
+      "status": "done",
+      "startedAt": 1794094905795,
+      "ms": 8
+    },
+    "rl": {
+      "status": "done",
+      "startedAt": 1794094905805,
+      "ms": 8
+    },
+    "make": {
+      "status": "done",
+      "startedAt": 1794094905815,
+      "ms": 117
+    }
+  },
+  "physics": "local",
+  "verdictSummary": {
+    "pass": false,
+    "passed": 8,
+    "total": 9,
+    "round": 1
+  },
+  "rounds": 1,
+  "finishedAt": 1794094905934
+}

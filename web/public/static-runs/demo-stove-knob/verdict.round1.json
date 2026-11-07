@@ -1,0 +1,84 @@
+{
+  "pass": false,
+  "fits_printer": "bambu-a1",
+  "checks": [
+    {
+      "name": "OpenSCAD compiles",
+      "pass": true,
+      "value": "1/1",
+      "by": "critic"
+    },
+    {
+      "name": "fits 256×256×256 mm bed",
+      "pass": true,
+      "value": 42,
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "size ≥ 15×35×35 mm",
+      "pass": true,
+      "value": "28×42×42",
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "size ≤ 40×70×70 mm",
+      "pass": true,
+      "value": "28×42×42",
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "wall ≥ 1.6 mm",
+      "pass": true,
+      "value": 2,
+      "unit": "mm",
+      "by": "critic"
+    },
+    {
+      "name": "volume ≥ 6000 mm³",
+      "pass": true,
+      "value": 31209.9,
+      "unit": "mm3",
+      "by": "critic"
+    },
+    {
+      "name": "volume ≤ 80000 mm³",
+      "pass": true,
+      "value": 31209.9,
+      "unit": "mm3",
+      "by": "critic"
+    },
+    {
+      "name": "≥ 1 parts",
+      "pass": true,
+      "value": 1,
+      "by": "critic"
+    },
+    {
+      "name": "sim:verifier_ran",
+      "pass": false,
+      "value": null,
+      "detail": "MuJoCo verifier did not produce sim_verdict.json",
+      "by": "mujoco"
+    },
+    {
+      "name": "subq_judge_p_satisfies",
+      "pass": false,
+      "value": 0.122,
+      "unit": "p",
+      "advisory": true
+    }
+  ],
+  "critic_pass": true,
+  "physics_pass": null,
+  "physics": "not verified",
+  "subq_p_satisfies": 0.122,
+  "heatmap": null,
+  "sim_media": [],
+  "notes": "Failed: sim:verifier_ran",
+  "round": 1,
+  "critic_model": "muse-wonder-1.0",
+  "sim": false
+}

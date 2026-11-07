@@ -1,0 +1,59 @@
+{
+  "written_from": "user prompt only (critic never sees the designer's reasoning or code)",
+  "model": "muse-wonder-1.0",
+  "criteria": [
+    {
+      "type": "compiles"
+    },
+    {
+      "type": "fits_bed",
+      "bed_mm": [
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "type": "bbox_min",
+      "mm": [
+        15,
+        35,
+        35
+      ]
+    },
+    {
+      "type": "bbox_max",
+      "mm": [
+        40,
+        70,
+        70
+      ]
+    },
+    {
+      "type": "min_wall",
+      "mm": 1.6
+    },
+    {
+      "type": "volume_min",
+      "mm3": 6000
+    },
+    {
+      "type": "volume_max",
+      "mm3": 80000
+    },
+    {
+      "type": "parts_min",
+      "n": 1
+    }
+  ],
+  "rationale": [
+    "Part must compile to a valid printable STL.",
+    "Part must fit on a standard 256 mm household printer bed.",
+    "Must be at least a hand-grippable knob size, not a small cap or disc.",
+    "Must not be oversized for a typical stove control knob.",
+    "Wall of at least 1.6 mm withstands repeated turning torque in PETG/PLA.",
+    "Must have enough material for a grippable body with a shaft socket.",
+    "Must not be an excessively solid or oversized block of material.",
+    "Must contain at least one complete printable part."
+  ]
+}

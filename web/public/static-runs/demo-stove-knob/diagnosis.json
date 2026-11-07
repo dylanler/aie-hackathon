@@ -1,0 +1,25 @@
+{
+  "kind": "static",
+  "object": "stove control knob",
+  "failure": "knob body cracked radially through shaft bore and split off metal D-shaft, losing torque transfer due to thermal aging embrittlement and hoop stress concentration at D-flat under normal turning force",
+  "dimensions": {
+    "outer_diameter": "42 mm (assumed)",
+    "overall_height": "28 mm (assumed)",
+    "shaft_bore_diameter": "6.0 mm (assumed)",
+    "shaft_bore_D-flat_width": "4.5 mm (assumed)",
+    "bore_depth": "20 mm (assumed)",
+    "wall_thickness_around_bore": "4.0 mm (assumed)"
+  },
+  "requirements": [
+    "press-fit onto 6mm D-shaft without slipping under turning torque",
+    "transmit rotational torque to stove valve without cracking",
+    "withstand continuous 120C stove-top ambient heat",
+    "provide finger grip for on/off and temperature adjustment"
+  ],
+  "assumptions": [
+    "standard residential gas/electric stove with 6mm D-shaft",
+    "push-on plastic knob, no set-screw or insert, assumed dimensions for common universal knob",
+    "failure is plastic body crack, metal shaft intact"
+  ],
+  "model": "muse-spark-1.3"
+}
