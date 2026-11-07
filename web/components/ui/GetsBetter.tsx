@@ -28,7 +28,7 @@ export function GetsBetter({ variant = "strip" }: { variant?: "strip" | "quiet" 
       <div className="flex items-center gap-3 text-s text-text-3">
         <span className="lbl">skill {best.version}{source === "fixture" ? " · sample" : ""}</span>
         <span className="num">{frac(best)} held-out</span>
-        {history.length > 1 && pct(best) !== pct(first) && <span className="num text-text-2">{pct(best) > pct(first) ? "↑" : "↓"} from {frac(first)}</span>}
+        {history.length > 1 && frac(best) !== frac(first) && <span className="num text-text-2">{pct(best) > pct(first) ? "↑" : "↓"} from {frac(first)}</span>}
       </div>
     );
   }
