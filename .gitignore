@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.env*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+data/runs/*/
+!data/runs/.gitkeep
+rl/runs/
