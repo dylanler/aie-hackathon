@@ -1,0 +1,35 @@
+self-improvement loop: 2 iteration(s), samples=2, provider=muse
+
+v6 ← patch of v1 from 6 train failures
+  diff: Added qualitative through-cut, correct-size-and-count, envelope, and access/clearance/retention rules to fix blind/missing/undersized holes, oversize boxes, and seating failures without brittle numeric margins.
+  v6 train: 16/20 = 80.0%
+    ✗ curtain-rod-bracket#0: 2× through-hole Ø5.3±0.6 mm (measured 5.25 mm; 2 match(es), found 1)
+    ✗ curtain-rod-bracket#1: 2× through-hole Ø5.3±0.6 mm (measured 5.48 mm; 2 match(es), found 1)
+    ✗ shelf-pin#1: size ≤ 16×16×30 mm (measured 14×15×34.5 mm)
+    ✗ toilet-seat-hinge-cap#0: wall ≥ 1.2 mm (measured 0.8 mm)
+  v6 heldout: 11/16 = 68.8%
+    ✗ battery-cover#0: size ≥ 1.5×33×45 mm (measured 5.8×32.8×44.8 mm)
+    ✗ bike-light-mount#0: through-hole Ø32.2±0.6 mm (measured 5.47 mm; 1 match(es), found 0)
+    ✗ bike-light-mount#1: through-hole Ø32.2±0.6 mm (measured 5.56 mm; 1 match(es), found 0)
+    ✗ door-stop-wedge#0: through-hole Ø10±0.8 mm (measured n/a mm; 1 match(es), found 0)
+    ✗ towel-bar-bracket#0: 2× Ø4.4 holes 30±0.8 mm apart (measured 30.88 mm)
+  held-out 68.8% → 68.8%: ROLLED BACK to v1
+
+v7 ← patch of v1 from 6 train failures
+  diff: Added two short qualitative rules for through-cut subtraction discipline and consistent assemblable design to fix blind/mismatched holes and interference without numeric margins that overfit.
+  v7 train: 18/20 = 90.0%
+    ✗ curtain-rod-bracket#0: 2× through-hole Ø5.3±0.6 mm (measured 5.48 mm; 2 match(es), found 1)
+    ✗ curtain-rod-bracket#1: 2× through-hole Ø5.3±0.6 mm (measured 5.31 mm; 2 match(es), found 1)
+  v7 heldout: 7/16 = 43.8%
+    ✗ battery-cover#1: size ≤ 8×36×49 mm (measured 4.4×33.6×51.6 mm)
+    ✗ bike-light-mount#0: through-hole Ø32.2±0.6 mm (measured 5.24 mm; 1 match(es), found 0)
+    ✗ bike-light-mount#1: through-hole Ø32.2±0.6 mm (measured 5.47 mm; 1 match(es), found 0)
+    ✗ door-stop-wedge#0: through-hole Ø10±0.8 mm (measured n/a mm; 1 match(es), found 0)
+    ✗ door-stop-wedge#1: OpenSCAD compiles (measured 0/1) | fits 256×256×256 mm bed (measured 0 mm) | wall ≥ 1.6 mm (measured n/a mm) | through-hole Ø10±0.8 mm (measured n/a mm; 1 match(es), found 0) | size ≥ 20×25×110 mm (measured n/a mm) | siz
+    ✗ towel-bar-bracket#0: 2× Ø4.4 holes 30±0.8 mm apart (measured n/a mm) | size ≤ 60×60×80 mm (measured 36×52×108 mm)
+    ✗ towel-bar-bracket#1: 2× Ø4.4 holes 30±0.8 mm apart (measured n/a mm)
+    ✗ vacuum-wall-hook#0: 2× through-hole Ø4.4±0.6 mm (measured 4.38 mm; 2 match(es), found 1)
+    ✗ vacuum-wall-hook#1: 2× through-hole Ø4.4±0.6 mm (measured 4.48 mm; 2 match(es), found 1)
+  held-out 68.8% → 43.8%: ROLLED BACK to v1
+
+current skill: v1 (train 70.0%, held-out 68.8%)

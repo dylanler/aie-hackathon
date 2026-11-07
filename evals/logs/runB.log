@@ -1,0 +1,79 @@
+self-improvement loop: 4 iteration(s), samples=2, provider=muse
+baseline v1
+  v1 train: 14/20 = 70.0%
+    ✗ cable-clip#0: through-hole Ø3.8±0.5 mm (measured 1.69 mm; 1 match(es), found 0)
+    ✗ cable-clip#1: through-hole Ø3.8±0.5 mm (measured n/a mm; 1 match(es), found 0)
+    ✗ curtain-rod-bracket#0: 2× through-hole Ø5.3±0.6 mm (measured 5.46 mm; 2 match(es), found 1) | size ≤ 80×80×120 mm (measured 60×88×90 mm)
+    ✗ curtain-rod-bracket#1: 2× through-hole Ø5.3±0.6 mm (measured 5.02 mm; 2 match(es), found 1)
+    ✗ drawer-pull#0: size ≤ 40×40×120 mm (measured 18×43.99×116.99 mm)
+    ✗ pegboard-hook-plate#1: through-hole Ø20.5±1.5 mm (measured n/a mm; 1 match(es), found 0)
+  v1 heldout: 11/16 = 68.8%
+    ✗ bike-light-mount#0: through-hole Ø32.2±0.6 mm (measured 5.21 mm; 1 match(es), found 0)
+    ✗ bike-light-mount#1: through-hole Ø32.2±0.6 mm (measured 5.56 mm; 1 match(es), found 0)
+    ✗ towel-bar-bracket#1: 2× Ø4.4 holes 30±0.8 mm apart (measured 30.88 mm)
+    ✗ vacuum-wall-hook#0: 2× through-hole Ø4.4±0.6 mm (measured 4.34 mm; 2 match(es), found 1)
+    ✗ vacuum-wall-hook#1: OpenSCAD compiles (measured 0/1) | fits 256×256×256 mm bed (measured 0 mm) | wall ≥ 2 mm (measured n/a mm) | 2× through-hole Ø4.4±0.6 mm (measured n/a mm; 2 match(es), found 0) | size ≤ 80×100×150 mm (measured n/a mm)
+
+v2 ← patch of v1 from 6 train failures
+  diff: Added general envelope-margin, true through-hole construction, clearance-oversize, identical-repeated-holes, and single-solid rules to fix undersized/blind/missing holes and oversize bounding boxes.
+  v2 train: 18/20 = 90.0%
+    ✗ curtain-rod-bracket#0: 2× through-hole Ø5.3±0.6 mm (measured 5.34 mm; 2 match(es), found 1)
+    ✗ curtain-rod-bracket#1: 2× through-hole Ø5.3±0.6 mm (measured 5.39 mm; 2 match(es), found 1)
+  v2 heldout: 7/16 = 43.8%
+    ✗ battery-cover#1: size ≤ 8×36×49 mm (measured 4.2×37.1×48 mm)
+    ✗ bike-light-mount#0: through-hole Ø32.2±0.6 mm (measured 5.49 mm; 1 match(es), found 0)
+    ✗ bike-light-mount#1: through-hole Ø32.2±0.6 mm (measured 5.5 mm; 1 match(es), found 0)
+    ✗ door-stop-wedge#1: OpenSCAD compiles (measured 0/1) | fits 256×256×256 mm bed (measured 0 mm) | wall ≥ 1.6 mm (measured n/a mm) | through-hole Ø10±0.8 mm (measured n/a mm; 1 match(es), found 0) | size ≥ 20×25×110 mm (measured n/a mm) | siz
+    ✗ phone-stand-hinge-pin#0: size ≤ 10×10×50 mm (measured 6×6×81 mm)
+    ✗ towel-bar-bracket#0: 2× Ø4.4 holes 30±0.8 mm apart (measured 30.86 mm)
+    ✗ towel-bar-bracket#1: 2× Ø4.4 holes 30±0.8 mm apart (measured n/a mm)
+    ✗ vacuum-wall-hook#0: 2× through-hole Ø4.4±0.6 mm (measured 4.49 mm; 2 match(es), found 1)
+    ✗ vacuum-wall-hook#1: 2× through-hole Ø4.4±0.6 mm (measured n/a mm; 2 match(es), found 0)
+  held-out 68.8% → 43.8%: ROLLED BACK to v1
+
+v3 ← patch of v1 from 6 train failures
+  diff: Added general through-hole, clearance-compensation, exact-count duplication, envelope-margin, and single-solid union-then-cut rules to fix blind/undersized/missing holes and oversize parts.
+  v3 train: 19/20 = 95.0%
+    ✗ smoke-detector-plate#0: 2× Ø4.3 holes 83±0.8 mm apart (measured n/a mm)
+  v3 heldout: 9/16 = 56.3%
+    ✗ battery-cover#0: size ≤ 8×36×49 mm (measured 4×38×50 mm)
+    ✗ bike-light-mount#0: through-hole Ø32.2±0.6 mm (measured 5.37 mm; 1 match(es), found 0)
+    ✗ bike-light-mount#1: through-hole Ø32.2±0.6 mm (measured 5.34 mm; 1 match(es), found 0)
+    ✗ light-switch-plate#1: 2× Ø3.8 holes 60.3±0.8 mm apart (measured n/a mm) | size ≥ 2×68×113 mm (measured 4×10×64.2 mm)
+    ✗ table-leg-foot#1: size ≤ 40×32×32 mm (measured 29×40×40 mm)
+    ✗ vacuum-wall-hook#0: 2× through-hole Ø4.4±0.6 mm (measured 4.4 mm; 2 match(es), found 1)
+    ✗ vacuum-wall-hook#1: 2× through-hole Ø4.4±0.6 mm (measured 4.44 mm; 2 match(es), found 1)
+  held-out 68.8% → 56.3%: ROLLED BACK to v1
+
+v4 ← patch of v1 from 6 train failures
+  diff: Added general true through-hole, identical-count, envelope-check, and single-solid-union rules to fix undersized, blind, missing, single-count, and oversize failures.
+  v4 train: 16/20 = 80.0%
+    ✗ curtain-rod-bracket#0: 2× through-hole Ø5.3±0.6 mm (measured 25.58 mm; 2 match(es), found 0)
+    ✗ curtain-rod-bracket#1: 2× through-hole Ø5.3±0.6 mm (measured 25.58 mm; 2 match(es), found 0)
+    ✗ drawer-pull#1: OpenSCAD compiles (measured 0/1) | fits 256×256×256 mm bed (measured 0 mm) | wall ≥ 2 mm (measured n/a mm) | size ≥ 8×10×70 mm (measured n/a mm) | size ≤ 40×40×120 mm (measured n/a mm)
+    ✗ shelf-pin#1: size ≤ 16×16×30 mm (measured 16×17×29.5 mm)
+  v4 heldout: 8/16 = 50.0%
+    ✗ battery-cover#1: size ≤ 8×36×49 mm (measured 2.8×33.6×53.6 mm)
+    ✗ bike-light-mount#0: through-hole Ø32.2±0.6 mm (measured 5.49 mm; 1 match(es), found 0)
+    ✗ bike-light-mount#1: through-hole Ø32.2±0.6 mm (measured 5.49 mm; 1 match(es), found 0)
+    ✗ table-leg-foot#0: size ≤ 40×32×32 mm (measured 25×42×42 mm)
+    ✗ table-leg-foot#1: size ≤ 40×32×32 mm (measured 30×38×38 mm)
+    ✗ towel-bar-bracket#0: 2× Ø4.4 holes 30±0.8 mm apart (measured 30.88 mm)
+    ✗ towel-bar-bracket#1: 2× Ø4.4 holes 30±0.8 mm apart (measured 30.88 mm)
+    ✗ vacuum-wall-hook#1: 2× through-hole Ø4.4±0.6 mm (measured 4.4 mm; 2 match(es), found 1)
+  held-out 68.8% → 50.0%: ROLLED BACK to v1
+
+v5 ← patch of v1 from 6 train failures
+  diff: Added general through-hole construction, clearance-diameter, hole-count duplication, and envelope-margin rules to fix blind, undersized, missing, and oversize failures.
+  v5 train: 19/20 = 95.0%
+    ✗ curtain-rod-bracket#1: 2× through-hole Ø5.3±0.6 mm (measured 25.58 mm; 2 match(es), found 0)
+  v5 heldout: 10/16 = 62.5%
+    ✗ battery-cover#1: size ≥ 1.5×33×45 mm (measured 2.7×33×44.6 mm)
+    ✗ bike-light-mount#0: through-hole Ø32.2±0.6 mm (measured 5.56 mm; 1 match(es), found 0)
+    ✗ bike-light-mount#1: through-hole Ø32.2±0.6 mm (measured n/a mm; 1 match(es), found 0)
+    ✗ door-stop-wedge#0: OpenSCAD compiles (measured 0/1) | fits 256×256×256 mm bed (measured 0 mm) | wall ≥ 1.6 mm (measured n/a mm) | through-hole Ø10±0.8 mm (measured n/a mm; 1 match(es), found 0) | size ≥ 20×25×110 mm (measured n/a mm) | siz
+    ✗ towel-bar-bracket#0: 2× Ø4.4 holes 30±0.8 mm apart (measured n/a mm)
+    ✗ vacuum-wall-hook#0: 2× through-hole Ø4.4±0.6 mm (measured 4.44 mm; 2 match(es), found 1)
+  held-out 68.8% → 62.5%: ROLLED BACK to v1
+
+current skill: v1 (train 70.0%, held-out 68.8%)

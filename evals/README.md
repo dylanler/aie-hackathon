@@ -15,3 +15,20 @@ Run: `cd web && npx tsx ../evals/loop.ts 4` (env: `LLM_PROVIDER=muse` to force M
 The run-time pipeline (`web/lib/agents/orchestrator.ts`) always designs with the latest adopted skill.
 
 `archive/runA/` holds the first run on an easier set (held-out saturated at 100%, which is why the set was made harder).
+
+## Results (real runs, Muse Spark 1.3, Nov 7 2026)
+Run B/C (current `history.json`, 20 train trials / 16 held-out trials per version):
+
+| version | parent | train | held-out | decision |
+|---|---|---|---|---|
+| v1 | — | 70.0% | 68.8% | baseline, adopted |
+| v2 | v1 | 90.0% | 43.8% | rolled back |
+| v3 | v1 | 95.0% | 56.3% | rolled back |
+| v4 | v1 | 80.0% | 50.0% | rolled back |
+| v5 | v1 | 95.0% | 62.5% | rolled back |
+| v6 | v1 | 80.0% | 68.8% | rolled back (tie; adoption needs a strict gain). The improver saw rolled-back patches + MuJoCo lessons from v6 on |
+| v7 | v1 | 90.0% | 43.8% | rolled back |
+
+Every patch raised the train score, and none beat v1 on held-out. That is overfitting, and the gate caught it 6 times out of 6. Noise caveat: with 16 held-out trials, one trial is 6.25 pts, so a 1–2 trial difference is within sampling noise.
+Run A (`archive/runA`, easier set): v1 83.3% → v2 100% adopted → v3 tie → rolled back, v4 83.3% → rolled back.
+Logs: `logs/runB.log` (v1–v5), `logs/runC.log` (v6–v7; the first v6 attempt died in a sandbox reboot and was re-run).
