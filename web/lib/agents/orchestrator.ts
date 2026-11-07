@@ -173,7 +173,22 @@ export async function runPipeline(id: string, prompt: string) {
     if (diag.d.kind !== "robot") { run.rl = null; emit({ runId: id, stage: "rl", phase: "done", message: "Skipped (static/mechanism part)" }); return; }
     const local = path.join(dir, "rl", "manifest.json");
     const shared = path.join(repoRoot(), "rl", "manifest.json");
-    if (!fs.existsSync(local) && fs.existsSync(shared)) { fs.mkdirSync(path.dirname(local), { recursive: true }); fs.copyFileSync(shared, local); }
+    if (!fs.existsSync(local) && fs.existsSync(shared)) {
+      // copy the RL lane's manifest and every file it references so /api/runs/:id/files/rl/... serves them
+      const src = path.dirname(shared), dst = path.dirname(local);
+      fs.mkdirSync(dst, { recursive: true });
+      fs.copyFileSync(shared, local);
+      try {
+        const m = JSON.parse(fs.readFileSync(shared, "utf8"));
+        const refs = [m.mjcf, m.firmware, ...(m.skills || []).flatMap((k: any) => [k.policy, k.reward_fn, k.curve, k.video])].filter((x) => typeof x === "string");
+        for (const r of refs) {
+          const from = path.resolve(src, r);
+          if (!from.startsWith(src) || !fs.existsSync(from)) continue;
+          fs.mkdirSync(path.dirname(path.join(dst, r)), { recursive: true });
+          fs.copyFileSync(from, path.join(dst, r));
+        }
+      } catch {}
+    }
     run.rl = fs.existsSync(local) ? "rl/manifest.json" : null;
     emit({ runId: id, stage: "rl", phase: "done", message: run.rl ? "RL policies attached" : "No RL manifest yet (rl lane)", data: { rl: run.rl } });
   });
@@ -181,9 +196,28 @@ export async function runPipeline(id: string, prompt: string) {
   // 7. MAKE — fab routing (fab lane if present) else printer-fit summary.
   await stage("make", "Routing to fabrication", async () => {
     const fabPy = path.join(repoRoot(), "fab", "route.py");
-    if (fs.existsSync(fabPy)) spawnSync("python3", [fabPy, dir], { cwd: repoRoot(), timeout: 120_000 });
     const fabPath = path.join(dir, "fab.json");
-    if (!fs.existsSync(fabPath)) {
+    try { fs.unlinkSync(fabPath); } catch {}
+    if (fs.existsSync(fabPy)) spawnSync("python3", [fabPy, dir], { cwd: repoRoot(), timeout: 120_000 });
+    let laneManifest: any = null;
+    try {
+      // fab lane (web/lib/fab): vendor routing + quotes. Its downloads synthesize placeholder box meshes,
+      // so we keep our real compiled STLs and only take its manifest plus any DXF cut files.
+      const fab: any = await import("../fab");
+      const bundle = await fab.routeFabrication(
+        run.parts.filter((p: any) => p.compiled).map((p: any) => ({ id: p.id, name: p.name, material: p.material, dims_mm: p.dims_mm, quantity: 1, printable: p.printable, scad: p.scad, stl: p.stl })),
+        { quotes: process.env.FAB_LIVE_QUOTES === "1" ? "live" : "skip", preferPrinter: v.verdict.fits_printer },
+      );
+      for (const f of bundle.files || []) {
+        if (!/\.dxf$/i.test(f.relativePath)) continue;
+        const dest = path.join(dir, f.relativePath);
+        if (!fs.existsSync(dest)) { fs.mkdirSync(path.dirname(dest), { recursive: true }); fs.writeFileSync(dest, f.bytes); }
+      }
+      laneManifest = bundle.manifest;
+    } catch (e: any) {
+      console.warn("[make] fab lane unavailable:", e?.message);
+    }
+    {
       const parts = cad.built.filter((b) => b.compiled).map((b) => {
         const mat = (b.material || "PETG").toUpperCase();
         const grams = +((b.analysis!.volume_mm3 / 1000) * (DENSITY[mat] || 1.25) * 0.6).toFixed(1); // ~60% effective fill w/ walls+infill
@@ -192,11 +226,13 @@ export async function runPipeline(id: string, prompt: string) {
       });
       const fit = v.verdict.fits_printer;
       writeJSON(id, "fab.json", {
-        route: fit ? "home-print" : "service",
+        ...(laneManifest || {}),
+        route: laneManifest?.route ?? (fit ? "home-print" : "service"),
         printer: fit, printers_checked: PRINTERS.map((p) => ({ id: p.id, name: p.name, bed_mm: p.bed })),
         parts, print: design.print || null,
         note: fit ? `Prints on a ${PRINTERS.find((p) => p.id === fit)!.name}. Download the STL and slice.` : "Too big for common home printers; use a print service quote (no spend without confirmation).",
-        source: "core fallback (fab lane route.py not present)",
+        core: { route: fit ? "home-print" : "service", printer: fit, parts, note: fit ? `Prints on a ${PRINTERS.find((p) => p.id === fit)!.name}.` : "Needs a print service." },
+        source: laneManifest ? "fab lane (web/lib/fab) + core printer-fit" : "core printer-fit (fab lane unavailable)",
       });
     }
     run.fab = "fab.json";
