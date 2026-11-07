@@ -21,6 +21,10 @@ const DENSITY: Record<string, number> = { PLA: 1.24, PETG: 1.27, TPU: 1.21, ASA:
 const s = (v: number[]) => [...v].sort((a, b) => a - b);
 const fitsBed = (dims: number[], bed: number[]) => s(dims).every((d, i) => d <= s(bed)[i]);
 
+// The physics verifier's published fixture contract (sim/README.md): what the MuJoCo test rig assumes. The designer
+// only ever sees this interface plus the measured failures, never the verifier's code.
+const PHYSICS_FIXTURE_BRIEF = `How the MuJoCo test rig works (fix the geometry so it passes): the part is screwed flat onto a door plate by M4 screws (Ø4.0 shank, Ø7 head) through VERTICAL through-holes in the base; every hole must be reachable from straight above (no part geometry over any hole). The rig finds the latch channel as a horizontal pocket running across the full part width (Y) with material directly above AND below it, puts a Ø6 mm striker pin in it, and pulls it with 20 N; the part must not move more than 0.5 mm and the striker must stay captured. So: make a clear horizontal channel of inner diameter >= 6.6 mm (>= 0.3 mm clearance) spanning the full width with no ribs, gussets or fillets intruding into it; a hook lip that wraps over the top of the channel and comes back down past the striker's centre so it cannot slide out; put the screw holes close to the hook on both sides of the load, base >= 3 mm thick; keep all fillets/gussets outside the channel and away from the holes.`;
+
 type Diagnosis = { kind: "static" | "mechanism" | "robot"; object: string; failure: string; dimensions: Record<string, string>; requirements: string[]; assumptions: string[] };
 
 export function startRun(prompt: string, opts: { id?: string; skillVersion?: string } = {}): string {
@@ -189,6 +193,7 @@ export async function runPipeline(id: string, prompt: string) {
         ...v.allChecks.filter((c) => !c.pass).map((c: any) => `${c.name.startsWith("sim:") ? "PHYSICS (MuJoCo) " : ""}${c.name} FAILED (measured ${c.value ?? "n/a"}${c.unit ? " " + c.unit : ""})${c.detail ? ` — ${c.detail}` : ""}`),
       ];
       if (cad.simVerdict?.notes) failures.push(`Physics verifier notes: ${String(cad.simVerdict.notes).slice(0, 400)}`);
+      if (v.allChecks.some((c) => !c.pass && c.name.startsWith("sim:"))) failures.push(PHYSICS_FIXTURE_BRIEF);
       if (cad.simVerdict?.info) failures.push(`Physics fixture/measurements: ${JSON.stringify(cad.simVerdict.info).slice(0, 900)}`);
       fs.copyFileSync(path.join(dir, "design.json"), path.join(dir, `design.round${round}.json`));
       emit({ runId: id, stage: "improve", phase: "progress", message: `Round ${round + 1}: repairing ${failures.length} failure(s)${v.verdict.critic_pass && v.verdict.physics_pass === false ? " — critic passed, physics said no" : ""}`, data: { failures } });
