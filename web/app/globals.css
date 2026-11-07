@@ -2,26 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+:root { color-scheme: dark; }
+html, body { background: #0B0B0C; color: #EDEDEF; height: 100%; }
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 450;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv11";
+  overflow: hidden;
 }
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+::selection { background: rgb(255 90 31 / 0.35); }
+.num { font-family: var(--font-geist-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+.lbl { font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: 11px; line-height: 14px; letter-spacing: 0.06em; text-transform: uppercase; }
+.glass { background: rgb(20 20 22 / 0.72); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgb(0 0 0 / 0.4); border: 1px solid #26262A; }
+.hairline { border: 1px solid #26262A; }
+:focus-visible { outline: 1px solid #FF5A1F; outline-offset: 2px; }
+input[type=range] { accent-color: #FF5A1F; }
+textarea { resize: none; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
 }
