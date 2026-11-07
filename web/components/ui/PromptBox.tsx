@@ -16,6 +16,7 @@ export function PromptBox({ onSubmit, onExample, busy, initial = "" }: { onSubmi
   const fileIn = useRef<HTMLInputElement>(null);
 
   useEffect(() => { ta.current?.focus(); }, []);
+
   useEffect(() => {
     setIdle(false);
     if (value) return;
@@ -27,7 +28,7 @@ export function PromptBox({ onSubmit, onExample, busy, initial = "" }: { onSubmi
     el.style.height = "0px"; el.style.height = Math.min(160, el.scrollHeight) + "px";
   }, [value]);
 
-  const go = (v = value) => { if (v.trim() && !busy) onSubmit(v.trim(), photo?.file); };
+  const go = (v = value) => { if (v.trim() && !busy) { try { localStorage.setItem("t2r:lastPrompt", v.trim()); } catch {} onSubmit(v.trim(), photo?.file); } };
   const take = (f?: File | null) => { if (f && f.type.startsWith("image/")) setPhoto({ file: f, url: URL.createObjectURL(f) }); };
 
   return (
@@ -50,7 +51,11 @@ export function PromptBox({ onSubmit, onExample, busy, initial = "" }: { onSubmi
         </AnimatePresence>
         <textarea
           ref={ta} rows={1} value={value} onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); go(); } }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); go(); }
+            // ↑ in an empty box brings back the last prompt you ran
+            if (e.key === "ArrowUp" && !value) { try { const v = localStorage.getItem("t2r:lastPrompt"); if (v) { e.preventDefault(); setValue(v); } } catch {} }
+          }}
           placeholder="Describe a problem, or a thing"
           className="block w-full bg-transparent px-5 pb-2 pt-5 text-l text-text placeholder:text-text-3 focus:outline-none"
           aria-label="What should exist?"
@@ -73,14 +78,14 @@ export function PromptBox({ onSubmit, onExample, busy, initial = "" }: { onSubmi
           </div>
         </div>
       </div>
-      <div className="-mx-20 mt-4 flex h-8 justify-center gap-2">
+      <div className="mt-4 flex min-h-8 flex-wrap justify-center gap-2 md:-mx-20 md:h-8 md:flex-nowrap">
         <AnimatePresence>
           {idle && !value && EXAMPLES.map((ex, i) => (
             <motion.button
               key={ex} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, transition: { duration: 0.12 } }}
               transition={{ duration: T.panel, ease: EASE_OUT, delay: i * 0.06 }}
               onClick={() => { setValue(ex); if (onExample) onExample(ex); else go(ex); }}
-              className="h-8 rounded-full border border-line px-3 text-s text-text-3 transition-colors duration-200 hover:border-[#3a3a40] hover:text-text"
+              className="h-11 rounded-full border border-line px-3 text-s text-text-3 md:h-8 transition-colors duration-200 hover:border-[#3a3a40] hover:text-text"
             >
               {ex}
             </motion.button>
