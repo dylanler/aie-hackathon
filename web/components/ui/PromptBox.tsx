@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { HintTip, KbdKey } from "./HintTip";
 import { EASE_OUT, T } from "./motion";
 
-const EXAMPLES = ["My freezer door won't stay shut", "A mini robot dog that can play dead", "A Wi-Fi powder dispenser"];
+import { EXAMPLE_PROMPTS as EXAMPLES } from "../data/client";
 
 export function PromptBox({ onSubmit, onExample, busy, initial = "" }: { onSubmit: (prompt: string, photo?: File) => void; onExample?: (prompt: string) => void; busy?: boolean; initial?: string }) {
   const [value, setValue] = useState(initial);

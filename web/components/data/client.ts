@@ -16,6 +16,37 @@ export const FIXTURES: Record<string, Fixture> = {
 };
 export const fixtureFor = (prompt: string) => (/dog|robot|walk|legs?/i.test(prompt) ? "demo-robot-dog" : "demo-freezer-latch");
 
+/** The three example chips, each with the real recorded pipeline run of that exact prompt (data/runs → /static-runs). */
+export const EXAMPLES: { prompt: string; run: string }[] = [
+  { prompt: "My freezer door won't stay shut", run: "demo-freezer-latch" },
+  { prompt: "A mini robot dog that can play dead", run: "demo-robot-dog" },
+  { prompt: "My stove knob cracked off", run: "demo-stove-knob" },
+];
+export const EXAMPLE_PROMPTS = EXAMPLES.map((e) => e.prompt);
+
+export type Health = { live: boolean; reason?: string | null; capabilities?: Record<string, unknown> };
+/** GET /api/health — is the full pipeline (LLM + compile + physics) reachable here? null when the API is unreachable. */
+export const getHealth = () => getJSON<Health>("/api/health", 3500);
+
+/** Example chip → a run route. Live run when the backend is fully available, else the recorded real run of that prompt. */
+export async function startExample(prompt: string): Promise<string> {
+  const ex = EXAMPLES.find((e) => e.prompt === prompt) || EXAMPLES.find((e) => e.prompt.toLowerCase() === prompt.trim().toLowerCase());
+  const h = await getHealth();
+  if (h?.live) {
+    const r = await createRun(prompt);
+    if (r.source === "api") return `/runs/${encodeURIComponent(r.id)}`;
+  }
+  return `/runs/${encodeURIComponent(ex?.run || fixtureFor(prompt))}`;
+}
+
+/** Typed prompt → live run route, or null when the live pipeline is not available here (UI offers the examples). */
+export async function startTyped(prompt: string): Promise<string | null> {
+  const h = await getHealth();
+  if (h && !h.live) return null;
+  const r = await createRun(prompt);
+  return r.source === "api" ? `/runs/${encodeURIComponent(r.id)}` : null;
+}
+
 async function getJSON<T>(url: string, ms = 2500): Promise<T | null> {
   const c = new AbortController();
   const timer = setTimeout(() => c.abort(), ms);
@@ -99,11 +130,15 @@ export function useRun(id: string, opts: { instant?: boolean } = {}): RunState {
       setRun({ ...full, parts: [] });
       let at = 250;
       let partsShown = false;
-      evs.forEach((ev) => {
-        const gap = instant ? 0 : ev.phase === "done" && ev.stage === "diagnose" ? 1700 : ev.phase === "done" && ev.stage === "verify" ? 1100 : ev.stage === "rl" || ev.stage === "improve" ? 260 : 520;
+      const hasTs = evs.length > 1 && evs.every((e) => typeof e.ts === "number" && e.ts > 0);
+      evs.forEach((ev, i) => {
+        // reading pace from the run's real events.jsonl timing, compressed (~1/8 real time) and clamped per step
+        const real = hasTs && i > 0 ? Math.max(0, (ev.ts as number) - (evs[i - 1].ts as number)) : 0;
+        const floor = ev.phase === "done" && ev.stage === "diagnose" ? 1700 : ev.phase === "done" && ev.stage === "verify" ? 1100 : 450;
+        const gap = instant ? 0 : hasTs ? Math.min(2600, Math.max(floor, real / 8)) : ev.phase === "done" && ev.stage === "diagnose" ? 1700 : ev.phase === "done" && ev.stage === "verify" ? 1100 : ev.stage === "rl" || ev.stage === "improve" ? 260 : 520;
         at += gap;
         later(at, () => {
-          setEvents((p) => [...p, { ...ev, ts: ev.ts || Date.now() }]);
+          setEvents((p) => [...p, { ...ev, ts: Date.now() }]);
           if (!partsShown && (ev.stage === "cad" && (ev.phase === "artifact" || ev.phase === "done"))) { partsShown = true; setRun(full); }
           if (ev.stage === "verify" && ev.phase === "done") setVerdict(art.verdict);
           if (ev.stage === "rl" && ev.phase === "start") setRl(art.rl);
