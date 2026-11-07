@@ -1,0 +1,51 @@
+[
+  {
+    "id": "latch",
+    "name": "Door latch clip",
+    "material": "PETG",
+    "dims_mm": [
+      60,
+      22,
+      14
+    ],
+    "quantity": 1,
+    "printable": true,
+    "scad": "parts/latch.scad"
+  },
+  {
+    "id": "cover",
+    "name": "Freezer cover panel",
+    "material": "PLA",
+    "dims_mm": [
+      320,
+      180,
+      4
+    ],
+    "quantity": 1,
+    "printable": true
+  },
+  {
+    "id": "bracket",
+    "name": "Aluminum Z-bracket blank",
+    "material": "Aluminum 5052",
+    "dims_mm": [
+      101.6,
+      50.8,
+      3.175
+    ],
+    "quantity": 1,
+    "printable": false
+  },
+  {
+    "id": "shelf",
+    "name": "Birch shelf",
+    "material": "Birch plywood",
+    "dims_mm": [
+      400,
+      200,
+      12
+    ],
+    "quantity": 1,
+    "printable": false
+  }
+]
