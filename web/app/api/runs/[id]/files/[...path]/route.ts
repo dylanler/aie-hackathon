@@ -12,6 +12,7 @@ const TYPES: Record<string, string> = {
 };
 
 export async function GET(_req: Request, { params }: { params: { id: string; path: string[] } }) {
+  try {
   const base = path.resolve(runDir(params.id));
   const target = path.resolve(base, ...params.path);
   if (!target.startsWith(base + path.sep) || !fs.existsSync(target) || fs.statSync(target).isDirectory()) {
@@ -21,4 +22,5 @@ export async function GET(_req: Request, { params }: { params: { id: string; pat
   const headers: Record<string, string> = { "Content-Type": TYPES[ext] || "application/octet-stream", "Cache-Control": "no-cache" };
   if (ext === ".stl" || ext === ".3mf") headers["Content-Disposition"] = `inline; filename="${path.basename(target)}"`;
   return new Response(fs.readFileSync(target), { headers });
+  } catch { return new Response("not found", { status: 404 }); }
 }

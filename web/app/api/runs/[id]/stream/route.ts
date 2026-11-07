@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from "node:fs";
 import path from "node:path";
 import { runDir } from "@/lib/agents/paths";
@@ -10,8 +11,11 @@ export const dynamic = "force-dynamic";
 // Each message is one contract event: {runId, stage, phase, message, data, model, ts}.
 // A final `event: end` carries the run.json when the run is done or errored.
 export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const file = path.join(runDir(params.id), "events.jsonl");
-  if (!fs.existsSync(runDir(params.id))) return new Response("not found", { status: 404 });
+  let file = "";
+  try {
+    file = path.join(runDir(params.id), "events.jsonl");
+    if (!fs.existsSync(runDir(params.id))) return new Response("not found", { status: 404 });
+  } catch { return new Response("not found", { status: 404 }); }
   const enc = new TextEncoder();
   let offset = 0;
   let closed = false;
@@ -40,7 +44,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       const tick = () => {
         if (closed) return;
         flush();
-        const run = readRun(params.id);
+        let run: any = null;
+        try { run = readRun(params.id); } catch {}
         if (run && (run.status === "done" || run.status === "error")) {
           flush();
           send(`event: end\ndata: ${JSON.stringify(run)}\n\n`);

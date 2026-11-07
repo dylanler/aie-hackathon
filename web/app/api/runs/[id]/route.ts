@@ -5,7 +5,8 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
-  const run = readRun(params.id);
+  let run = null;
+  try { run = readRun(params.id); } catch {}
   if (!run) return NextResponse.json({ error: "not found" }, { status: 404 });
   return NextResponse.json(run);
 }
