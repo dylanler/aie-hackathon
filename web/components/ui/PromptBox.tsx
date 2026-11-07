@@ -66,7 +66,7 @@ export function PromptBox({ onSubmit, busy, initial = "" }: { onSubmit: (prompt:
             <span className={`flex items-center gap-1.5 text-s text-text-3 transition-opacity duration-200 ${value ? "opacity-100" : "opacity-0"}`}><KbdKey>⏎</KbdKey> to make it</span>
             <button
               aria-label="Make it" onClick={() => go()} disabled={!value.trim() || busy}
-              className={`flex h-8 w-8 items-center justify-center rounded-btn transition-all duration-200 ease-out ${value.trim() ? "bg-signal text-black" : "bg-raised text-text-3"}`}
+              className={`flex h-8 w-8 items-center justify-center rounded-btn transition-all duration-200 ease-out ${value.trim() ? "bg-signal text-black" : "bg-raised text-text-3"} ${busy ? "animate-pulse" : ""}`}
             >
               <ArrowUp size={16} strokeWidth={2.25} />
             </button>

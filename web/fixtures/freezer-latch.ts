@@ -50,7 +50,7 @@ export const freezerFab: Fab = {
   note: "Prints on a Bambu Lab A1 in 36 minutes.",
 };
 
-const t = (stage: RunEvent["stage"], phase: RunEvent["phase"], message: string, model?: string, data?: any) =>
+const t = (stage: RunEvent["stage"], phase: RunEvent["phase"], message: string, model?: string, data?: Record<string, unknown>) =>
   ({ runId: "demo-freezer-latch", stage, phase, message, model, data, ts: 0 }) as RunEvent;
 
 /** Replayed with the delays (ms after previous event). */

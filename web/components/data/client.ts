@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
 import type { Fab, HistoryEntry, RLManifest, Run, RunEvent, StepKey, StepState, Verdict } from "./types";
 import { STEPS, stepOf } from "./types";

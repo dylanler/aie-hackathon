@@ -60,7 +60,7 @@ export const dogFab: Fab = {
   note: "Print 3 parts at home. Cut 2 in metal and wood.",
 };
 
-const t = (stage: RunEvent["stage"], phase: RunEvent["phase"], message: string, model?: string, data?: any) =>
+const t = (stage: RunEvent["stage"], phase: RunEvent["phase"], message: string, model?: string, data?: Record<string, unknown>) =>
   ({ runId: "demo-robot-dog", stage, phase, message, model, data, ts: 0 }) as RunEvent;
 
 export const dogEvents: [number, RunEvent][] = [

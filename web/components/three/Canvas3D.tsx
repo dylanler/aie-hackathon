@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { Edges, OrbitControls } from "@react-three/drei";
 import { Component, ReactNode, Suspense, useEffect, useMemo, useRef } from "react";
@@ -79,9 +80,10 @@ function PartMesh({ geometry, part, mode, hovered, failing, onHover, position, s
 function STLPart(props: PartProps) {
   const raw = useLoader(STLLoader, props.url!);
   const geo = useMemo(() => prepSTL(raw), [raw]);
-  const base = props.part.params || {};
+  const base = props.part.params;
   const scale = useMemo<[number, number, number]>(() => {
     const s: [number, number, number] = [1, 1, 1];
+    if (!base) return s;
     for (const [k, v0] of Object.entries(base)) {
       const v = props.params[k]; if (!v || !v0) continue;
       const r = v / v0;

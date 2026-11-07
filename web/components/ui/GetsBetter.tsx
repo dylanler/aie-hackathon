@@ -32,13 +32,13 @@ export function GetsBetter({ variant = "strip" }: { variant?: "strip" | "quiet" 
 
   return (
     <div className="glass relative flex items-center gap-5 rounded-panel px-4 py-3" onPointerLeave={() => setHover(null)}>
-      <div className="w-[118px]">
-        <div className="lbl flex items-center gap-2 text-text-3">Gets better{source === "fixture" && <span className="text-text-3/70 normal-case tracking-normal">· sample</span>}</div>
+      <div className="w-[132px]">
+        <div className="lbl whitespace-nowrap text-text-3">Gets better</div>
         <div className="mt-1 flex items-baseline gap-1.5">
           <span className="num text-l text-text">{Math.round(pct(best) * 100)}%</span>
           <span className="num text-s text-text-3">{n ? `${frac(best)}` : ""}</span>
         </div>
-        <div className="mt-0.5 text-s text-text-3">held-out pass</div>
+        <div className="mt-0.5 whitespace-nowrap text-s text-text-3">held-out pass{source === "fixture" ? " · sample" : ""}</div>
       </div>
       <svg width={W + 20} height={H + 30} viewBox={`-10 -6 ${W + 20} ${H + 30}`} className="overflow-visible">
         <line x1={-4} x2={W + 4} y1={H} y2={H} stroke="#26262A" />

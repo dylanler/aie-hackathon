@@ -1,10 +1,11 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AnimatePresence, motion } from "framer-motion";
 import { Lock, Unlock } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { fileUrl, useRun } from "../data/client";
 import type { Part, StepKey } from "../data/types";
 import { STEPS } from "../data/types";
@@ -42,7 +43,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
   const [paused, setPaused] = useState(false);
   const [curves, setCurves] = useState<Record<string, number[]>>({});
 
-  const parts = r.run?.parts ?? [];
+  const parts = useMemo(() => r.run?.parts ?? [], [r.run?.parts]);
   const robot = r.run?.kind === "robot";
 
   // follow the pipeline until the user takes over
@@ -235,7 +236,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
             <motion.div key="train" className="absolute inset-x-0 bottom-6 mx-auto w-fit" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               {r.rl.skills.find((s) => s.name === gait)?.video && r.source === "api" && (
                 <video key={gait} src={fileUrl(id, r.rl.skills.find((s) => s.name === gait)!.video!)} autoPlay loop muted playsInline
-                  className="mb-3 w-[760px] rounded-panel border border-line" ref={(v) => { if (v) paused ? v.pause() : v.play().catch(() => {}); }} />
+                  className="mb-3 w-[760px] rounded-panel border border-line" ref={(v) => { if (!v) return; if (paused) v.pause(); else v.play().catch(() => {}); }} />
               )}
               <TrainSheet rl={r.rl} gait={gait} onGait={setGait} paused={paused} onPause={() => setPaused((p) => !p)} curves={curves} />
             </motion.div>

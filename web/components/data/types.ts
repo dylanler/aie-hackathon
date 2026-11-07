@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type Stage = "diagnose" | "design" | "cad" | "verify" | "improve" | "rl" | "make";
 export type Phase = "start" | "progress" | "artifact" | "done" | "error";
 export type RunEvent = { runId: string; stage: Stage; phase: Phase; message: string; data?: any; model?: string; ts: number };
