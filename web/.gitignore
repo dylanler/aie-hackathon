@@ -35,3 +35,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .next-build/
+
+# e2e artifacts
+/e2e/.out*
+/e2e/.shots
