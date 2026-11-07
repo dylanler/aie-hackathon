@@ -1,0 +1,7 @@
+mujoco>=3.2
+trimesh
+coacd
+scipy
+rtree
+imageio
+imageio-ffmpeg
