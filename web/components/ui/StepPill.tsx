@@ -41,7 +41,7 @@ export function StepPill({ label, state, active, onClick }: { label: string; sta
     <button
       onClick={onClick}
       className={`group relative flex h-8 items-center gap-2 rounded-full px-3 text-s transition-colors duration-200 ease-out ${
-        active ? "bg-raised text-text" : dim ? "text-text-3 hover:text-text-2" : "text-text-2 hover:text-text"
+        active ? "text-text" : dim ? "text-text-3 hover:text-text-2" : "text-text-2 hover:text-text"
       }`}
     >
       {active && <motion.span layoutId="pill-active" className="absolute inset-0 rounded-full border border-line bg-raised" transition={{ duration: T.panel, ease: EASE_OUT }} />}

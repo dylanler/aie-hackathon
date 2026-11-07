@@ -51,9 +51,9 @@ export function MakePanel({ fab, parts, onDownload }: { fab: Fab; parts: Part[];
       <div className="mt-1.5 text-m text-text">{fab.note || "Ready to make."}</div>
       <div className="mt-3 border-t border-line pt-2">
         <Row k="Material" v={materials} />
-        {hours !== undefined && <Row k="Print time" v={fmtH(hours)} />}
+        {hours !== undefined && <Row k="Print time" v={(fab.print?.hours ? "" : "≈ ") + fmtH(hours)} />}
         <Row k="Plates" v={String(fab.print?.plates ?? 1)} />
-        {cost !== undefined && <Row k="Filament" v={`$${cost.toFixed(2)}`} />}
+        {cost !== undefined && <Row k="Filament" v={`${fab.print?.cost_usd ? "" : "≈ "}$${cost.toFixed(2)}`} />}
         {fab.printer && <Row k="Printer" v={PRINTERS[fab.printer] || fab.printer} />}
       </div>
       {cut.length > 0 && (

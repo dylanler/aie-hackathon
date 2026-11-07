@@ -16,7 +16,7 @@ export function ThoughtLine({ events }: { events: RunEvent[] }) {
             <motion.div key={e.idx} layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: age === 0 ? 1 : age === 1 ? 0.55 : 0.28, y: 0 }} exit={{ opacity: 0 }}
               transition={{ duration: T.ui, ease: EASE_OUT }} className="flex items-center gap-2 text-s">
               <span className={`h-1 w-1 shrink-0 rounded-full ${e.phase === "error" ? "bg-err" : age === 0 ? "bg-signal" : "bg-text-3"}`} />
-              <span className="truncate text-text-3">{e.message}</span>
+              <span className="truncate text-text-3">{e.message.replace(/^(static|mechanism|robot): /, "")}</span>
               {m && <span className="num shrink-0 rounded-[4px] border border-line px-1.5 py-px text-[10px] uppercase tracking-[0.06em] text-text-3">{m}</span>}
             </motion.div>
           );

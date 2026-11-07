@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { Verdict } from "../data/types";
 import { EASE_OUT, T } from "./motion";
 
-const fmt = (v: number | string, unit?: string) => (typeof v === "number" ? `${+v.toFixed(2)}${unit ? " " + unit.replace("mm3", "mm³") : ""}` : `${v}${unit ? " " + unit : ""}`);
+const fmt = (v: number | string, unit?: string) => (typeof v === "number" ? `${unit === "p" ? v.toFixed(2) : +v.toFixed(2)}${unit ? " " + unit.replace("mm3", "mm³") : ""}` : `${v}${unit ? " " + unit : ""}`);
 
 export function verdictLine(v: Verdict) {
   const hard = v.checks.filter((c) => !c.advisory);

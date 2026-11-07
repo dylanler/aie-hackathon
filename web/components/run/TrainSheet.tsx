@@ -60,7 +60,7 @@ export function TrainSheet({ rl, gait, onGait, paused, onPause, curves, meta = {
         </div>
       </div>
       <div className="mt-3 text-s text-text-3">
-        <span className="num">{judge} judged reward v{skill.reward_version} · picked 1 of {m.candidates ?? skill.candidates ?? 4}</span>
+        <span className="num">{judge === "SubQ" ? `SubQ judged reward v${skill.reward_version} · picked 1 of ${m.candidates ?? skill.candidates ?? 4}` : `${judge} picked reward v${skill.reward_version} · 1 of ${m.candidates ?? skill.candidates ?? 4} candidates`}</span>
       </div>
     </BottomSheet>
   );

@@ -1,6 +1,7 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { EASE_OUT, T } from "./motion";
 
 export function BottomSheet({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -21,7 +22,10 @@ export function ConfirmSheet({ open, onClose, title, children, confirmLabel, onC
     window.addEventListener("keydown", k);
     return () => window.removeEventListener("keydown", k);
   }, [open, onClose]);
-  return (
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: T.ui }} onClick={onClose}>
@@ -36,6 +40,7 @@ export function ConfirmSheet({ open, onClose, title, children, confirmLabel, onC
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

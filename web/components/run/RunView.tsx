@@ -195,13 +195,13 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
             {r.diagnosis ? (
               <>
                 <div className="lbl text-text-3">{r.diagnosis.object}</div>
-                <div className="mx-auto mt-3 max-w-[520px] text-l text-text">{r.diagnosis.failure}</div>
+                <div className="mx-auto mt-3 max-w-[520px] text-l text-text">{String(r.diagnosis.failure || "").replace(/^./, (c: string) => c.toUpperCase())}</div>
                 {r.diagnosis.assumptions?.length > 0 && (
                   <div className="mt-5 flex flex-wrap justify-center gap-1.5">
                     {(r.diagnosis.assumptions as string[]).slice(0, 4).map((a, i) => (
                       <HintTip key={a} label="Assumed. Edit in Design." side="bottom">
                         <motion.span initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.03, duration: T.ui, ease: EASE_OUT }}
-                          className="num max-w-[260px] truncate rounded-chip border border-line bg-surface/60 px-2 py-1 text-[12px] text-text-2">{a}</motion.span>
+                          className="num max-w-[320px] truncate rounded-chip border border-line bg-surface/60 px-2 py-1 text-[12px] text-text-2">{a}</motion.span>
                       </HintTip>
                     ))}
                   </div>
@@ -254,7 +254,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
                 <source src={video.replace(/\.mp4$/, ".webm")} type="video/webm" />
                 <source src={video} type="video/mp4" />
               </video>
-              <span className="lbl absolute left-3 top-3 rounded-chip bg-black/60 px-1.5 py-0.5 text-text-2">MuJoCo · {curveMeta[skillNow?.name ?? ""]?.videoLabel ?? "policy rollout"}</span>
+              <span className="lbl absolute bottom-3 left-3 rounded-chip bg-black/60 px-1.5 py-0.5 text-text-2">MuJoCo · {curveMeta[skillNow?.name ?? ""]?.videoLabel ?? "policy rollout"}</span>
             </div>
           </motion.div>
         )}
