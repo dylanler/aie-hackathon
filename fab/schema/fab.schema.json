@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thought-to-reality.local/fab.schema.json",
+  "title": "fab.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "generatedAt", "source", "printers", "parts", "summary", "orderPlaced", "autoPay"],
+  "properties": {
+    "version": { "const": 1 },
+    "generatedAt": { "type": "string" },
+    "source": { "const": "thought-to-reality/fab" },
+    "printers": { "type": "array" },
+    "parts": { "type": "array" },
+    "summary": {
+      "type": "object",
+      "required": ["partCount", "printableHere", "quoted", "quoteUnavailable", "downloadCount"],
+      "properties": {
+        "partCount": { "type": "integer" },
+        "printableHere": { "type": "integer" },
+        "quoted": { "type": "integer" },
+        "quoteUnavailable": { "type": "integer" },
+        "downloadCount": { "type": "integer" }
+      }
+    },
+    "orderPlaced": { "const": false },
+    "autoPay": { "const": false }
+  }
+}

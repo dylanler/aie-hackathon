@@ -1,0 +1,389 @@
+{
+  "version": 1,
+  "generatedAt": "2026-11-07T22:10:51.834Z",
+  "source": "thought-to-reality/fab",
+  "printers": [
+    {
+      "id": "bambu-a1",
+      "name": "Bambu Lab A1",
+      "build_mm": [
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "id": "prusa-mk4",
+      "name": "Prusa MK4",
+      "build_mm": [
+        250,
+        210,
+        220
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "latch",
+      "name": "Door latch clip",
+      "material": "PETG",
+      "materialFamily": "plastic",
+      "dims_mm": [
+        60,
+        22,
+        14
+      ],
+      "quantity": 1,
+      "scad": "parts/latch.scad",
+      "route": "fdm-download",
+      "fitsPrinter": {
+        "fits": true,
+        "printerId": "bambu-a1",
+        "orientation_mm": [
+          60,
+          22,
+          14
+        ],
+        "checked": [
+          {
+            "id": "bambu-a1",
+            "name": "Bambu Lab A1",
+            "fits": true,
+            "orientation_mm": [
+              60,
+              22,
+              14
+            ]
+          },
+          {
+            "id": "prusa-mk4",
+            "name": "Prusa MK4",
+            "fits": true,
+            "orientation_mm": [
+              60,
+              22,
+              14
+            ]
+          }
+        ],
+        "reason": "Fits Bambu Lab A1 at 60 × 22 × 14 mm."
+      },
+      "downloads": [
+        {
+          "format": "stl",
+          "path": "parts/latch.stl",
+          "bytes": 684,
+          "mediaType": "model/stl",
+          "role": "print"
+        },
+        {
+          "format": "3mf",
+          "path": "parts/latch.3mf",
+          "bytes": 1940,
+          "mediaType": "model/3mf",
+          "role": "print"
+        }
+      ],
+      "quotes": [
+        {
+          "reason": "Craftcloud quote unavailable: no modelId or public modelUrl. STL and 3MF downloads are ready; upload one at Craftcloud or pass modelUrl. No API key is required once the mesh is reachable.",
+          "checkoutUrl": "https://craftcloud3d.com/en/upload",
+          "cartUrl": "https://craftcloud3d.com/en/upload",
+          "vendor": "craftcloud",
+          "status": "unavailable",
+          "requiresHumanCheckout": true,
+          "autoPay": false,
+          "orderPlaced": false
+        }
+      ],
+      "vendorLinks": [
+        {
+          "vendor": "craftcloud",
+          "url": "https://craftcloud3d.com/en/upload",
+          "note": "Craftcloud quote unavailable: no modelId or public modelUrl. STL and 3MF downloads are ready; upload one at Craftcloud or pass modelUrl. No API key is required once the mesh is reachable."
+        }
+      ],
+      "notes": "Fits Bambu Lab A1 at 60 × 22 × 14 mm. Download the STL or 3MF, or open the Craftcloud offer if a quote came back."
+    },
+    {
+      "id": "cover",
+      "name": "Freezer cover panel",
+      "material": "PLA",
+      "materialFamily": "plastic",
+      "dims_mm": [
+        320,
+        180,
+        4
+      ],
+      "quantity": 1,
+      "route": "oversized",
+      "fitsPrinter": {
+        "fits": false,
+        "printerId": null,
+        "orientation_mm": null,
+        "checked": [
+          {
+            "id": "bambu-a1",
+            "name": "Bambu Lab A1",
+            "fits": false,
+            "orientation_mm": null
+          },
+          {
+            "id": "prusa-mk4",
+            "name": "Prusa MK4",
+            "fits": false,
+            "orientation_mm": null
+          }
+        ],
+        "reason": "Does not fit a Bambu A1 (256 mm cube) or a Prusa MK4 (250 × 210 × 220 mm) in any orientation."
+      },
+      "downloads": [
+        {
+          "format": "stl",
+          "path": "parts/cover.stl",
+          "bytes": 684,
+          "mediaType": "model/stl",
+          "role": "print"
+        },
+        {
+          "format": "3mf",
+          "path": "parts/cover.3mf",
+          "bytes": 1944,
+          "mediaType": "model/3mf",
+          "role": "print"
+        },
+        {
+          "format": "dxf",
+          "path": "parts/cover.dxf",
+          "bytes": 156,
+          "mediaType": "application/dxf",
+          "role": "flat-pattern"
+        }
+      ],
+      "quotes": [
+        {
+          "reason": "Craftcloud quote unavailable: no modelId or public modelUrl. STL and 3MF downloads are ready; upload one at Craftcloud or pass modelUrl. No API key is required once the mesh is reachable.",
+          "checkoutUrl": "https://craftcloud3d.com/en/upload",
+          "cartUrl": "https://craftcloud3d.com/en/upload",
+          "vendor": "craftcloud",
+          "status": "unavailable",
+          "requiresHumanCheckout": true,
+          "autoPay": false,
+          "orderPlaced": false
+        }
+      ],
+      "vendorLinks": [
+        {
+          "vendor": "craftcloud",
+          "url": "https://craftcloud3d.com/en/upload",
+          "note": "Craftcloud quote unavailable: no modelId or public modelUrl. STL and 3MF downloads are ready; upload one at Craftcloud or pass modelUrl. No API key is required once the mesh is reachable."
+        },
+        {
+          "vendor": "SendCutSend",
+          "url": "https://sendcutsend.com/",
+          "note": "Flat-part laser cutting when the blank is larger than a desktop printer. Upload the DXF on their site. No public buyer API and no order is placed here."
+        }
+      ],
+      "notes": "Does not fit a Bambu A1 (256 mm cube) or a Prusa MK4 (250 × 210 × 220 mm) in any orientation. STL, 3MF, and a DXF flat pattern are ready. A print service can make the solid; a laser shop can cut the outline."
+    },
+    {
+      "id": "bracket",
+      "name": "Aluminum Z-bracket blank",
+      "material": "Aluminum 5052",
+      "materialFamily": "metal",
+      "dims_mm": [
+        101.6,
+        50.8,
+        3.175
+      ],
+      "quantity": 1,
+      "route": "sheet-metal",
+      "fitsPrinter": {
+        "fits": false,
+        "printerId": null,
+        "orientation_mm": null,
+        "checked": [
+          {
+            "id": "bambu-a1",
+            "name": "Bambu Lab A1",
+            "fits": true,
+            "orientation_mm": [
+              101.6,
+              50.8,
+              3.175
+            ]
+          },
+          {
+            "id": "prusa-mk4",
+            "name": "Prusa MK4",
+            "fits": true,
+            "orientation_mm": [
+              101.6,
+              50.8,
+              3.175
+            ]
+          }
+        ],
+        "reason": "Sheet metal is not an FDM print. It is routed to OSH Cut, with Fabworks as the other shop."
+      },
+      "downloads": [
+        {
+          "format": "dxf",
+          "path": "parts/bracket.dxf",
+          "bytes": 162,
+          "mediaType": "application/dxf",
+          "role": "flat-pattern"
+        }
+      ],
+      "quotes": [
+        {
+          "currency": "USD",
+          "price": 11.65,
+          "total": 11.65,
+          "leadTime": "Standard, ships 2026-11-11",
+          "vendorName": "OSH Cut",
+          "cartId": "O-32558139-7930-4814-9d56",
+          "cartUrl": "https://app.oshcut.com/cart/O-32558139-7930-4814-9d56",
+          "checkoutUrl": "https://app.oshcut.com/cart/O-32558139-7930-4814-9d56",
+          "alternatives": [
+            {
+              "vendor": "Fabworks",
+              "url": "https://www.fabworks.com/",
+              "note": "Sheet-metal quote and DFM. Their MCP (https://api.fabworks.com/mcp) needs OAuth, so this lane links a person there instead of calling it."
+            }
+          ],
+          "reason": "Quote only. Shipping, tax, and payment happen on the OSH Cut cart. Nothing was ordered.",
+          "details": {
+            "material": "Aluminum 5052 H32 0.125\" (1/8\")",
+            "materialSheetId": 15,
+            "thicknessAssumed": false,
+            "manufacturable": true,
+            "size": "101.60 mm x 50.80 mm",
+            "pricesValidUntil": "2026-11-09T17:30:00.000Z",
+            "leadOptions": [
+              {
+                "name": "Priority Rush",
+                "shipDate": "2026-11-09",
+                "businessDays": 0,
+                "totalUsd": 221.65
+              },
+              {
+                "name": "Expedited",
+                "shipDate": "2026-11-10",
+                "businessDays": 1,
+                "totalUsd": 176.65
+              },
+              {
+                "name": "Standard",
+                "shipDate": "2026-11-11",
+                "businessDays": 2,
+                "totalUsd": 11.65
+              }
+            ]
+          },
+          "vendor": "oshcut",
+          "status": "quoted",
+          "requiresHumanCheckout": true,
+          "autoPay": false,
+          "orderPlaced": false
+        }
+      ],
+      "vendorLinks": [
+        {
+          "vendor": "oshcut",
+          "url": "https://app.oshcut.com/cart/O-32558139-7930-4814-9d56",
+          "note": "Quote only. Shipping, tax, and payment happen on the OSH Cut cart. Nothing was ordered."
+        },
+        {
+          "vendor": "Fabworks",
+          "url": "https://www.fabworks.com/",
+          "note": "Sheet-metal quote and DFM. Their MCP (https://api.fabworks.com/mcp) needs OAuth, so this lane links a person there instead of calling it."
+        }
+      ],
+      "notes": "Sheet metal is not an FDM print. It is routed to OSH Cut, with Fabworks as the other shop. The DXF is the file to upload. The cart link is for a person to check out."
+    },
+    {
+      "id": "shelf",
+      "name": "Birch shelf",
+      "material": "Birch plywood",
+      "materialFamily": "wood",
+      "dims_mm": [
+        400,
+        200,
+        12
+      ],
+      "quantity": 1,
+      "route": "wood-sheet",
+      "fitsPrinter": {
+        "fits": false,
+        "printerId": null,
+        "orientation_mm": null,
+        "checked": [
+          {
+            "id": "bambu-a1",
+            "name": "Bambu Lab A1",
+            "fits": false,
+            "orientation_mm": null
+          },
+          {
+            "id": "prusa-mk4",
+            "name": "Prusa MK4",
+            "fits": false,
+            "orientation_mm": null
+          }
+        ],
+        "reason": "Wood is not an FDM print. It is routed to a sheet-goods vendor with a DXF."
+      },
+      "downloads": [
+        {
+          "format": "dxf",
+          "path": "parts/shelf.dxf",
+          "bytes": 156,
+          "mediaType": "application/dxf",
+          "role": "flat-pattern"
+        }
+      ],
+      "quotes": [
+        {
+          "reason": "No public quote API for this wood blank. Upload the DXF at Ponoko for plywood, MDF, or solid sheet. SendCutSend is the fallback for flat goods. Nothing is ordered here.",
+          "alternatives": [
+            {
+              "vendor": "SendCutSend",
+              "url": "https://sendcutsend.com/",
+              "note": "Flat-part laser cutting when the blank is larger than a desktop printer. Upload the DXF on their site. No public buyer API and no order is placed here."
+            }
+          ],
+          "checkoutUrl": "https://www.ponoko.com/",
+          "cartUrl": "https://www.ponoko.com/",
+          "vendor": "ponoko",
+          "status": "unavailable",
+          "requiresHumanCheckout": true,
+          "autoPay": false,
+          "orderPlaced": false
+        }
+      ],
+      "vendorLinks": [
+        {
+          "vendor": "ponoko",
+          "url": "https://www.ponoko.com/",
+          "note": "No public quote API for this wood blank. Upload the DXF at Ponoko for plywood, MDF, or solid sheet. SendCutSend is the fallback for flat goods. Nothing is ordered here."
+        },
+        {
+          "vendor": "SendCutSend",
+          "url": "https://sendcutsend.com/",
+          "note": "Flat-part laser cutting when the blank is larger than a desktop printer. Upload the DXF on their site. No public buyer API and no order is placed here."
+        }
+      ],
+      "notes": "Wood is not an FDM print. It is routed to a sheet-goods vendor with a DXF. The DXF is the file to upload."
+    }
+  ],
+  "summary": {
+    "partCount": 4,
+    "printableHere": 1,
+    "quoted": 1,
+    "quoteUnavailable": 3,
+    "downloadCount": 7
+  },
+  "orderPlaced": false,
+  "autoPay": false
+}
