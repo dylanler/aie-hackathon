@@ -1,0 +1,30 @@
+{
+  "id": "demo-freezer-latch",
+  "prompt": "My freezer door won't stay shut \u2014 the latch clip snapped. Make me a replacement clip.",
+  "kind": "static",
+  "parts": [
+    {
+      "id": "freezer_door_latch_clip",
+      "name": "Freezer Door Latch Clip",
+      "scad": "parts/freezer_door_latch_clip.scad",
+      "stl": "parts/freezer_door_latch_clip.stl",
+      "material": "PETG",
+      "dims_mm": [
+        40,
+        20,
+        14.5
+      ],
+      "printable": true,
+      "purpose": "screws flat to freezer door and captures \u00d86mm striker to hold door shut",
+      "compiled": true
+    }
+  ],
+  "skillVersion": "v1",
+  "status": "done",
+  "verdictSummary": {
+    "pass": true,
+    "passed": 16,
+    "total": 16,
+    "round": 2
+  }
+}

@@ -2,7 +2,7 @@
 - snapshots the latest stored run (MongoDB, else data/runs) into agents-fetch/snapshot/<id>/ for public download links
 - inlines the shared protocol, bakes APP_URL / verifier address / snapshot into the code
 - creates (or reuses) hosted agents, uploads code, starts them; writes agents-fetch/deployed.json
-Env: AGENTVERSE_API_KEY, optional MONGODB_URI, APP_URL (public URL of the Next.js app, if deployed)."""
+Env: AGENTVERSE_API_KEY, optional SNAPSHOT_RUN (pin a run id), MONGODB_URI, APP_URL (public URL of the Next.js app, if deployed)."""
 import json, os, shutil, sys, time
 from pathlib import Path
 import requests
@@ -17,6 +17,10 @@ state = json.loads(STATE.read_text()) if STATE.exists() else {}
 
 
 def latest_run():
+    pin = os.environ.get("SNAPSHOT_RUN")  # e.g. demo-freezer-latch: pin the golden run instead of "latest"
+    if pin and (ROOT / "data/runs" / pin / "run.json").exists():
+        vp = ROOT / "data/runs" / pin / "verdict.json"
+        return json.loads((ROOT / "data/runs" / pin / "run.json").read_text()), (json.loads(vp.read_text()) if vp.exists() else {})
     uri = os.environ.get("MONGODB_URI")
     if uri:
         from pymongo import MongoClient
