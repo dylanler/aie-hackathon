@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { callLLM, parseJSON } from "../llm/router";
 import { subqPartSatisfies } from "../llm/subq";
 import { saveVerdict, similarRuns } from "../db/mongo";
@@ -101,9 +101,24 @@ export async function runPipeline(id: string, prompt: string) {
     run.parts = partsManifest(built, d);
     save();
     if (fs.existsSync(verifyPy)) {
-      const r = spawnSync("python3", [verifyPy, dir], { cwd: repoRoot(), timeout: 180_000, encoding: "utf8" });
-      try { simVerdict = JSON.parse(fs.readFileSync(path.join(dir, "verdict.json"), "utf8")); } catch {}
-      emit({ runId: id, stage: "cad", phase: "progress", message: simVerdict ? `MuJoCo verifier: ${simVerdict.pass ? "pass" : "fail"}` : `sim/verify.py exited ${r.status}`, data: simVerdict ? { verdict: "verdict.json" } : { stderr: (r.stderr || "").slice(-400) } });
+      emit({ runId: id, stage: "cad", phase: "progress", message: "MuJoCo physics verifier running (independent of the designer)" });
+      for (const f of ["sim_verdict.json", "verdict.json"]) try { fs.unlinkSync(path.join(dir, f)); } catch {}
+      const r = await new Promise<{ status: number | null; stderr: string }>((resolve) => {
+        const p = spawn("python3", [verifyPy, dir], { cwd: repoRoot() });
+        let err = "";
+        p.stderr.on("data", (d) => (err += d));
+        const t = setTimeout(() => p.kill("SIGKILL"), 240_000);
+        p.on("close", (code) => { clearTimeout(t); resolve({ status: code, stderr: err }); });
+        p.on("error", () => { clearTimeout(t); resolve({ status: -1, stderr: err }); });
+      });
+      for (const f of ["sim_verdict.json", "verdict.json"]) {
+        if (simVerdict) break;
+        try { simVerdict = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")); } catch {}
+      }
+      const media = ["sim.png", "sim.mp4"].filter((f) => fs.existsSync(path.join(dir, f)));
+      emit({ runId: id, stage: "cad", phase: simVerdict ? "artifact" : "progress",
+        message: simVerdict ? `MuJoCo verifier: ${(simVerdict.checks || []).filter((c: any) => c.pass).length}/${(simVerdict.checks || []).length} physics checks pass` : `sim/verify.py exited ${r.status}`,
+        data: simVerdict ? { sim_verdict: "sim_verdict.json", media, checks: simVerdict.checks } : { stderr: (r.stderr || "").slice(-400) } });
     }
     emit({ runId: id, stage: "cad", phase: "done", message: `${built.filter((b) => b.compiled).length}/${built.length} parts compiled (${built[0]?.engine})` });
     return { built, simVerdict };
@@ -123,9 +138,14 @@ export async function runPipeline(id: string, prompt: string) {
     const satVals = sat.filter((x): x is number => typeof x === "number");
     const subq = satVals.length ? +Math.min(...satVals).toFixed(3) : null;
     if (subq !== null) emit({ runId: id, stage: "verify", phase: "progress", message: `SubQ Snap: P(part fixes the problem) = ${subq}`, data: { subq_p_satisfies: subq }, model: "subq" });
-    const allChecks: CheckResult[] = [...checks, ...(simVerdict?.checks || []).map((c: any) => ({ ...c, name: `sim:${c.name}` }))];
+    // Physics checks from the MuJoCo lane gate the verdict only when SIM_GATE=1 (verifier still being calibrated);
+    // otherwise they are reported alongside as advisory.
+    const simChecks: CheckResult[] = (simVerdict?.checks || []).map((c: any) => ({ name: `sim:${c.name}`, pass: !!c.pass, value: c.value ?? null, unit: c.unit }));
+    const simGate = process.env.SIM_GATE === "1";
+    const allChecks: CheckResult[] = [...checks, ...(simGate ? simChecks : [])];
     // SubQ Snap is a second, independent opinion. It is recorded but advisory: it does not gate pass/fail.
-    const advisory = subq !== null ? [{ name: "subq_judge_p_satisfies", pass: subq >= 0.5, value: subq, unit: "p", advisory: true }] : [];
+    const advisory: any[] = subq !== null ? [{ name: "subq_judge_p_satisfies", pass: subq >= 0.5, value: subq, unit: "p", advisory: true }] : [];
+    if (!simGate) advisory.push(...simChecks.map((c) => ({ ...c, advisory: true })));
     const fit = PRINTERS.find((p) => built.every((b) => b.compiled && fitsBed(b.analysis!.dims_mm, p.bed)));
     const pass = allChecks.every((c) => c.pass);
     const verdict = {
@@ -133,6 +153,7 @@ export async function runPipeline(id: string, prompt: string) {
       checks: [...allChecks.map((c) => ({ name: c.name, pass: c.pass, value: c.value, unit: c.unit })), ...advisory],
       subq_p_satisfies: subq,
       heatmap: simVerdict?.heatmap || null,
+      sim_media: ["sim.png", "sim.mp4"].filter((f) => fs.existsSync(path.join(dir, f))),
       notes: pass ? `All ${allChecks.length} independent checks pass` : `Failed: ${allChecks.filter((c) => !c.pass).map((c) => c.name).join(", ")}`,
       round, critic_model: critic.model, sim: simVerdict ? true : false,
     };
