@@ -7,7 +7,7 @@
 
 - **Live demo:** (Vercel URL)
 - **Video:** (YouTube link)
-- **Backup screen recording (59 s, no audio):** [`docs/demo.mp4`](docs/demo.mp4)
+- **Backup screen recording (57 s, no audio):** [`docs/demo.mp4`](docs/demo.mp4)
 
 Built from scratch at the **AIE Code Summit Hackathon** (Cerebral Valley, SHACK15 SF, **Nov 7, 2026**). Every file in this repo was written during the event.
 

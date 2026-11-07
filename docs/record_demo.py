@@ -26,7 +26,7 @@ with sync_playwright() as p:
     mark("prompt")
     box = pg.locator("textarea").first
     box.click()
-    box.type("My freezer door won't stay shut. The latch clip snapped. Make me a replacement clip.", delay=28)
+    box.type("My freezer door won't stay shut", delay=45)
     pg.wait_for_timeout(500)
     box.press("Enter")
     mark("submitted")
