@@ -1,5 +1,6 @@
 import { spawn, spawnSync } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { analyzeMesh, parseSTL, type Analysis } from "./geometry";
 import { webDir } from "./paths";
@@ -24,8 +25,21 @@ function run(cmd: string, args: string[], cwd: string, timeoutMs: number): Promi
   });
 }
 
+// CGAL compiles are CPU-bound: cap concurrent compiles at the core count so a busy eval run
+// doesn't turn into timeouts (a timeout would be scored as a designer failure).
+const SLOTS = Math.max(1, Number(process.env.CAD_CONCURRENCY || os.cpus().length || 2));
+let active = 0;
+const waiters: (() => void)[] = [];
+async function acquire() { if (active < SLOTS) { active++; return; } await new Promise<void>((r) => waiters.push(r)); active++; }
+function release() { active--; const w = waiters.shift(); if (w) w(); }
+
 /** Compile a .scad file to STL and analyse the mesh. */
-export async function compileScad(scadPath: string, stlPath: string, timeoutMs = 120_000): Promise<CompileResult> {
+export async function compileScad(scadPath: string, stlPath: string, timeoutMs = 240_000): Promise<CompileResult> {
+  await acquire();
+  try { return await compileInner(scadPath, stlPath, timeoutMs); } finally { release(); }
+}
+
+async function compileInner(scadPath: string, stlPath: string, timeoutMs: number): Promise<CompileResult> {
   const t0 = Date.now();
   fs.mkdirSync(path.dirname(stlPath), { recursive: true });
   try { fs.unlinkSync(stlPath); } catch {}
