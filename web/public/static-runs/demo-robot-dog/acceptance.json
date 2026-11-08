@@ -1,0 +1,59 @@
+{
+  "written_from": "user prompt only (critic never sees the designer's reasoning or code)",
+  "model": "muse-wonder-1.0",
+  "criteria": [
+    {
+      "type": "compiles"
+    },
+    {
+      "type": "fits_bed",
+      "bed_mm": [
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "type": "min_wall",
+      "mm": 1.2
+    },
+    {
+      "type": "bbox_min",
+      "mm": [
+        20,
+        30,
+        50
+      ]
+    },
+    {
+      "type": "bbox_max",
+      "mm": [
+        80,
+        120,
+        160
+      ]
+    },
+    {
+      "type": "volume_min",
+      "mm3": 5000
+    },
+    {
+      "type": "volume_max",
+      "mm3": 300000
+    },
+    {
+      "type": "parts_min",
+      "n": 1
+    }
+  ],
+  "rationale": [
+    "Part must compile to a valid STL to be printable.",
+    "Part must fit on a standard 256mm printer bed.",
+    "Walls of at least 1.2mm ensure printed legs/body do not snap in handling.",
+    "Minimum bounding box ensures a recognizable mini dog, not a flat token or fragment.",
+    "Maximum bounding box keeps it mini and handheld, not a full-size dog model.",
+    "Minimum volume ensures substantial solid material for body, head and legs.",
+    "Maximum volume prevents an oversized solid block wasting material.",
+    "At least one complete part must be present in the model."
+  ]
+}

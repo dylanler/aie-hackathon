@@ -1,0 +1,120 @@
+{
+  "id": "demo-robot-dog",
+  "prompt": "A mini robot dog that can play dead",
+  "kind": "robot",
+  "parts": [
+    {
+      "id": "body_chassis",
+      "name": "Body Chassis Tub",
+      "scad": "parts/body_chassis.scad",
+      "stl": "parts/body_chassis.stl",
+      "material": "PETG",
+      "dims_mm": [
+        150,
+        74,
+        38
+      ],
+      "printable": true,
+      "purpose": "holds battery, controller, and 8 leg servos for walking and play-dead roll",
+      "params": {
+        "body_length_mm": 150,
+        "body_width_mm": 70,
+        "body_height_mm": 38,
+        "wall_mm": 3
+      },
+      "compiled": true
+    },
+    {
+      "id": "leg_upper",
+      "name": "Upper Leg Hip Arm",
+      "scad": "parts/leg_upper.scad",
+      "stl": "parts/leg_upper.stl",
+      "material": "PETG",
+      "dims_mm": [
+        55,
+        20,
+        8
+      ],
+      "printable": true,
+      "purpose": "shoulder/hip lever from servo horn to knee servo for walk and legs-up play-dead pose",
+      "params": {
+        "upper_length_mm": 35,
+        "width_mm": 20,
+        "thickness_mm": 8
+      },
+      "compiled": true
+    },
+    {
+      "id": "leg_lower",
+      "name": "Lower Leg with Foot",
+      "scad": "parts/leg_lower.scad",
+      "stl": "parts/leg_lower.stl",
+      "material": "PETG",
+      "dims_mm": [
+        22,
+        59,
+        7
+      ],
+      "printable": true,
+      "purpose": "knee to ground foot, tucks up during play-dead and supports standing/walking",
+      "params": {
+        "lower_length_mm": 40,
+        "width_mm": 16,
+        "foot_dia_mm": 22
+      },
+      "compiled": true
+    }
+  ],
+  "verdict": "verdict.json",
+  "rl": "rl/manifest.json",
+  "fab": "fab.json",
+  "skillVersion": "v1",
+  "status": "done",
+  "createdAt": 1794096199225,
+  "stages": {
+    "diagnose": {
+      "status": "done",
+      "startedAt": 1794096199234,
+      "ms": 8074
+    },
+    "design": {
+      "status": "done",
+      "startedAt": 1794096207312,
+      "ms": 15585
+    },
+    "cad": {
+      "status": "done",
+      "startedAt": 1794096222912,
+      "ms": 214797
+    },
+    "verify": {
+      "status": "done",
+      "startedAt": 1794096437766,
+      "ms": 10314
+    },
+    "improve": {
+      "status": "done",
+      "startedAt": 1794096448932,
+      "ms": 31
+    },
+    "rl": {
+      "status": "done",
+      "startedAt": 1794096448972,
+      "ms": 209
+    },
+    "make": {
+      "status": "done",
+      "startedAt": 1794096449184,
+      "ms": 42
+    }
+  },
+  "physics": "local",
+  "verdictSummary": {
+    "pass": false,
+    "passed": 8,
+    "total": 9,
+    "round": 1
+  },
+  "rounds": 1,
+  "finishedAt": 1794096449228
+}

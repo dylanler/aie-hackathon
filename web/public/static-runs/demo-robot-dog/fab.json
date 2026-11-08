@@ -1,0 +1,197 @@
+{
+  "version": 1,
+  "generatedAt": "2026-11-08T00:07:29.212Z",
+  "source": "fab lane (web/lib/fab) + core printer-fit",
+  "printers": [
+    {
+      "id": "bambu-a1",
+      "name": "Bambu Lab A1",
+      "build_mm": [
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "id": "prusa-mk4",
+      "name": "Prusa MK4",
+      "build_mm": [
+        250,
+        210,
+        220
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "part": "body_chassis",
+      "name": "Body Chassis Tub",
+      "stl": "parts/body_chassis.stl",
+      "material": "PETG",
+      "dims_mm": [
+        150,
+        74,
+        38
+      ],
+      "est_grams": 52.5,
+      "fits": [
+        "bambu-a1",
+        "prusa-mk4",
+        "ender-3",
+        "bambu-a1-mini"
+      ]
+    },
+    {
+      "part": "leg_upper",
+      "name": "Upper Leg Hip Arm",
+      "stl": "parts/leg_upper.stl",
+      "material": "PETG",
+      "dims_mm": [
+        55,
+        20,
+        8
+      ],
+      "est_grams": 5,
+      "fits": [
+        "bambu-a1",
+        "prusa-mk4",
+        "ender-3",
+        "bambu-a1-mini"
+      ]
+    },
+    {
+      "part": "leg_lower",
+      "name": "Lower Leg with Foot",
+      "stl": "parts/leg_lower.stl",
+      "material": "PETG",
+      "dims_mm": [
+        22,
+        59,
+        7
+      ],
+      "est_grams": 4.9,
+      "fits": [
+        "bambu-a1",
+        "prusa-mk4",
+        "ender-3",
+        "bambu-a1-mini"
+      ]
+    }
+  ],
+  "summary": {
+    "partCount": 3,
+    "printableHere": 3,
+    "quoted": 0,
+    "quoteUnavailable": 3,
+    "downloadCount": 6
+  },
+  "orderPlaced": false,
+  "autoPay": false,
+  "route": "home-print",
+  "printer": "bambu-a1",
+  "printers_checked": [
+    {
+      "id": "bambu-a1",
+      "name": "Bambu Lab A1",
+      "bed_mm": [
+        256,
+        256,
+        256
+      ]
+    },
+    {
+      "id": "prusa-mk4",
+      "name": "Prusa MK4",
+      "bed_mm": [
+        250,
+        210,
+        220
+      ]
+    },
+    {
+      "id": "ender-3",
+      "name": "Creality Ender-3",
+      "bed_mm": [
+        220,
+        220,
+        250
+      ]
+    },
+    {
+      "id": "bambu-a1-mini",
+      "name": "Bambu Lab A1 mini",
+      "bed_mm": [
+        180,
+        180,
+        180
+      ]
+    }
+  ],
+  "print": {
+    "orientation": "chassis upside-down flat on bed, legs flat on side thickness up, foot disc down",
+    "supports": false,
+    "infill_pct": 40
+  },
+  "note": "Prints on a Bambu Lab A1. Download the STL and slice.",
+  "core": {
+    "route": "home-print",
+    "printer": "bambu-a1",
+    "parts": [
+      {
+        "part": "body_chassis",
+        "name": "Body Chassis Tub",
+        "stl": "parts/body_chassis.stl",
+        "material": "PETG",
+        "dims_mm": [
+          150,
+          74,
+          38
+        ],
+        "est_grams": 52.5,
+        "fits": [
+          "bambu-a1",
+          "prusa-mk4",
+          "ender-3",
+          "bambu-a1-mini"
+        ]
+      },
+      {
+        "part": "leg_upper",
+        "name": "Upper Leg Hip Arm",
+        "stl": "parts/leg_upper.stl",
+        "material": "PETG",
+        "dims_mm": [
+          55,
+          20,
+          8
+        ],
+        "est_grams": 5,
+        "fits": [
+          "bambu-a1",
+          "prusa-mk4",
+          "ender-3",
+          "bambu-a1-mini"
+        ]
+      },
+      {
+        "part": "leg_lower",
+        "name": "Lower Leg with Foot",
+        "stl": "parts/leg_lower.stl",
+        "material": "PETG",
+        "dims_mm": [
+          22,
+          59,
+          7
+        ],
+        "est_grams": 4.9,
+        "fits": [
+          "bambu-a1",
+          "prusa-mk4",
+          "ender-3",
+          "bambu-a1-mini"
+        ]
+      }
+    ],
+    "note": "Prints on a Bambu Lab A1."
+  }
+}

@@ -1,0 +1,210 @@
+<!--
+  mini-dog-12dof
+  Original 12-DoF mini quadruped for Thought to Reality (AIE Code Summit, Nov 7 2026).
+  Not derived from MuJoCo Menagerie, Unitree, ANYmal, or other third-party models.
+
+  Actuated joints: 4 legs x (abduction, hip, knee) = 12.
+  The floating base is unactuated.
+  Collision geoms are capsules and spheres only. MJX has no mesh-mesh collision,
+  so this file is safe to train with primitive contacts. Visual geoms carry the
+  dog silhouette (head, ears, snout, tail, collar) and do not participate in contact.
+-->
+<mujoco model="mini-dog-12dof">
+  <compiler angle="radian" autolimits="true" balanceinertia="true"/>
+
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast" cone="elliptic" iterations="3" ls_iterations="6">
+    <flag warmstart="enable"/>
+  </option>
+
+  <visual>
+    <headlight diffuse="0.85 0.85 0.85" ambient="0.35 0.35 0.38" specular="0.15 0.15 0.15"/>
+    <rgba haze="0.10 0.10 0.12 1" fog="0.10 0.10 0.12 1"/>
+    <global azimuth="135" elevation="-18" offwidth="640" offheight="480"/>
+    <quality shadowsize="2048"/>
+  </visual>
+
+  <default>
+    <geom contype="1" conaffinity="1" condim="3" friction="1.05 0.03 0.01" solref="0.008 1" solimp="0.92 0.98 0.001" density="550" rgba="0.75 0.73 0.68 1"/>
+    <joint damping="0.04" armature="0.003" frictionloss="0.015" limited="true"/>
+    <position kp="26" kv="0.7" forcerange="-4.5 4.5"/>
+    <site size="0.008" rgba="1 0.35 0.12 0.6"/>
+
+    <default class="visual">
+      <geom contype="0" conaffinity="0" group="1" density="0" mass="0"/>
+    </default>
+    <default class="collision">
+      <geom group="3" rgba="0.2 0.55 0.35 0.15"/>
+    </default>
+    <default class="abad">
+      <joint axis="1 0 0" range="-0.65 0.65" damping="0.05" armature="0.003"/>
+      <position kp="20" kv="0.55" ctrlrange="-0.65 0.65" forcerange="-3.2 3.2"/>
+    </default>
+    <default class="hip">
+      <joint axis="0 1 0" range="-1.05 1.85" damping="0.07" armature="0.004"/>
+      <position kp="32" kv="0.85" ctrlrange="-1.05 1.85" forcerange="-5.5 5.5"/>
+    </default>
+    <default class="knee">
+      <joint axis="0 1 0" range="-2.55 -0.25" damping="0.05" armature="0.003"/>
+      <position kp="32" kv="0.75" ctrlrange="-2.55 -0.25" forcerange="-5.5 5.5"/>
+    </default>
+    <default class="leg_vis">
+      <geom contype="0" conaffinity="0" group="1" density="0" rgba="0.16 0.16 0.18 1"/>
+    </default>
+    <default class="foot_vis">
+      <geom contype="0" conaffinity="0" group="1" density="0" rgba="1.0 0.353 0.122 1"/>
+    </default>
+  </default>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.16 0.16 0.18" rgb2="0.05 0.05 0.06" width="512" height="3072"/>
+    <texture name="floortex" type="2d" builtin="checker" mark="edge" rgb1="0.16 0.16 0.18" rgb2="0.22 0.22 0.25" markrgb="0.32 0.32 0.36" width="300" height="300"/>
+    <material name="floor" texture="floortex" texuniform="true" texrepeat="5 5" reflectance="0.04"/>
+    <material name="body" rgba="0.85 0.84 0.81 1"/>
+    <material name="body_dark" rgba="0.55 0.52 0.48 1"/>
+    <material name="accent" rgba="1.0 0.353 0.122 1"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0.4 -0.3 1.6" dir="-0.2 0.2 -1" directional="true" diffuse="0.9 0.9 0.9" specular="0.2 0.2 0.2" castshadow="true"/>
+    <light pos="-0.8 0.6 0.8" dir="0.4 -0.3 -1" directional="true" diffuse="0.25 0.25 0.28" specular="0 0 0" castshadow="false"/>
+    <geom name="floor" type="plane" size="4 4 0.1" material="floor" friction="1.1 0.03 0.01"/>
+
+    <body name="torso" pos="0 0 0.20">
+      <freejoint name="root"/>
+      <site name="imu" pos="0 0 0.01" size="0.01"/>
+      <camera name="track" mode="trackcom" pos="0.62 -0.92 0.34" xyaxes="0.83 0.56 0 -0.18 0.27 0.95"/>
+
+      <!-- Collision: one capsule along the spine. No meshes. -->
+      <geom name="torso_col" class="collision" type="capsule" fromto="-0.095 0 0 0.085 0 0" size="0.042"/>
+
+      <!-- Visual dog body -->
+      <geom class="visual" type="capsule" fromto="-0.10 0 0 0.09 0 0" size="0.048" material="body"/>
+      <geom class="visual" type="box" pos="0.02 0 0.012" size="0.07 0.038 0.028" material="body"/>
+      <geom class="visual" type="capsule" fromto="0.09 0 0.005 0.155 0 -0.005" size="0.028" material="body"/>
+      <geom class="visual" type="sphere" pos="0.162 0.012 0.012" size="0.008" rgba="0.08 0.08 0.09 1"/>
+      <geom class="visual" type="sphere" pos="0.162 -0.012 0.012" size="0.008" rgba="0.08 0.08 0.09 1"/>
+      <geom class="visual" type="capsule" fromto="0.175 0 -0.002 0.205 0 -0.012" size="0.012" material="body_dark"/>
+      <geom class="visual" type="capsule" fromto="0.07 0.02 0.04 0.055 0.028 0.085" size="0.01" material="accent"/>
+      <geom class="visual" type="capsule" fromto="0.07 -0.02 0.04 0.055 -0.028 0.085" size="0.01" material="accent"/>
+      <geom class="visual" type="cylinder" pos="0.055 0 0" size="0.05 0.012" euler="1.5708 0 0" material="accent"/>
+      <geom class="visual" type="capsule" fromto="-0.10 0 0.01 -0.17 0 0.045" size="0.01" material="body_dark"/>
+
+      <!-- FL -->
+      <body name="FL_abad" pos="0.078 0.048 0">
+        <joint name="FL_abad" class="abad"/>
+        <geom class="leg_vis" type="sphere" size="0.02"/>
+        <geom class="collision" type="sphere" size="0.018"/>
+        <body name="FL_hip" pos="0 0.022 0">
+          <joint name="FL_hip" class="hip"/>
+          <geom name="FL_thigh_col" class="collision" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.013"/>
+          <geom class="leg_vis" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.016"/>
+          <body name="FL_knee" pos="0 0 -0.078">
+            <joint name="FL_knee" class="knee"/>
+            <geom name="FL_calf_col" class="collision" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.011"/>
+            <geom class="leg_vis" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.013"/>
+            <geom name="FL_foot_col" class="collision" type="sphere" pos="0 0 -0.078" size="0.016" friction="1.25 0.02 0.01"/>
+            <geom class="foot_vis" type="sphere" pos="0 0 -0.078" size="0.018"/>
+            <site name="FL_foot" pos="0 0 -0.086" size="0.024" type="sphere"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- FR -->
+      <body name="FR_abad" pos="0.078 -0.048 0">
+        <joint name="FR_abad" class="abad"/>
+        <geom class="leg_vis" type="sphere" size="0.02"/>
+        <geom class="collision" type="sphere" size="0.018"/>
+        <body name="FR_hip" pos="0 -0.022 0">
+          <joint name="FR_hip" class="hip"/>
+          <geom name="FR_thigh_col" class="collision" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.013"/>
+          <geom class="leg_vis" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.016"/>
+          <body name="FR_knee" pos="0 0 -0.078">
+            <joint name="FR_knee" class="knee"/>
+            <geom name="FR_calf_col" class="collision" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.011"/>
+            <geom class="leg_vis" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.013"/>
+            <geom name="FR_foot_col" class="collision" type="sphere" pos="0 0 -0.078" size="0.016" friction="1.25 0.02 0.01"/>
+            <geom class="foot_vis" type="sphere" pos="0 0 -0.078" size="0.018"/>
+            <site name="FR_foot" pos="0 0 -0.086" size="0.024" type="sphere"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- RL -->
+      <body name="RL_abad" pos="-0.082 0.048 0">
+        <joint name="RL_abad" class="abad"/>
+        <geom class="leg_vis" type="sphere" size="0.02"/>
+        <geom class="collision" type="sphere" size="0.018"/>
+        <body name="RL_hip" pos="0 0.022 0">
+          <joint name="RL_hip" class="hip"/>
+          <geom name="RL_thigh_col" class="collision" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.013"/>
+          <geom class="leg_vis" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.016"/>
+          <body name="RL_knee" pos="0 0 -0.078">
+            <joint name="RL_knee" class="knee"/>
+            <geom name="RL_calf_col" class="collision" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.011"/>
+            <geom class="leg_vis" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.013"/>
+            <geom name="RL_foot_col" class="collision" type="sphere" pos="0 0 -0.078" size="0.016" friction="1.25 0.02 0.01"/>
+            <geom class="foot_vis" type="sphere" pos="0 0 -0.078" size="0.018"/>
+            <site name="RL_foot" pos="0 0 -0.086" size="0.024" type="sphere"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- RR -->
+      <body name="RR_abad" pos="-0.082 -0.048 0">
+        <joint name="RR_abad" class="abad"/>
+        <geom class="leg_vis" type="sphere" size="0.02"/>
+        <geom class="collision" type="sphere" size="0.018"/>
+        <body name="RR_hip" pos="0 -0.022 0">
+          <joint name="RR_hip" class="hip"/>
+          <geom name="RR_thigh_col" class="collision" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.013"/>
+          <geom class="leg_vis" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.016"/>
+          <body name="RR_knee" pos="0 0 -0.078">
+            <joint name="RR_knee" class="knee"/>
+            <geom name="RR_calf_col" class="collision" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.011"/>
+            <geom class="leg_vis" type="capsule" fromto="0 0 0 0 0 -0.078" size="0.013"/>
+            <geom name="RR_foot_col" class="collision" type="sphere" pos="0 0 -0.078" size="0.016" friction="1.25 0.02 0.01"/>
+            <geom class="foot_vis" type="sphere" pos="0 0 -0.078" size="0.018"/>
+            <site name="RR_foot" pos="0 0 -0.086" size="0.024" type="sphere"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <contact>
+    <exclude body1="torso" body2="FL_hip"/>
+    <exclude body1="torso" body2="FR_hip"/>
+    <exclude body1="torso" body2="RL_hip"/>
+    <exclude body1="torso" body2="RR_hip"/>
+    <exclude body1="torso" body2="FL_knee"/>
+    <exclude body1="torso" body2="FR_knee"/>
+    <exclude body1="torso" body2="RL_knee"/>
+    <exclude body1="torso" body2="RR_knee"/>
+  </contact>
+
+  <actuator>
+    <position name="FL_abad" joint="FL_abad" class="abad"/>
+    <position name="FL_hip" joint="FL_hip" class="hip"/>
+    <position name="FL_knee" joint="FL_knee" class="knee"/>
+    <position name="FR_abad" joint="FR_abad" class="abad"/>
+    <position name="FR_hip" joint="FR_hip" class="hip"/>
+    <position name="FR_knee" joint="FR_knee" class="knee"/>
+    <position name="RL_abad" joint="RL_abad" class="abad"/>
+    <position name="RL_hip" joint="RL_hip" class="hip"/>
+    <position name="RL_knee" joint="RL_knee" class="knee"/>
+    <position name="RR_abad" joint="RR_abad" class="abad"/>
+    <position name="RR_hip" joint="RR_hip" class="hip"/>
+    <position name="RR_knee" joint="RR_knee" class="knee"/>
+  </actuator>
+
+  <sensor>
+    <framequat name="imu_quat" objtype="site" objname="imu"/>
+    <gyro name="imu_gyro" site="imu"/>
+    <velocimeter name="imu_lin" site="imu"/>
+    <accelerometer name="imu_acc" site="imu"/>
+    <touch name="FL_touch" site="FL_foot"/>
+    <touch name="FR_touch" site="FR_foot"/>
+    <touch name="RL_touch" site="RL_foot"/>
+    <touch name="RR_touch" site="RR_foot"/>
+  </sensor>
+</mujoco>

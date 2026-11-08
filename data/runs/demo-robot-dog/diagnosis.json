@@ -1,0 +1,24 @@
+{
+  "kind": "robot",
+  "object": "mini robot dog",
+  "failure": "no existing unit described - new build requested that can walk and perform play-dead trick (fall/roll over and remain motionless) on command",
+  "dimensions": {
+    "body_length": "150 mm (assumed)",
+    "body_height_standing": "100 mm (assumed)",
+    "body_width": "70 mm (assumed)",
+    "leg_length": "60 mm (assumed)"
+  },
+  "requirements": [
+    "quadruped locomotion by itself",
+    "play dead on command - lie on side/back with legs up and hold still",
+    "resume standing/walking on command",
+    "battery-powered indoor-safe operation"
+  ],
+  "assumptions": [
+    "mini means handheld desktop scale ~150 mm body length (assumed)",
+    "play dead means roll onto back/side and power-hold motionless until released (assumed)",
+    "trigger via button or IR remote (assumed)",
+    "standard micro servos and 3D-printed chassis (assumed)"
+  ],
+  "model": "muse-spark-1.3"
+}
