@@ -183,6 +183,7 @@ def _pack(manifest: dict) -> None:
     for skill in spec.SKILLS:
         names.append(spec.policy_filename(skill))
         names.append(spec.video_filename(skill))
+        names.append(f"{skill}.webm")
         names.append(spec.curve_filename(skill))
         names.append(f"rewards/{spec.reward_filename(skill)}")
         names.append(f"firmware/include/{spec.c_symbol(skill)}_policy.h")

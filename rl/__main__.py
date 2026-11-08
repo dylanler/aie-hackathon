@@ -11,10 +11,11 @@ Open-loop comparison, written to rl/<skill>_openloop.mp4:
 
     python -m rl replay --skill rollover --controller scripted
 
-Train-screen files for Hark (does not edit web/):
+Train-screen files for Hark (does not edit web/). The pack includes the
+prebuilt PPO webms. --webm transcodes only when one of those files is missing:
 
     python -m rl handoff
-    python -m rl handoff --pack /tmp/rl-public --webm
+    python -m rl handoff --pack /tmp/rl-public
 
 Local judge: if GEMINI_API_KEY, META_API_KEY / MODEL_API_KEY, and SUBQ_API_KEY
 are unset, the local designer writes the reward and the local judge ranks
@@ -212,7 +213,7 @@ def main(argv: list[str] | None = None) -> None:
             "  python -m rl replay --skill play-dead\n"
             "  python -m rl replay --skill walk --controller scripted\n"
             "  python -m rl handoff\n"
-            "  python -m rl handoff --pack /tmp/rl-public --webm\n"
+            "  python -m rl handoff --pack /tmp/rl-public\n"
             "  python -m rl status\n"
             "\n"
             "Missing GEMINI_API_KEY, META_API_KEY / MODEL_API_KEY, or SUBQ_API_KEY is the\n"
@@ -267,9 +268,9 @@ def main(argv: list[str] | None = None) -> None:
     replay.add_argument("--version", type=int, default=None, help="checkpoint version; default is the curve's policy_checkpoint")
     replay.set_defaults(func=_cmd_replay)
 
-    handoff = sub.add_parser("handoff", help="list or package the mp4s, manifest, and curves for the Train screen")
+    handoff = sub.add_parser("handoff", help="list or package the mp4s, prebuilt webms, manifest, and curves for the Train screen")
     handoff.add_argument("--pack", default=None, help="directory to write. Refuses anything under web/")
-    handoff.add_argument("--webm", action="store_true", help="with --pack, also transcode each mp4 to vp9 webm")
+    handoff.add_argument("--webm", action="store_true", help="with --pack, transcode a vp9 webm only when the prebuilt file is missing")
     handoff.add_argument("--sync-sample-pack", action="store_true", help="copy published artifacts into rl/sample_pack")
     handoff.add_argument("--check", action="store_true", help="exit 1 when labels, success, or sample_pack drift")
     handoff.add_argument("--json", action="store_true")
