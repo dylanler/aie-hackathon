@@ -13,6 +13,8 @@ const TYPES: Record<string, string> = {
 
 export async function GET(_req: Request, { params }: { params: { id: string; path: string[] } }) {
   try {
+  // run ids are plain slugs; anything else (../, encoded slashes) could escape data/runs
+  if (!/^[A-Za-z0-9_-]{1,100}$/.test(params.id)) return new Response("not found", { status: 404 });
   const base = path.resolve(runDir(params.id));
   const target = path.resolve(base, ...params.path);
   if (!target.startsWith(base + path.sep) || !fs.existsSync(target) || fs.statSync(target).isDirectory()) {

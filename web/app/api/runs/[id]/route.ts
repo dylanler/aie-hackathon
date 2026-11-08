@@ -8,6 +8,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
+  if (!/^[A-Za-z0-9_-]{1,100}$/.test(params.id)) return NextResponse.json({ error: "not found" }, { status: 404 });
   let run: any = null;
   try { run = readRun(params.id); } catch {}
   if (!run) return NextResponse.json({ error: "not found" }, { status: 404 });

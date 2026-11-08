@@ -12,6 +12,7 @@ const STALE_MS = 10 * 60 * 1000;
 // Each message is one contract event: {runId, stage, phase, message, data, model, ts}.
 // A final `event: end` carries the run.json when the run is done or errored.
 export async function GET(req: Request, { params }: { params: { id: string } }) {
+  if (!/^[A-Za-z0-9_-]{1,100}$/.test(params.id)) return new Response("not found", { status: 404 });
   let file = "";
   try {
     file = path.join(runDir(params.id), "events.jsonl");
