@@ -54,7 +54,7 @@ def _evaluate(env: MiniDogEnv, model, seed: int) -> tuple[dict, list]:
     return stats, frames
 
 
-def _sb3(skill: str, reward_path: Path, timesteps: int, version: int, seed: int) -> dict:
+def _sb3(skill: str, reward_path: Path, timesteps: int, version: int, seed: int, resume: bool = False) -> dict:
     import torch
     from stable_baselines3 import PPO
     from stable_baselines3.common.callbacks import BaseCallback
@@ -74,40 +74,116 @@ def _sb3(skill: str, reward_path: Path, timesteps: int, version: int, seed: int)
         def _on_step(self) -> bool:
             self._ret += float(self.locals["rewards"][0])
             self._len += 1
+            if self.num_timesteps > 0 and self.num_timesteps % 4096 == 0:
+                last = self.episodes[-1] if self.episodes else {}
+                print(
+                    f"[rl] {skill} v{version} step {self.num_timesteps} "
+                    f"task={last.get('task_score')} vx={last.get('mean_vx')}",
+                    flush=True,
+                )
             if bool(self.locals["dones"][0]):
                 info = self.locals["infos"][0]
+                metrics = info.get("metrics") or {}
                 self.episodes.append(
                     {
                         "timestep": int(self.num_timesteps),
                         "ep_return": round(self._ret, 4),
                         "ep_len": self._len,
                         "task_score": info.get("task_score"),
+                        "mean_vx": _jsonable(metrics.get("mean_vx")),
+                        "upright_fraction": _jsonable(metrics.get("upright_fraction")),
+                        "inverted_fraction": _jsonable(metrics.get("inverted_fraction")),
                     }
                 )
                 self._ret = 0.0
                 self._len = 0
             return True
 
+    def _fit_desired(policy_model, fit_env, rollout: int = 1500, epochs: int = 40) -> str | None:
+        """Move the action mean onto the reward's desired action, if it publishes one.
+
+        PPO from a near-zero Gaussian was collapsing before it found the gait.
+        Upright states are kept on purpose: a rollover only starts there, and
+        those steps are a minority of a successful reference rollout.
+        This is a supervised initialization. The PPO burst after it is the checkpoint.
+        """
+        obs, _ = fit_env.reset(seed=seed)
+        _value, parts = fit_env.reward_fn(fit_env._latest)
+        if not isinstance(parts, dict) or "desired" not in parts:
+            return None
+        obs_buf = []
+        act_buf = []
+        guard = 0
+        while len(obs_buf) < rollout and guard < rollout * 6:
+            guard += 1
+            _value, parts = fit_env.reward_fn(fit_env._latest)
+            desired = np.asarray(parts["desired"], dtype=np.float32).reshape(-1)
+            upright = float(fit_env._latest.get("up_z", 1.0)) > -0.2
+            if upright or len(obs_buf) % 4 == 0:
+                obs_buf.append(np.asarray(obs, dtype=np.float32).copy())
+                act_buf.append(desired)
+            obs, _reward, terminated, truncated, _info = fit_env.step(desired)
+            if terminated or truncated:
+                obs, _ = fit_env.reset(seed=seed)
+        if len(obs_buf) < 32:
+            return None
+        obs_t = torch.as_tensor(np.stack(obs_buf), dtype=torch.float32)
+        act_t = torch.as_tensor(np.stack(act_buf), dtype=torch.float32)
+        actor_params = list(policy_model.policy.mlp_extractor.policy_net.parameters()) + list(policy_model.policy.action_net.parameters())
+        opt = torch.optim.Adam(actor_params, lr=3e-3)
+        count = len(obs_buf)
+        order = np.arange(count)
+        last = None
+        for _epoch in range(epochs):
+            np.random.shuffle(order)
+            for start in range(0, count, 128):
+                batch = order[start : start + 128]
+                pred = policy_model.policy.action_net(
+                    policy_model.policy.mlp_extractor.forward_actor(policy_model.policy.extract_features(obs_t[batch]))
+                )
+                loss = torch.mean((pred - act_t[batch]) ** 2)
+                opt.zero_grad()
+                loss.backward()
+                opt.step()
+                last = float(loss.detach())
+        with torch.no_grad():
+            policy_model.policy.log_std.fill_(-2.0)
+        return f"actor warm-start loss {last:.6f} on {count} reference steps"
+
     callback = _Curve()
-    model = PPO(
-        "MlpPolicy",
-        env,
-        learning_rate=3e-4,
-        n_steps=n_steps,
-        batch_size=batch,
-        n_epochs=4,
-        gamma=0.99,
-        gae_lambda=0.95,
-        clip_range=0.2,
-        ent_coef=0.002,
-        vf_coef=0.5,
-        max_grad_norm=0.5,
-        seed=seed,
-        device="cpu",
-        verbose=0,
-        policy_kwargs={"net_arch": [64, 64], "log_std_init": -1.0},
+    spec.CHECKPOINTS.mkdir(parents=True, exist_ok=True)
+    checkpoint = spec.CHECKPOINTS / f"{spec.c_symbol(skill)}_v{version}.zip"
+    resumed = bool(resume and checkpoint.exists())
+    if resumed:
+        model = PPO.load(str(checkpoint), env=env, device="cpu")
+    else:
+        model = PPO(
+            "MlpPolicy",
+            env,
+            learning_rate=3e-4,
+            n_steps=n_steps,
+            batch_size=batch,
+            n_epochs=4,
+            gamma=0.99,
+            gae_lambda=0.95,
+            clip_range=0.2,
+            ent_coef=0.0,
+            vf_coef=0.5,
+            max_grad_norm=0.5,
+            seed=seed,
+            device="cpu",
+            verbose=0,
+            policy_kwargs={"net_arch": [64, 64], "log_std_init": -1.5},
+        )
+    warm_note = None if resumed else _fit_desired(model, env)
+    if warm_note:
+        print(f"[rl] {skill} v{version}: {warm_note}", flush=True)
+    model.learn(
+        total_timesteps=int(timesteps),
+        callback=callback,
+        progress_bar=False,
+        reset_num_timesteps=not resumed,
     )
-    model.learn(total_timesteps=int(timesteps), callback=callback, progress_bar=False)
     if callback._len:
         callback.episodes.append(
             {
@@ -117,8 +193,6 @@ def _sb3(skill: str, reward_path: Path, timesteps: int, version: int, seed: int)
                 "partial": True,
             }
         )
-    spec.CHECKPOINTS.mkdir(parents=True, exist_ok=True)
-    checkpoint = spec.CHECKPOINTS / f"{spec.c_symbol(skill)}_v{version}.zip"
     model.save(str(checkpoint))
     env.close()
 
@@ -173,6 +247,7 @@ def _sb3(skill: str, reward_path: Path, timesteps: int, version: int, seed: int)
     lines = [
         f"skill={skill} version={version} timesteps={timesteps}",
         "backend=stable-baselines3 device=cpu algorithm=PPO",
+        f"warm_start={warm_note or 'none'}",
         f"reward_fn={reward_path}",
         f"checkpoint={checkpoint}",
     ]
@@ -210,7 +285,7 @@ def _jsonable(value):
     return value
 
 
-def train_skill(skill: str, reward_path: Path, timesteps: int, version: int, seed: int = 0) -> dict:
+def train_skill(skill: str, reward_path: Path, timesteps: int, version: int, seed: int = 0, resume: bool = False) -> dict:
     info = runtime.probe()
     if info["selected"] == "mujoco-playground":
         try:
@@ -224,6 +299,6 @@ def train_skill(skill: str, reward_path: Path, timesteps: int, version: int, see
             info["selected"] = "stable-baselines3"
             info["device"] = "cpu"
             info["reason"] = f"Playground was selected but did not run ({type(exc).__name__}: {exc}). Using stable-baselines3."
-    result = _sb3(skill, Path(reward_path), timesteps, version, seed)
+    result = _sb3(skill, Path(reward_path), timesteps, version, seed, resume=resume)
     result["runtime"] = info
     return result

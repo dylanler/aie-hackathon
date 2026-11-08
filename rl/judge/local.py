@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import math
 
+from rl.labels import local_rank_sentence
+
 
 def _gap(stats: dict) -> float:
     good = float(stats.get("probe_scripted_reward", 0.0))
@@ -58,6 +60,6 @@ def judge(skill: str, candidates: list[dict]) -> dict:
         "hacking": hacking,
         "gait_score": gait,
         "rank": {cand_id: rank for rank, _ver, cand_id in ((s, v, i) for s, v, i in scored)},
-        "notes": "SubQ was not called. Winner is the candidate with the higher task score, a positive scripted-vs-vibration gap, and a lower hacking flag.",
+        "notes": local_rank_sentence(),
         "raw": None,
     }

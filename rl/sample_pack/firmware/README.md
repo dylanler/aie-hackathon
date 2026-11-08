@@ -33,7 +33,7 @@ different default pose (belly-up). Do not share one zero between those skills.
 | 21:33 | joint velocity × 0.1 | the 0.1 scale is `joint_vel_scale`. |
 | 33:45 | previous action | the last output, in `[-1, 1]`. |
 | 45:48 | command | `vx, vy, yaw rate`. Walk uses `[0.20, 0, 0]`, trot `[0.40, 0, 0]`. |
-| 48:50 | sin(phase), cos(phase) | phase is `control_time * gait_freq` wrapped to `[0, 1)`. Walk freq is 1.6 Hz, trot is 2.0 Hz. Rollover and play-dead use phase 0. |
+| 48:50 | sin(phase), cos(phase) | phase is `control_time * gait_freq` wrapped to `[0, 1)`. Walk and trot are 2.4 Hz. Rollover is 3.0 Hz. Play-dead uses phase 0. `gait_freq_hz` in `policy_spec.json` is the source of those numbers. |
 
 Clip the vector to `[-10, 10]` before the network. That clip is part of the
 trained observation, not an optional safety check.
@@ -51,11 +51,23 @@ and clip `q_target` to the MJCF joint ranges (abad ±0.65, hip −1.05 to 1.85,
 knee −2.55 to −0.25). Send `q_target` to the servos at 50 Hz. If a tick is
 later than about 50 ms, drop torque. Do not integrate a missed tick.
 
-The checked-in ONNX files are early PPO checkpoints from a short CPU burst.
-The walk and play-dead mp4s next to them are captioned **scripted motion
-fallback** when that burst has not learned the gait. Use the scripted joint
-trajectory in `rl/scripted.py` as the bring-up motion, and switch to the ONNX
-file only after a longer training run raises `policy_success` in the curve JSON.
+The ONNX file is the deterministic PPO action mean. The shipped
+`rl/<skill>.mp4` files are rollouts of that policy. Frames are captioned
+**ppo policy rollout**, and the curve field `video_label` says the same thing.
+`success` is the task score of that mp4.
+
+| skill | success | clip |
+|---|---:|---|
+| walk | 0.9522 | upright PPO walk |
+| trot | 0.8548 | upright PPO trot |
+| rollover | 0.6675 | PPO roll that reaches belly-up and does not hold |
+| play-dead | 0.9843 | PPO pose that holds still and belly-up |
+
+`python -m rl replay --skill <name>` plays the checkpoint named in the curve.
+`python -m rl replay --skill <name> --controller scripted` writes a separate
+open-loop mp4 captioned **open-loop controller**. A future publish uses that
+open-loop clip as `<skill>.mp4` only when the policy rollout does not perform
+the skill. The files next to this README are the PPO rollouts.
 
 ## Raspberry Pi
 

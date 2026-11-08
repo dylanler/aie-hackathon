@@ -48,9 +48,13 @@ def caption(frame: np.ndarray, text: str) -> np.ndarray:
     image = Image.fromarray(frame)
     draw = ImageDraw.Draw(image)
     pad = 8
-    # Default bitmap font is small; draw a dark chip behind the label.
-    tw = 6 * len(text) + 12
-    draw.rectangle([pad, pad, pad + tw, pad + 18], fill=(11, 11, 12))
+    try:
+        bbox = draw.textbbox((0, 0), text)
+        tw = bbox[2] - bbox[0]
+        th = bbox[3] - bbox[1]
+    except AttributeError:
+        tw, th = draw.textsize(text)
+    draw.rectangle([pad, pad, pad + tw + 12, pad + max(th, 10) + 8], fill=(11, 11, 12))
     draw.text((pad + 6, pad + 4), text, fill=(255, 90, 31))
     return np.asarray(image)
 

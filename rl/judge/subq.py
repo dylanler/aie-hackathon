@@ -21,6 +21,7 @@ from PIL import Image
 
 from rl.http_api import HTTPFailure, post_json
 from rl.judge import local as local_judge
+from rl.labels import unset_subq_note
 
 URL = "https://api.subq.ai/v1/systemone"
 MODEL = "subq-snap-1.1"
@@ -117,7 +118,7 @@ def judge(skill: str, candidates: list[dict], frames: list | None = None) -> dic
     key = os.environ.get("SUBQ_API_KEY", "").strip()
     if not key:
         result = local_judge.judge(skill, candidates)
-        result["notes"] = "SUBQ_API_KEY is unset. " + result["notes"]
+        result["notes"] = unset_subq_note()
         return result
     if len(candidates) < 2:
         raise JudgeError("choice questions need at least two candidates")
@@ -147,12 +148,17 @@ def judge(skill: str, candidates: list[dict], frames: list | None = None) -> dic
         raw = post_json(URL, payload, headers, timeout=90)
     except HTTPFailure as exc:
         fallback = local_judge.judge(skill, candidates)
-        fallback["notes"] = f"SubQ HTTP {exc.status}; used the local judge instead."
+        fallback["notes"] = (
+            f"SubQ HTTP {exc.status}. The local judge ranked the candidates instead. This is not a SubQ verdict."
+        )
         fallback["subq_error"] = {"status": exc.status}
         return fallback
     except Exception as exc:
         fallback = local_judge.judge(skill, candidates)
-        fallback["notes"] = f"SubQ request failed ({type(exc).__name__}); used the local judge instead."
+        fallback["notes"] = (
+            f"SubQ request failed ({type(exc).__name__}). The local judge ranked the candidates instead. "
+            "This is not a SubQ verdict."
+        )
         return fallback
     return _interpret(skill, candidates, raw)
 
@@ -163,7 +169,10 @@ def _interpret(skill: str, candidates: list[dict], raw: dict) -> dict:
     best = (answers.get("best") or {}).get("choice")
     if best not in ids:
         fallback = local_judge.judge(skill, candidates)
-        fallback["notes"] = "SubQ responded but best.choice was missing; used the local judge."
+        fallback["notes"] = (
+            "SubQ responded but best.choice was missing. The local judge ranked the candidates instead. "
+            "This is not a SubQ verdict."
+        )
         fallback["raw"] = raw
         return fallback
     hacking = {}

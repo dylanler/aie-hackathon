@@ -152,8 +152,86 @@ def _scale_floats(source: str, factor: float) -> str:
     return re.sub(r"(?<![\w.])-?\d+\.\d+(?![\w.])", repl, source)
 
 
+def _gait(version: int, feedback: str, skill: str, hip_amp: float, knee_lift: float) -> str:
+    """Track a diagonal gait the ±0.45 rad residual can actually reach."""
+    return _header(skill, version, feedback) + f'''
+def compute_reward(s):
+    phase = float(s["phase"])
+    hip0 = 0.8
+    knee0 = -1.5
+    hip_amp = {hip_amp}
+    knee_lift = {knee_lift}
+    offsets = (0.0, 0.5, 0.5, 0.0)  # FL, FR, RL, RR
+    ref = np.zeros(12, dtype=np.float64)
+    for i, off in enumerate(offsets):
+        leg_phase = (phase + off) % 1.0
+        ang = math.sin(2.0 * math.pi * leg_phase)
+        swing = max(0.0, ang)
+        ref[i * 3 + 1] = hip0 - hip_amp * ang
+        ref[i * 3 + 2] = knee0 - knee_lift * swing
+    err = float(np.sum(np.square(s["joint_pos"] - ref)))
+    pose = math.exp(-err / 0.06)
+    default = np.array([0.0, 0.8, -1.5, 0.0, 0.8, -1.5, 0.0, 0.8, -1.5, 0.0, 0.8, -1.5])
+    desired = np.clip((ref - default) / 0.45, -1.0, 1.0)
+    act = math.exp(-float(np.sum(np.square(s["action"] - desired))) / 0.12)
+    upright = math.exp(-((float(s["projected_gravity"][2]) + 1.0) ** 2) / 0.08)
+    vel = s["base_lin_vel"]
+    cmd = float(s["command"][0])
+    forward = max(float(vel[0]), 0.0)
+    tracking = math.exp(-((float(vel[0]) - cmd) ** 2) / 0.12 - (float(vel[1]) ** 2) / 0.08)
+    rate = float(np.sum(np.square(s["action"] - s["prev_action"])))
+    reward = (
+        3.00 * act * upright
+        + 1.20 * pose * upright
+        + 0.80 * tracking * upright
+        + 0.60 * forward * upright
+        + 0.20 * upright
+        - 0.03 * rate
+        - 0.30 * float(s["torso_contact"])
+    )
+    parts = {{"act": act, "pose": pose, "tracking": tracking, "forward": forward, "upright": upright, "desired": desired}}
+    return float(reward), parts
+'''
+
+
+def _rollover_v3(version: int, feedback: str) -> str:
+    return _header("rollover", version, feedback) + '''
+def compute_reward(s):
+    # A and B alternate at the rollover phase clock. On this MJCF that
+    # alternation rolls the body from a stand. Both poses fit in the residual.
+    pose_a = np.array([0.45, 0.35, -1.05, -0.45, 1.25, -1.95, 0.45, 0.35, -1.05, -0.45, 1.25, -1.95])
+    pose_b = np.array([0.45, 1.25, -1.95, -0.45, 0.35, -1.05, 0.45, 1.25, -1.95, -0.45, 0.35, -1.05])
+    pose_dead = np.array([0.35, 0.9, -1.8, -0.35, 0.9, -1.8, 0.35, 0.9, -1.8, -0.35, 0.9, -1.8])
+    up = float(s["up_z"])
+    if up < -0.25:
+        ref = pose_dead
+    elif float(s["phase"]) < 0.5:
+        ref = pose_a
+    else:
+        ref = pose_b
+    err = float(np.sum(np.square(s["joint_pos"] - ref)))
+    pose = math.exp(-err / 0.08)
+    default = np.array([0.0, 0.8, -1.5, 0.0, 0.8, -1.5, 0.0, 0.8, -1.5, 0.0, 0.8, -1.5])
+    desired = np.clip((ref - default) / 0.45, -1.0, 1.0)
+    act = math.exp(-float(np.sum(np.square(s["action"] - desired))) / 0.15)
+    rolled = min(abs(float(s["roll"])) / math.pi, 1.0)
+    hold = math.exp(-float(np.sum(np.square(s["joint_vel"]))) / 6.0) if up < -0.25 else 0.0
+    calm = math.exp(-float(np.sum(np.square(s["base_ang_vel"]))) / 4.0) if up < -0.25 else 0.0
+    rate = float(np.sum(np.square(s["action"] - s["prev_action"])))
+    reward = 2.60 * act + 1.00 * pose + 1.30 * rolled + 0.70 * hold + 0.30 * calm - 0.03 * rate
+    parts = {"act": act, "pose": pose, "rolled": rolled, "hold": hold, "desired": desired}
+    return float(reward), parts
+'''
+
+
 def generate(skill: str, version: int, parent_code: str, feedback: str) -> str:
     del parent_code
+    if version >= 3 and skill == "walk":
+        return _gait(version, feedback, "walk", 0.25, 0.30)
+    if version >= 3 and skill == "trot":
+        return _gait(version, feedback, "trot", 0.28, 0.45)
+    if version >= 3 and skill == "rollover":
+        return _rollover_v3(version, feedback)
     base = _BUILDERS[skill](version, feedback)
     if version <= 2:
         return base

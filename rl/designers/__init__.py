@@ -7,6 +7,7 @@ from pathlib import Path
 
 from rl.designers import gemini, local, muse
 from rl.designers.gemini import DesignerError
+from rl.labels import designer_api_failed_reason, designer_keys_unset_reason
 from rl.reward_api import RewardRejected, load_reward_source, smoke_call
 
 
@@ -38,5 +39,10 @@ def propose(skill: str, version: int, parent_code: str, feedback: str, dest: Pat
             raise DesignerError(f"local fallback reward was rejected: {exc}") from exc
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(code)
-    reason = "designer API keys unset" if not errors and source == "local-fallback" else "; ".join(errors)
+    if source == "local-fallback" and not errors:
+        reason = designer_keys_unset_reason()
+    elif source == "local-fallback":
+        reason = designer_api_failed_reason(errors)
+    else:
+        reason = "; ".join(errors)
     return {"source": source, "model": model, "path": dest, "errors": errors, "reason": reason, "code": code}

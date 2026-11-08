@@ -1,47 +1,47 @@
 skill=play-dead version=2 timesteps=8192
 backend=stable-baselines3 device=cpu algorithm=PPO
-reward_fn=/workspace/rl/rewards/versions/play_dead_v2.py
-checkpoint=/workspace/rl/checkpoints/play_dead_v2.zip
-EPISODE {"timestep": 200, "ep_return": 244.6485, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 400, "ep_return": 249.432, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 600, "ep_return": 246.2187, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 800, "ep_return": 243.7883, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 1000, "ep_return": 242.3368, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 1200, "ep_return": 245.6787, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 1400, "ep_return": 248.6229, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 1600, "ep_return": 246.9828, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 1800, "ep_return": 247.2894, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 2000, "ep_return": 251.2515, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 2200, "ep_return": 243.9546, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 2400, "ep_return": 246.7507, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 2600, "ep_return": 249.415, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 2800, "ep_return": 242.8631, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 3000, "ep_return": 247.1153, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 3200, "ep_return": 245.723, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 3400, "ep_return": 248.3811, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 3600, "ep_return": 247.6546, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 3800, "ep_return": 244.6274, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 4000, "ep_return": 245.8776, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 4200, "ep_return": 242.9166, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 4400, "ep_return": 248.0882, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 4600, "ep_return": 248.7828, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 4800, "ep_return": 241.9756, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 5000, "ep_return": 237.868, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 5200, "ep_return": 246.7306, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 5400, "ep_return": 244.671, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 5600, "ep_return": 245.2056, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 5800, "ep_return": 244.4783, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 6000, "ep_return": 247.2315, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 6200, "ep_return": 240.6968, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 6400, "ep_return": 251.1108, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 6600, "ep_return": 249.0968, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 6800, "ep_return": 247.2791, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 7000, "ep_return": 243.6041, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 7200, "ep_return": 247.2026, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 7400, "ep_return": 241.936, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 7600, "ep_return": 244.887, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 7800, "ep_return": 243.2592, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 8000, "ep_return": 248.722, "ep_len": 200, "task_score": 0.55}
-EPISODE {"timestep": 8192, "ep_return": 238.0844, "ep_len": 192, "partial": true}
-EVAL {"steps": 200, "mean_reward": 2.072725, "ep_return": 414.545004, "mean_vx": -5.2e-05, "upright_fraction": 0.0, "inverted_fraction": 1.0, "still_fraction": 0.99, "min_up_z": -1.0, "max_up_z": -0.946679, "min_height": 0.040653, "fell": 0.0, "inverted_reached": 1.0, "action_jitter": 0.000436, "reward_errors": 0, "task_score": 0.9955, "probe_scripted_reward": 0.07887, "probe_bad_reward": -0.681757, "probe_gap": 0.760627, "timesteps": 8192, "backend": "stable-baselines3", "device": "cpu", "version": 2}
+reward_fn=/agent/repos/aie-hackathon/rl/rewards/play_dead.py
+checkpoint=/agent/repos/aie-hackathon/rl/checkpoints/play_dead_v2.zip
+EPISODE {"timestep": 8392, "ep_return": 243.1672, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.001338, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 8592, "ep_return": 247.4433, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000321, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 8792, "ep_return": 243.0537, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000714, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 8992, "ep_return": 243.0243, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000395, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 9192, "ep_return": 243.7125, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000117, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 9392, "ep_return": 243.7483, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000378, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 9592, "ep_return": 245.4703, "ep_len": 200, "task_score": 0.55, "mean_vx": -0.000141, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 9792, "ep_return": 249.5068, "ep_len": 200, "task_score": 0.55, "mean_vx": -0.000221, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 9992, "ep_return": 243.6649, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000833, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 10192, "ep_return": 244.2012, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000249, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 10392, "ep_return": 241.11, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000509, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 10592, "ep_return": 247.3304, "ep_len": 200, "task_score": 0.55, "mean_vx": 5.6e-05, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 10792, "ep_return": 248.8678, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.00021, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 10992, "ep_return": 238.7967, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000211, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 11192, "ep_return": 244.8358, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000793, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 11392, "ep_return": 241.4024, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.001289, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 11592, "ep_return": 245.1571, "ep_len": 200, "task_score": 0.55, "mean_vx": -0.000211, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 11792, "ep_return": 249.0234, "ep_len": 200, "task_score": 0.55, "mean_vx": -0.000498, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 11992, "ep_return": 245.2899, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000133, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 12192, "ep_return": 243.9447, "ep_len": 200, "task_score": 0.55, "mean_vx": -8e-06, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 12392, "ep_return": 241.5887, "ep_len": 200, "task_score": 0.55, "mean_vx": -0.000288, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 12592, "ep_return": 243.8446, "ep_len": 200, "task_score": 0.55, "mean_vx": -9.8e-05, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 12792, "ep_return": 241.8106, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000322, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 12992, "ep_return": 232.669, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.004475, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 13192, "ep_return": 237.0805, "ep_len": 200, "task_score": 0.55, "mean_vx": -0.000298, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 13392, "ep_return": 239.7926, "ep_len": 200, "task_score": 0.55, "mean_vx": -0.000948, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 13592, "ep_return": 243.0403, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.001309, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 13792, "ep_return": 239.7427, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.00048, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 13992, "ep_return": 243.716, "ep_len": 200, "task_score": 0.55, "mean_vx": -3.1e-05, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 14192, "ep_return": 244.7763, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000232, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 14392, "ep_return": 240.7235, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000801, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 14592, "ep_return": 247.1349, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000657, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 14792, "ep_return": 241.7302, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.001447, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 14992, "ep_return": 242.2501, "ep_len": 200, "task_score": 0.55, "mean_vx": -0.000815, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 15192, "ep_return": 239.2965, "ep_len": 200, "task_score": 0.55, "mean_vx": -0.000239, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 15392, "ep_return": 241.3536, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000548, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 15592, "ep_return": 238.5766, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000802, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 15792, "ep_return": 244.4956, "ep_len": 200, "task_score": 0.55, "mean_vx": 0.000196, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 15992, "ep_return": 245.1298, "ep_len": 200, "task_score": 0.55, "mean_vx": 8.1e-05, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 16192, "ep_return": 243.5887, "ep_len": 200, "task_score": 0.55, "mean_vx": 5.2e-05, "upright_fraction": 0.0, "inverted_fraction": 1.0}
+EPISODE {"timestep": 16384, "ep_return": 232.0022, "ep_len": 192, "partial": true}
+EVAL {"steps": 200, "mean_reward": 2.032861, "ep_return": 406.5722, "mean_vx": -5e-05, "upright_fraction": 0.0, "inverted_fraction": 1.0, "still_fraction": 0.965, "min_up_z": -1.0, "max_up_z": -0.946206, "min_height": 0.040683, "fell": 0.0, "inverted_reached": 1.0, "action_jitter": 0.001893, "reward_errors": 0, "task_score": 0.98425, "probe_scripted_reward": 0.07887, "probe_bad_reward": -0.681757, "probe_gap": 0.760627, "timesteps": 8192, "backend": "stable-baselines3", "device": "cpu", "version": 2}
 PROBE scripted_mean_reward=0.078870 bad_mean_reward=-0.681757 gap=0.760627

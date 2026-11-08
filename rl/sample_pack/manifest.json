@@ -6,28 +6,28 @@
       "name": "walk",
       "policy": "walk.onnx",
       "reward_fn": "rewards/walk.py",
-      "reward_version": 2,
+      "reward_version": 5,
       "curve": "walk_curve.json",
       "video": "walk.mp4",
-      "success": 0.9731
+      "success": 0.9522
     },
     {
       "name": "trot",
       "policy": "trot.onnx",
       "reward_fn": "rewards/trot.py",
-      "reward_version": 2,
+      "reward_version": 3,
       "curve": "trot_curve.json",
       "video": "trot.mp4",
-      "success": 0.893
+      "success": 0.8548
     },
     {
       "name": "rollover",
       "policy": "rollover.onnx",
       "reward_fn": "rewards/rollover.py",
-      "reward_version": 1,
+      "reward_version": 5,
       "curve": "rollover_curve.json",
       "video": "rollover.mp4",
-      "success": 0.8644
+      "success": 0.6675
     },
     {
       "name": "play-dead",
@@ -36,7 +36,7 @@
       "reward_version": 2,
       "curve": "play-dead_curve.json",
       "video": "play-dead.mp4",
-      "success": 0.6944
+      "success": 0.9843
     }
   ],
   "firmware": "firmware/README.md"
