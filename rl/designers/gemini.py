@@ -24,7 +24,11 @@ class DesignerError(RuntimeError):
 def _key() -> str:
     key = os.environ.get("GEMINI_API_KEY", "").strip()
     if not key:
-        raise DesignerError("GEMINI_API_KEY is unset")
+        raise DesignerError(
+            "GEMINI_API_KEY is unset. Gemini was not called. "
+            "Leave it unset to use the local designer, or export the variable in the environment. "
+            "The value is never printed."
+        )
     return key
 
 

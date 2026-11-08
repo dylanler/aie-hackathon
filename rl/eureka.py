@@ -15,6 +15,7 @@ from rl import history, spec
 from rl.designers import propose
 from rl.export_onnx import export_checkpoint
 from rl.judge import judge
+from rl.labels import OPEN_LOOP_CAPTION, POLICY_CAPTION, behavior_text, curve_note, sample_pack_readme
 from rl.reward_api import RewardRejected, validate_source
 from rl.train import train_skill
 
@@ -88,7 +89,7 @@ def publish_clip(skill: str, reward_path: Path, checkpoint: Path) -> dict:
         shutil.copy2(policy_path, main_path)
         return {
             "source": "ppo-policy",
-            "label": "ppo policy rollout",
+            "label": POLICY_CAPTION,
             "success": float(policy["success"]),
             "policy_success": float(policy["success"]),
             "scripted_success": float(scripted_task_score(skill, reward_path)),
@@ -98,7 +99,7 @@ def publish_clip(skill: str, reward_path: Path, checkpoint: Path) -> dict:
     scripted = scripted_rollout(skill, reward_path, main_path)
     return {
         "source": "scripted-fallback",
-        "label": "scripted motion fallback",
+        "label": OPEN_LOOP_CAPTION,
         "success": float(scripted["success"]),
         "policy_success": float(policy["success"]),
         "scripted_success": float(scripted["success"]),
@@ -111,19 +112,15 @@ def _curve(skill: str, version: int, trained: dict, published: dict, judgment: d
     episodes = list(trained["episodes"] if episodes is None else episodes)
     series = [ep.get("ep_return", 0.0) for ep in episodes]
     source = published["source"]
-    if source == "ppo-policy":
-        note = (
-            "success and policy_success are the deterministic PPO rollout written to the manifest mp4. "
-            "scripted_success is the open-loop controller on the same robot, not the published clip. "
-            f"Judge backend: {judgment.get('backend')}."
-        )
-    else:
-        note = (
-            "success is the scripted demo that produced the manifest video. "
-            "policy_success is the deterministic PPO rollout of the adopted reward. "
-            "The mp4 is captioned so the fallback is visible. "
-            f"Judge backend: {judgment.get('backend')}."
-        )
+    behavior = behavior_text(
+        skill,
+        source,
+        float(published["success"]),
+        float(published["policy_success"]),
+        float(published["scripted_success"]),
+        published.get("policy_metrics"),
+    )
+    note = curve_note(behavior, judgment.get("backend"))
     return {
         "skill": skill,
         "reward_version": version,
@@ -139,6 +136,7 @@ def _curve(skill: str, version: int, trained: dict, published: dict, judgment: d
         "success": published["success"],
         "video_source": source,
         "video_label": published["label"],
+        "behavior": behavior,
         "policy_checkpoint": trained["checkpoint"],
         "judge_backend": judgment["backend"],
         "judge_winner": judgment["winner"],
@@ -198,16 +196,7 @@ def _pack(manifest: dict) -> None:
         dest = pack / name
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dest)
-    (pack / "README.md").write_text(
-        "Sample RL pack for one robot run.\n\n"
-        "The core pipeline can copy this directory onto a run:\n\n"
-        "    mkdir -p data/runs/<id>/rl\n"
-        "    cp -a rl/sample_pack/. data/runs/<id>/rl/\n\n"
-        "manifest.json matches the frozen contract in COORDINATION.md.\n"
-        "A skill mp4 is a PPO policy rollout when that policy performs the skill.\n"
-        "Otherwise the mp4 is the open-loop clip, captioned scripted motion fallback.\n"
-        "success in manifest.json matches the published mp4.\n"
-    )
+    (pack / "README.md").write_text(sample_pack_readme())
 
 
 def run(skills: tuple[str, ...] = spec.SKILLS, timesteps: int = 8192, candidates: int = 2, seed: int = 0) -> dict:
@@ -403,8 +392,10 @@ def upgrade(skills: tuple[str, ...] = spec.SKILLS, timesteps: int = 65536, seed:
     """Train the adopted reward further, or a new local candidate, then publish an honest clip.
 
     SubQ Snap is used when SUBQ_API_KEY is set. Otherwise the local judge runs
-    and the curve says so. A policy clip replaces the scripted mp4 only when
-    the rollout meets the skill. Other skills in the manifest are left as they are.
+    and the curve says judge_backend=local-fallback. The manifest mp4 becomes
+    the PPO rollout when that rollout performs the skill, captioned
+    "ppo policy rollout". Otherwise it is the open-loop controller.
+    Other skills in the manifest are left as they are.
     """
     if timesteps < 0:
         raise ValueError("timesteps must be >= 0")
@@ -445,7 +436,10 @@ def upgrade(skills: tuple[str, ...] = spec.SKILLS, timesteps: int = 65536, seed:
                     "model": None,
                     "winner": "r0",
                     "hacking": {},
-                    "notes": "SUBQ_API_KEY is unset. Only one reward version is logged, so no choice was made.",
+                    "notes": (
+                        "Only one reward version is logged, so the local judge had no pair to rank. "
+                        "If SUBQ_API_KEY is unset, SubQ was not called. This is not a SubQ verdict."
+                    ),
                 }
             data["skills"][skill]["adopted_version"] = version
             adopted_code = spec.VERSIONS / spec.version_filename(skill, version)

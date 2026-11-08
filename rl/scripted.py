@@ -1,8 +1,9 @@
-"""Open-loop joint targets for demo rollouts.
+"""Open-loop joint targets for comparison rollouts.
 
-These are physics rollouts (the servos track the targets). They are not the
-learned policy. Videos rendered from this module are labeled
-"scripted motion fallback".
+These are physics rollouts (the servos track the targets). They are a
+different video from the shipped skill mp4s, which are PPO policy rollouts
+captioned "ppo policy rollout". Videos rendered from this module are labeled
+"open-loop controller".
 
 Walk and trot parameters were tuned on robot.xml: a diagonal pair gait that
 stays upright and moves forward. Rollover and play-dead share a throw onto

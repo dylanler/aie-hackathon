@@ -51,11 +51,23 @@ and clip `q_target` to the MJCF joint ranges (abad ±0.65, hip −1.05 to 1.85,
 knee −2.55 to −0.25). Send `q_target` to the servos at 50 Hz. If a tick is
 later than about 50 ms, drop torque. Do not integrate a missed tick.
 
-The ONNX file is the deterministic PPO action mean. `rl/<skill>.mp4` is a
-rollout of that policy when the policy performs the skill (caption **ppo policy
-rollout**). When it does not, the mp4 is the open-loop clip in `rl/scripted.py`,
-captioned **scripted motion fallback**. `success` in the curve matches the mp4.
-`policy_success` is always the PPO rollout.
+The ONNX file is the deterministic PPO action mean. The shipped
+`rl/<skill>.mp4` files are rollouts of that policy. Frames are captioned
+**ppo policy rollout**, and the curve field `video_label` says the same thing.
+`success` is the task score of that mp4.
+
+| skill | success | clip |
+|---|---:|---|
+| walk | 0.9522 | upright PPO walk |
+| trot | 0.8548 | upright PPO trot |
+| rollover | 0.6675 | PPO roll that reaches belly-up and does not hold |
+| play-dead | 0.9843 | PPO pose that holds still and belly-up |
+
+`python -m rl replay --skill <name>` plays the checkpoint named in the curve.
+`python -m rl replay --skill <name> --controller scripted` writes a separate
+open-loop mp4 captioned **open-loop controller**. A future publish uses that
+open-loop clip as `<skill>.mp4` only when the policy rollout does not perform
+the skill. The files next to this README are the PPO rollouts.
 
 ## Raspberry Pi
 

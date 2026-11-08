@@ -113,6 +113,30 @@ def c_symbol(skill: str) -> str:
     return skill.replace("-", "_")
 
 
+def adopted_checkpoint(skill: str) -> Path:
+    """Checkpoint that produced the published curve, else the newest zip.
+
+    Replay and export use this so a default command plays the shipped policy
+    (walk_v5, trot_v3, rollover_v5, play_dead_v2) rather than v1, which is
+    still on disk.
+    """
+    curve_path = ROOT / curve_filename(skill)
+    if curve_path.is_file():
+        try:
+            payload = json.loads(curve_path.read_text())
+        except json.JSONDecodeError:
+            payload = {}
+        rel = payload.get("policy_checkpoint")
+        if isinstance(rel, str) and rel and not rel.startswith(("/", "\\")) and ".." not in Path(rel).parts:
+            path = (ROOT / rel).resolve()
+            if path.is_file() and ROOT.resolve() in path.parents:
+                return path
+    matches = sorted(CHECKPOINTS.glob(f"{c_symbol(skill)}_v*.zip"))
+    if not matches:
+        raise FileNotFoundError(f"no checkpoint for {skill}")
+    return matches[-1]
+
+
 def build_obs(projected_gravity, base_ang_vel, base_lin_vel, joint_pos_rel, joint_vel, prev_action, command, phase):
     import numpy as np
 

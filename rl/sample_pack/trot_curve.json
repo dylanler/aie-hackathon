@@ -1692,10 +1692,11 @@
   "success": 0.8548018270923212,
   "video_source": "ppo-policy",
   "video_label": "ppo policy rollout",
+  "behavior": "PPO policy rollout. Trots upright (mean_vx 0.191325 m/s, upright_fraction 0.985, fell 0). success 0.8548 is the task score of this mp4. The open-loop controller scored 0.8930 on the same robot and is a different video.",
   "policy_checkpoint": "checkpoints/trot_v3.zip",
   "judge_backend": "local-fallback",
   "judge_winner": "r1",
-  "judge_notes": "SUBQ_API_KEY is unset. SubQ was not called. Winner is the candidate with the higher task score, a positive scripted-vs-vibration gap, and a lower hacking flag.",
+  "judge_notes": "SUBQ_API_KEY is unset, so SubQ Snap was not called. The local judge picked the candidate with the higher task score, a positive scripted-vs-vibration gap, and a lower hacking flag. This is not a SubQ verdict.",
   "hacking": {
     "r0": 0.12,
     "r1": 0.12
@@ -1712,7 +1713,7 @@
     "min_up_z": 0.721678,
     "mean_reward": 1.622883
   },
-  "note": "success and policy_success are the deterministic PPO rollout written to the manifest mp4. scripted_success is the open-loop controller on the same robot, not the published clip. Judge backend: local-fallback.",
+  "note": "PPO policy rollout. Trots upright (mean_vx 0.191325 m/s, upright_fraction 0.985, fell 0). success 0.8548 is the task score of this mp4. The open-loop controller scored 0.8930 on the same robot and is a different video. Judge backend: local-fallback.",
   "onnx": "trot.onnx",
   "firmware_header": "firmware/include/trot_policy.h"
 }

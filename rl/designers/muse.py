@@ -21,7 +21,11 @@ MODELS = ("muse-spark-1.3", "muse-wonder-1.0")
 def _key() -> str:
     key = os.environ.get("META_API_KEY", "").strip() or os.environ.get("MODEL_API_KEY", "").strip()
     if not key:
-        raise DesignerError("META_API_KEY and MODEL_API_KEY are unset")
+        raise DesignerError(
+            "META_API_KEY and MODEL_API_KEY are unset. Muse was not called. "
+            "Leave both unset to use the local designer, or export one of them. "
+            "The value is never printed."
+        )
     return key
 
 
