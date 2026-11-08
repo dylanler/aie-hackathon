@@ -157,7 +157,7 @@ export function RunView({ id, initialView }: { id: string; initialView?: StepKey
         <Link href="/" className="pointer-events-auto text-s text-text-2 transition-colors hover:text-text">Thought to Reality</Link>
         <div className="pointer-events-none absolute inset-x-0 hidden justify-center md:flex"><motion.div initial={{ opacity: 0, y: 12, scale: 1.04 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: T.panel, ease: EASE_OUT }} className="glass pointer-events-auto flex h-9 max-w-[520px] items-center gap-2 rounded-full px-4">
           <HintTip label="Start over with a new prompt" side="bottom">
-            <button onClick={() => router.push(`/?q=${encodeURIComponent(r.run?.prompt || "")}`)} className="max-w-[460px] truncate text-s text-text">{r.run?.prompt ?? "…"}</button>
+            <button aria-label={`Start over from prompt: ${r.run?.prompt ?? ""}`} onClick={() => router.push(`/?q=${encodeURIComponent(r.run?.prompt || "")}`)} className="max-w-[460px] truncate text-s text-text">{r.run?.prompt ?? "…"}</button>
           </HintTip>
         </motion.div></div>
         <div className="pointer-events-auto relative flex items-center gap-3">
