@@ -2,14 +2,18 @@ import { expect, test, type Page } from "@playwright/test";
 
 const SHOTS = process.env.E2E_SHOTS || "e2e/.shots";
 const RUN = "/runs/demo-freezer-latch";
+// Files the UI probes for on purpose and falls back from when absent: per-round MuJoCo clips/stills and
+// later-round verdicts (FitRounds), and API → static-runs → fixture lookups for a run id.
+const OPTIONAL = /\/files\/(sim\.round\d\.(mp4|png)|(sim_)?verdict\.round\d\.json)$|\/api\/runs\/demo-[\w-]+$|\/static-runs\/[\w-]+\/run\.json$/;
 
 /** Collect console errors + failed/404 requests for the page. */
 function watch(page: Page) {
   const errors: string[] = [];
   const bad: string[] = [];
-  page.on("console", (m) => { if (m.type() === "error" && !/WebGL|GPU|THREE\.WebGLRenderer|favicon|Download the React DevTools/i.test(m.text())) errors.push(m.text()); });
+  // "Failed to load resource" duplicates a 4xx, which is checked below against the allowlist
+  page.on("console", (m) => { if (m.type() === "error" && !/WebGL|GPU|THREE\.WebGLRenderer|favicon|Download the React DevTools|Failed to load resource/i.test(m.text())) errors.push(m.text()); });
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
-  page.on("response", (r) => { if (r.status() >= 400 && !/favicon|\/api\/runs\/[^/]+\/files\/\.\.|_next\/webpack-hmr/.test(r.url())) bad.push(`${r.status()} ${r.url()}`); });
+  page.on("response", (r) => { if (r.status() >= 400 && !/favicon|_next\/webpack-hmr/.test(r.url()) && !OPTIONAL.test(r.url())) bad.push(`${r.status()} ${r.url()}`); });
   return { errors, bad };
 }
 
@@ -47,10 +51,11 @@ test.describe("UI flow", () => {
     await shot(page, "01-landing", info.project.name);
     await noOverflow(page, "landing");
     for (const c of chips.slice(0, 2)) {
-      await page.goto("/");
+      await page.goto("/?replay=1"); // recorded runs: don't start live pipelines from the chip test
       await page.getByRole("button", { name: c }).click();
       await page.waitForURL(/\/runs\//, { timeout: 15000 });
-      expect(page.url()).toMatch(c.includes("freezer") ? /demo-freezer-latch/ : /demo-robot-dog/);
+      // chips open the recorded run, or a live run when /api/health says the pipeline is live
+      expect(page.url()).toMatch(/\/runs\/[\w-]+/);
     }
     expect.soft(w.errors, "console errors").toEqual([]);
     expect.soft(w.bad, "4xx/5xx").toEqual([]);
@@ -122,9 +127,18 @@ test.describe("UI flow", () => {
     await page.locator("body").click({ position: { x: 700, y: 450 } });
     await page.keyboard.press("e");
     await expect(page.getByRole("button", { name: "Explode" })).toHaveClass(/text-signal/);
+    // ←/→ step between stages, ? opens the shortcuts list
+    await page.keyboard.press("ArrowRight");
+    await expect(page.getByText("Designed by one model. Checked by physics.")).toBeVisible();
+    await page.keyboard.press("ArrowLeft");
+    await page.keyboard.press("Shift+Slash");
+    await expect(page.getByRole("dialog", { name: "Keyboard shortcuts" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("button", { name: "Copy link" })).toBeVisible();
     // gets better hover shows a version tooltip
     const gb = page.getByText("Gets better").first();
     await expect(gb).toBeVisible();
+    await gb.hover();
     // download STL from the run's file API
     const href = await page.evaluate(() => fetch("/api/runs/demo-freezer-latch").then((r) => r.json()).then((j) => j.parts?.[0]?.stl));
     const res = await page.request.get(`/api/runs/demo-freezer-latch/files/${href}`);
@@ -135,7 +149,7 @@ test.describe("UI flow", () => {
     expect(ascii || binary, "valid STL").toBeTruthy();
     // fit hover checks
     await page.goto(RUN + "?view=verify&instant=1");
-    const chip = page.getByText(/checks? pass|PASS|pass/i).first();
+    const chip = page.getByText(/Fits|Blocked/).first();
     await expect(chip).toBeVisible({ timeout: 15000 });
     await chip.hover();
     await page.waitForTimeout(600);
