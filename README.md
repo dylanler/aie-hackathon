@@ -6,7 +6,7 @@
 **Describe a broken thing. Get a part that physics has checked.**
 
 - **Live demo:** https://thought-to-reality.vercel.app (replays the recorded example runs; add `?replay=1` to force replay)
-- **Video:** (YouTube link)
+- **Video:** [60-second demo](https://youtu.be/92OTflubH_0) · [narrated walkthrough with architecture and sponsors](https://youtu.be/AI2A8qyULFw)
 - **Backup screen recording (57 s, no audio):** [`docs/demo.mp4`](docs/demo.mp4)
 
 Built from scratch at the **AIE Code Summit Hackathon** (Cerebral Valley, SHACK15 SF, **Nov 7, 2026**). Every file in this repo was written during the event.
