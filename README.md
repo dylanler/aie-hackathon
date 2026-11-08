@@ -5,7 +5,7 @@
 
 **Describe a broken thing. Get a part that physics has checked.**
 
-- **Live demo:** (Vercel URL)
+- **Live demo:** https://thought-to-reality.vercel.app (replays the recorded example runs; add `?replay=1` to force replay)
 - **Video:** (YouTube link)
 - **Backup screen recording (57 s, no audio):** [`docs/demo.mp4`](docs/demo.mp4)
 
