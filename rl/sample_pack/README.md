@@ -22,7 +22,13 @@ Judge backend on these curves is whatever `judge_backend` says.
 local-fallback means SUBQ_API_KEY was unset and SubQ was not called.
 That ranking is not a SubQ verdict, and it is not a Gemini or Muse verdict.
 
-List or package the Train-screen copies (mp4s, manifest, curves) with:
+walk.webm, trot.webm, rollover.webm, and play-dead.webm are VP9 copies
+of these same PPO policy mp4s (no audio). The Train player asks for
+the webm before the mp4. Replace the older webms in web/public/rl/
+with these. Those older files are scripted/open-loop clips, so leaving
+them in place keeps the old picture on the Train screen.
+
+List or package the Train-screen copies (mp4s, webms, manifest, curves) with:
 
     python -m rl handoff
     python -m rl handoff --pack /tmp/rl-public

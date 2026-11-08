@@ -47,6 +47,7 @@ each variable is set, never the value.
 | `manifest.json` | frozen contract: robot, mjcf, skills[], firmware |
 | `walk.onnx`, `trot.onnx`, `rollover.onnx`, `play-dead.onnx` | deterministic PPO means |
 | `walk.mp4`, `trot.mp4`, `rollover.mp4`, `play-dead.mp4` | shipped PPO policy rollouts |
+| `walk.webm`, `trot.webm`, `rollover.webm`, `play-dead.webm` | same PPO rollouts as the mp4s, VP9, no audio. The Train player asks for these first |
 | `*_policy.mp4` | same PPO rollout, replayed beside the shipped file |
 | `*_openloop.mp4` | open-loop controller, written only when you ask for it |
 | `*_curve.json` | training curve, success, `behavior`, `video_label`, judge backend |
@@ -116,9 +117,11 @@ python -m rl replay --skill play-dead
 # Open-loop comparison. Writes rl/<skill>_openloop.mp4 and leaves the shipped mp4 in place.
 python -m rl replay --skill rollover --controller scripted
 
-# Files Hark copies onto web/public/rl/ after merge: four mp4s, manifest, four curves.
-# This command does not write under web/.
+# Files Hark copies onto web/public/rl/ after merge: four mp4s, four webms, manifest, four curves.
+# This command does not write under web/. The webms are already built, so ffmpeg is not required.
 python -m rl handoff
+python -m rl handoff --pack /tmp/rl-public
+# --webm transcodes only when a prebuilt <skill>.webm is missing.
 python -m rl handoff --pack /tmp/rl-public --webm
 python -m rl handoff --sync-sample-pack --check
 
@@ -153,18 +156,23 @@ older zips such as `walk_v1.zip` are still in `checkpoints/`.
 
 Hark owns `web/`. The RL lane does not edit it. After this branch merges, the
 Train screen still has the previous curves (`video_label` from that older
-publish) until someone copies the new files.
+publish) until someone copies the new files. The player requests `<skill>.webm`
+before `<skill>.mp4`. The webms already in `web/public/rl/` are the older
+scripted/open-loop clips. Replace them with `walk.webm`, `trot.webm`,
+`rollover.webm`, and `play-dead.webm` from this directory. Those files are VP9
+transcodes of the shipped PPO mp4s (no audio): the same trained-policy videos,
+captioned **ppo policy rollout**. Leaving the old webms in place keeps the
+previous picture on screen under the new caption.
 
 ```bash
 python -m rl handoff
-python -m rl handoff --pack /tmp/rl-public --webm
+python -m rl handoff --pack /tmp/rl-public
 ```
 
 The pack is `manifest.json`, `walk.mp4`, `trot.mp4`, `rollover.mp4`,
-`play-dead.mp4`, and the four `*_curve.json` files, plus `LABELS.md`.
-`--webm` transcodes each mp4, because the Train player requests `<skill>.webm`
-before `<skill>.mp4`. Leaving the old webms in place keeps the previous
-picture on screen.
+`play-dead.mp4`, `walk.webm`, `trot.webm`, `rollover.webm`, `play-dead.webm`,
+and the four `*_curve.json` files, plus `LABELS.md`. ffmpeg is not required.
+`--webm` transcodes a webm only when the prebuilt file is missing.
 
 `LABELS.md` is the sheet for the Train labels: pill percents are
 `round(success * 100)` (walk 95, trot 85, rollover 67, play-dead 98), the
@@ -181,5 +189,8 @@ python -m rl handoff --sync-sample-pack
 ```
 
 `sample_pack/manifest.json` is the same contract the core pipeline reads.
+The sample pack also carries the four PPO webms, because `python -m rl handoff`
+keeps `sample_pack/` aligned with the published Train files. Those webms are
+the same trained clips Hark should copy over the older ones in `web/public/rl/`.
 `python -m rl handoff --check` exits 1 if those published files drift from
 `rl/`.

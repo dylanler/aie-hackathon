@@ -1,9 +1,9 @@
 """List and package the RL files the Train screen should refresh.
 
 Hark owns web/. This module never writes under web/. It prints the copy list
-and, with --pack, writes a directory of the four mp4s, manifest.json, and the
-four curves. --webm also transcodes those mp4s for the player that asks for
-<video> webm first.
+and, with --pack, writes a directory of the four mp4s, the four prebuilt VP9
+webms, manifest.json, and the four curves. --webm transcodes a webm only when
+that prebuilt file is missing.
 """
 
 from __future__ import annotations
@@ -147,33 +147,45 @@ def _transcode_webm(src: Path, dest: Path) -> None:
         "-an",
         "-row-mt",
         "1",
+        "-pix_fmt",
+        "yuv420p",
         str(dest),
     ]
     try:
         subprocess.run(command, check=True, capture_output=True)
     except FileNotFoundError as exc:
-        raise SystemExit("ffmpeg is not on PATH, so --webm cannot transcode the mp4s.") from exc
+        raise SystemExit(
+            "ffmpeg is not on PATH, so --webm cannot transcode a missing webm. "
+            "The prebuilt VP9 files in rl/ are the ones to copy."
+        ) from exc
     except subprocess.CalledProcessError as exc:
         detail = (exc.stderr or b"").decode("utf-8", errors="replace")[-500:]
         raise SystemExit(f"ffmpeg failed for {src.name}: {detail}") from exc
 
 
 def pack(dest: Path, webm: bool = False) -> list[str]:
-    """Copy the Train-screen files. Does not touch web/."""
+    """Copy the Train-screen files, including prebuilt webms. Does not touch web/.
+
+    --webm transcodes a webm from its mp4 only when rl/ does not already have that file.
+    """
     _reject_web(dest)
     dest.mkdir(parents=True, exist_ok=True)
     written = []
     for rel in PUBLIC_RL_FILES:
         src = spec.ROOT / rel
-        if not src.exists():
-            raise SystemExit(f"missing {src}. The published set is incomplete.")
         target = dest / rel
-        shutil.copy2(src, target)
-        written.append(rel)
-        if webm and rel.endswith(".mp4"):
-            webm_name = rel[:-4] + ".webm"
-            _transcode_webm(src, dest / webm_name)
-            written.append(webm_name)
+        if src.exists():
+            shutil.copy2(src, target)
+            written.append(rel)
+            continue
+        if webm and rel.endswith(".webm"):
+            mp4 = spec.ROOT / (rel[:-5] + ".mp4")
+            if not mp4.exists():
+                raise SystemExit(f"missing {src} and {mp4}. The published set is incomplete.")
+            _transcode_webm(mp4, target)
+            written.append(rel)
+            continue
+        raise SystemExit(f"missing {src}. The published set is incomplete.")
     labels = dest / "LABELS.md"
     labels.write_text(labels_markdown())
     written.append("LABELS.md")
@@ -189,10 +201,13 @@ def labels_markdown() -> str:
         "This pack was written by `python -m rl handoff`. It does not edit `web/`.",
         "",
         "The player asks for `<skill>.webm` before `<skill>.mp4`.",
-        "The webms already in `web/public/rl/` are the previous open-loop clips.",
-        "Replace or delete them when you copy the mp4s, or pass `--webm` to this pack",
-        "and copy those webms too. Otherwise the Train screen keeps the old picture",
-        "under the new caption.",
+        "`walk.webm`, `trot.webm`, `rollover.webm`, and `play-dead.webm` in this pack",
+        "are VP9 transcodes of the shipped PPO policy mp4s (no audio). They are the",
+        "same trained-policy videos, captioned `ppo policy rollout`.",
+        "Replace the webms already in `web/public/rl/` with these files.",
+        "Those older webms are scripted/open-loop clips. Leaving them in place keeps",
+        "the old picture on the Train screen under the new caption.",
+        "ffmpeg is not required for this copy. `--webm` transcodes only when a webm is missing.",
         "",
         "Overlay text comes from each curve's `video_label` (`MuJoCo · ppo policy rollout`).",
         "The percent on each skill pill is `Math.round(manifest.success * 100)`.",
@@ -257,8 +272,11 @@ def report_text() -> str:
         else:
             lines.append(f"  rl/{rel}  MISSING")
     lines.append("")
-    lines.append("The Train player prefers <skill>.webm. Existing webms in web/public/rl/ are older clips.")
-    lines.append("Package a drop directory with: python -m rl handoff --pack /tmp/rl-public --webm")
+    lines.append("The Train player prefers <skill>.webm before <skill>.mp4.")
+    lines.append("rl/<skill>.webm is the trained PPO clip (VP9, no audio), the same rollout as rl/<skill>.mp4.")
+    lines.append("Replace the older webms in web/public/rl/. Those are scripted/open-loop clips.")
+    lines.append("Package a drop directory with: python -m rl handoff --pack /tmp/rl-public")
+    lines.append("That copy includes the prebuilt webms. --webm transcodes only when one is missing.")
     lines.append("List only: python -m rl handoff")
     if drift:
         lines.append("")
@@ -266,7 +284,7 @@ def report_text() -> str:
         lines.append("Refresh it with: python -m rl handoff --sync-sample-pack")
     else:
         lines.append("")
-        lines.append("sample_pack matches the published mp4s, curves, manifest, and firmware README.")
+        lines.append("sample_pack matches the published mp4s, webms, curves, manifest, and firmware README.")
     lines.append("")
     lines.append("Replay the adopted policy (the checkpoint named in the curve):")
     for name in spec.SKILLS:
@@ -292,6 +310,11 @@ def problems() -> list[str]:
         video = spec.ROOT / row["video"]
         if not video.exists():
             found.append(f"{row['name']}: missing {row['video']}")
+        webm = spec.ROOT / f"{row['name']}.webm"
+        if not webm.exists() or webm.stat().st_size == 0:
+            found.append(f"{row['name']}: missing {webm.name}")
+        elif webm.read_bytes()[:4] != b"\x1a\x45\xdf\xa3":
+            found.append(f"{row['name']}: {webm.name} is not a WebM file")
     found.extend(f"sample_pack drift: {rel}" for rel in sample_pack_drift())
     return found
 
@@ -299,10 +322,14 @@ def problems() -> list[str]:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         prog="python -m rl handoff",
-        description="List or package the mp4s, manifest, and curves for the Train screen.",
+        description="List or package the mp4s, prebuilt webms, manifest, and curves for the Train screen.",
     )
     parser.add_argument("--pack", default=None, help="directory to write. Refuses anything under web/.")
-    parser.add_argument("--webm", action="store_true", help="with --pack, also transcode each mp4 to vp9 webm")
+    parser.add_argument(
+        "--webm",
+        action="store_true",
+        help="with --pack, transcode a vp9 webm only when the prebuilt file is missing",
+    )
     parser.add_argument("--sync-sample-pack", action="store_true", help="copy published artifacts into rl/sample_pack")
     parser.add_argument("--check", action="store_true", help="exit 1 if labels, success, or sample_pack drift")
     parser.add_argument("--json", action="store_true", help="print the shipped rows as JSON")
